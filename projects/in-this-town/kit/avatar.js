@@ -49,6 +49,9 @@ function face(name, glow = null) {
       case 'squeeze_talk': g.lineWidth = 11; g.beginPath(); g.moveTo(66, 88); g.lineTo(104, 106); g.lineTo(66, 124); g.moveTo(190, 88); g.lineTo(152, 106); g.lineTo(190, 124); g.stroke(); mouthOpen(20, 22); break;
       case 'smug': g.fillRect(68, 100, 40, 12); g.fillRect(148, 100, 40, 12); dot(88, 112, 13, 9); dot(168, 112, 13, 9); g.lineWidth = 9; g.beginPath(); g.moveTo(60, 74); g.lineTo(108, 80); g.moveTo(148, 80); g.lineTo(196, 70); g.stroke(); g.lineWidth = 11; g.beginPath(); g.moveTo(96, 176); g.quadraticCurveTo(140, 192, 168, 160); g.stroke(); break;
       case 'smug_talk': g.fillRect(68, 100, 40, 12); g.fillRect(148, 100, 40, 12); dot(88, 112, 13, 9); dot(168, 112, 13, 9); g.lineWidth = 9; g.beginPath(); g.moveTo(60, 74); g.lineTo(108, 80); g.moveTo(148, 80); g.lineTo(196, 70); g.stroke(); mouthOpen(22, 18); break;
+      case 'yell': eyes(16); g.lineWidth = 12; g.beginPath(); g.moveTo(58, 62); g.lineTo(110, 80); g.moveTo(146, 80); g.lineTo(198, 62); g.stroke(); mouthOpen(34, 40); break;
+      case 'proud': happyEyes(); g.beginPath(); g.arc(128, 150, 40, 0.25, Math.PI - 0.25); g.stroke(); g.lineWidth = 9; g.beginPath(); g.moveTo(62, 68); g.lineTo(108, 62); g.moveTo(148, 62); g.lineTo(194, 68); g.stroke(); break;
+      case 'forced': eyes(); g.lineWidth = 10; g.beginPath(); g.moveTo(84, 176); g.lineTo(172, 176); g.stroke(); for (let i = 0; i < 5; i++) { g.beginPath(); g.moveTo(92 + i * 18, 168); g.lineTo(92 + i * 18, 184); g.stroke(); } g.fillStyle = 'rgba(120,190,255,.8)'; dot(200, 70, 9, 14); g.fillStyle = INK; break;
       case 'sleepy': g.fillRect(70, 108, 38, 9); g.fillRect(150, 108, 38, 9); dot(128, 182, 10, 8); break;
       case 'glow': g.fillStyle = glow; g.beginPath(); g.ellipse(88, 106, 18, 12, -0.25, 0, 7); g.ellipse(168, 106, 18, 12, 0.25, 0, 7); g.fill(); g.strokeStyle = glow; g.lineWidth = 9; g.beginPath(); g.arc(128, 140, 52, 0.35, Math.PI - 0.35); g.stroke(); break;
       case 'glow_evil': g.fillStyle = glow; g.beginPath(); g.moveTo(62, 92); g.lineTo(112, 112); g.lineTo(66, 120); g.closePath(); g.moveTo(194, 92); g.lineTo(144, 112); g.lineTo(190, 120); g.closePath(); g.fill(); g.strokeStyle = glow; g.lineWidth = 9; g.beginPath(); g.moveTo(76, 160); for (let i = 0; i <= 8; i++) g.lineTo(76 + i * 13, 160 + (i % 2 ? 14 : 0)); g.stroke(); break;
@@ -176,6 +179,10 @@ export const POSES = {
   sitBack: { armL: [-0.2, 0, -0.5], armR: [-0.2, 0, 0.5], legL: [-1.57, 0, 0], legR: [-1.57, 0, 0], head: [-0.15, 0, 0] },
   kneel: { armL: [-0.9, 0, 0.1], armR: [-0.9, 0, -0.1], legL: [-1.57, 0, 0], legR: [0.2, 0, 0], head: [0.5, 0, 0] },
   shy: { armL: [-0.35, 0.6, 0.6], armR: [-0.35, -0.6, -0.6], legL: [0, 0, 0.08], legR: [0, 0, -0.08], head: [0.3, 0, 0] },
+  yell: { armL: [-2.0, 0.5, -0.35], armR: [-2.0, -0.5, 0.35], legL: [0, 0, -0.12], legR: [0, 0, 0.12], head: [-0.2, 0, 0] },
+  climb: { armL: [-2.9, 0, 0.1], armR: [-2.3, 0, -0.1], legL: [-1.0, 0, 0], legR: [-0.3, 0, 0], head: [-0.25, 0, 0] },
+  throw: { armL: [-0.4, 0, 0.3], armR: [-2.7, 0, -0.2], legL: [0.4, 0, 0], legR: [-0.4, 0, 0], head: [-0.2, 0, 0] },
+  serve: { armL: [-1.4, 0, 0.15], armR: [-1.4, 0, -0.15], legL: [0, 0, 0], legR: [0, 0, 0], head: [0.15, 0, 0] },
   hug: { armL: [-1.45, 0.75, -0.2], armR: [-1.45, -0.75, 0.2], legL: [0, 0, 0], legR: [0, 0, 0], head: [0.1, 0, 0] },
   yoga: { armL: [-3.0, 0, 0.12], armR: [-3.0, 0, -0.12], legL: [0, 0, 0], legR: [-0.3, 0, 1.4], head: [-0.1, 0, 0] },
   float: { armL: [-0.4, 0, -1.9], armR: [-0.4, 0, 1.9], legL: [0.3, 0, -0.45], legR: [-0.2, 0, 0.45], head: [-0.2, 0, 0] },

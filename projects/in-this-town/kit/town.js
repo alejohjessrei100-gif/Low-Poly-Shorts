@@ -112,7 +112,7 @@ export function bench(p, x, z, rot) {
   box(3.2, 0.18, 0.9, wood, 0, 1.0, 0, g, 0.06); box(3.2, 0.7, 0.16, wood, 0, 1.6, -0.42, g, 0.06);
   [-1.3, 1.3].forEach((a) => box(0.16, 1.0, 0.9, iron, a, 0.5, 0, g));
 }
-function townHall(p, z) {
+export function townHall(p, z) {
   const g = new THREE.Group(); g.position.set(0, 0, z); p.add(g);
   const white = std(0xf6f4f0), gold = std(0xf2c14e, { metalness: 0.5, roughness: 0.3 });
   box(36, 2, 16, std(0xdcd6cc), 0, 1, 0, g); // steps
@@ -131,10 +131,11 @@ function townHall(p, z) {
   });
   const cm = new THREE.Mesh(new THREE.CircleGeometry(2.6, 32), new THREE.MeshStandardMaterial({ map: clock, roughness: 0.6 })); cm.position.set(0, 21, 3.05); g.add(cm);
   const flag = std(0x6fb6ff); box(0.15, 5, 0.15, std(0x888888), 0, 29.6, -2, g); box(2.4, 1.4, 0.06, flag, 1.25, 31.2, -2, g);
+  return { g, clock: cm };
 }
 
 // ---------------------------------------------------------------- build
-export function buildTown(scene) {
+export function buildTown(scene, { hall = true } = {}) {
   const T = new THREE.Group(); scene.add(T);
   const road = new THREE.Mesh(new THREE.PlaneGeometry(10, 280), new THREE.MeshStandardMaterial({ map: asphalt(), roughness: 0.95 }));
   road.rotation.x = -Math.PI / 2; road.position.set(0, 0, -100); road.receiveShadow = true; T.add(road);
@@ -172,7 +173,7 @@ export function buildTown(scene) {
   car(T, -3.6, -30, 0xff8f6b); car(T, 2.6, -48, 0x6fb6ff, Math.PI); car(T, -3.6, -66, 0xffd45c); car(T, 2.6, 10, 0xb98cf0, Math.PI);
   hydrant(T, 5.9, -4.5);
   bench(T, 9.0, 5.5, -Math.PI / 2);
-  townHall(T, -122);
+  if (hall) townHall(T, -122);
   // skyline: pale glass towers behind the town hall
   const gt = glassTower();
   for (let i = 0; i < 14; i++) {
