@@ -527,3 +527,5 @@ window.renderAt = (t) => {
 window.SHOT_TIMES = SHOTS.map((s) => s.t);
 window.END = END;
 window.READY = true;
+const NAMES = ['leo', 'shadow', 'mia', 'cop', 'cop2', 'tapeGuy', 'tapeShadow', 'baker', 'bakerShadow', ...FOLK_LOOKS.map((_, i) => 'folk' + i), ...FOLK_LOOKS.map((_, i) => 'folkShadow' + i)];
+window.QA = { scene, camera, THREE, actors: actors.map((a, i) => ({ name: NAMES[i] || 'actor' + i, wrap: a.wrap, head: a.head })) };

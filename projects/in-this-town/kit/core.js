@@ -59,6 +59,8 @@ export function createCore(canvas) {
     .replace('float factor = ( focus + viewZ );', 'float d0 = focus + viewZ; float factor = sign(d0) * max(0.0, abs(d0) - range);');
   bokeh.materialBokeh.needsUpdate = true;
   composer.addPass(bokeh);
+  // House rule (Nov 2026): no depth-of-field blur. Shots may still set dof; it is ignored.
+  Object.defineProperty(bokeh, 'enabled', { get: () => false, set: () => {} });
   // grade from the style bible: lifted, purple-tinted blacks (black point ~0.16), pastel saturation
   const grade = new ShaderPass({
     uniforms: { tDiffuse: { value: null }, lift: { value: new THREE.Vector3(0.075, 0.06, 0.12) }, sat: { value: 1.3 },
