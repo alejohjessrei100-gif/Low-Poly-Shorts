@@ -30,11 +30,19 @@ page.on('pageerror', (e) => console.error('pageerror:', e.message));
 await page.goto(`http://localhost:${port}/${ep}/index.html`);
 await page.waitForFunction(() => window.READY === true, null, { timeout: 120000 });
 
-const list = times || Array.from({ length: Math.round((t1 - t0) * fps) }, (_, i) => t0 + i / fps);
+let list0 = times;
+if (args.includes('--shots')) { // QA: one still in the middle of every shot
+  const { st, end } = await page.evaluate(() => ({ st: window.SHOT_TIMES, end: window.END }));
+  list0 = st.map((t, i) => +(((t + (st[i + 1] ?? end)) / 2).toFixed(3)));
+  const only = opt('only', ''); if (only) { const ids = only.split(',').map(Number); list0 = list0.filter((_, i) => ids.includes(i)); }
+}
+
+const f0 = Math.round(t0 * fps), f1 = Math.round(t1 * fps);
+const list = list0 || Array.from({ length: f1 - f0 }, (_, i) => (f0 + i) / fps);
 const start = Date.now();
 for (let i = 0; i < list.length; i++) {
   const url = await page.evaluate((t) => { window.renderAt(t); return document.getElementById('c').toDataURL('image/jpeg', 0.94); }, list[i]);
-  const name = times ? `still_${list[i].toFixed(2)}.jpg` : `${String(i).padStart(5, '0')}.jpg`;
+  const name = list0 ? `still_${list[i].toFixed(2)}.jpg` : `${String(Math.round(list[i] * fps)).padStart(5, '0')}.jpg`; // global frame number
   fs.writeFileSync(path.join(out, name), Buffer.from(url.split(',')[1], 'base64'));
   if (i % 30 === 0) console.log(`frame ${i + 1}/${list.length}  ${((Date.now() - start) / (i + 1) / 1000).toFixed(2)} s/frame`);
 }

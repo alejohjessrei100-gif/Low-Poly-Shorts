@@ -45,6 +45,24 @@ const facade = (base, rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
   }
   g.fillStyle = 'rgba(0,0,0,.1)'; g.fillRect(0, 0, w, 14);
 });
+// night: the same window grid, lit warm, used as an emissive map (own RNG so the day layout is unchanged)
+let seed2 = 11;
+const rnd2 = () => ((seed2 = (seed2 * 16807) % 2147483647) / 2147483647);
+const facadeGlow = (rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
+  g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+  const top = 30, bottom = shop ? 130 : 30, ch = (h - top - bottom) / rows, cw = w / cols;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    if (rnd2() < 0.25) continue; // some rooms stay dark
+    g.fillStyle = rnd2() < 0.5 ? '#ffd27a' : '#ffe9b0';
+    g.fillRect(c * cw + cw * 0.2, top + r * ch + ch * 0.18, cw * 0.6, ch * 0.6);
+  }
+  if (shop) { g.fillStyle = '#ffe9b0'; g.fillRect(18, h - 96, w - 70, 80); }
+});
+export const WINDOW_MATS = [];
+export function setWindows(k) { for (const m of WINDOW_MATS) m.emissiveIntensity = k; }
+export const LAMP_MATS = [];
+export function setLamps(k) { for (const m of LAMP_MATS) m.emissiveIntensity = k; }
+
 const glassTower = () => canvasTex(128, 512, (g, w, h) => {
   const gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#bfe6ff'); gr.addColorStop(1, '#6fb8ec');
   g.fillStyle = gr; g.fillRect(0, 0, w, h);
@@ -67,7 +85,8 @@ function lamp(p, x, z, side) {
   const m = std(0x3c4a6b, { metalness: 0.3, roughness: 0.5 });
   box(0.25, 7, 0.25, m, x, 3.5, z, p);
   box(1.6 * side, 0.18, 0.2, m, x - 0.8 * side, 7, z, p);
-  box(0.7, 0.35, 0.5, std(0xfff4c8, { emissive: 0xfff0b0, emissiveIntensity: 0.6 }), x - 1.5 * side, 6.8, z, p);
+  const lm = std(0xfff4c8, { emissive: 0xfff0b0, emissiveIntensity: 0.6 }); LAMP_MATS.push(lm);
+  box(0.7, 0.35, 0.5, lm, x - 1.5 * side, 6.8, z, p);
 }
 function car(p, x, z, color, rot = 0) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; p.add(g);
@@ -136,7 +155,8 @@ export function buildTown(scene) {
       const tex = facade(col, rows, Math.max(2, Math.round(d / 3)), shop);
       const top = std(new THREE.Color(col).multiplyScalar(0.92));
       // BoxGeometry material order: +x, -x, +y, -y, +z, -z; the street-facing side gets the facade
-      const front = std(0xffffff, { map: tex });
+      const front = std(0xffffff, { map: tex, emissive: 0xffffff, emissiveMap: facadeGlow(rows, Math.max(2, Math.round(d / 3)), shop), emissiveIntensity: 0 });
+      WINDOW_MATS.push(front);
       const fixed = s > 0 ? [std(col), front, top, top, std(col), std(col)] : [front, std(col), top, top, std(col), std(col)];
       const g = new THREE.BoxGeometry(depth, h, d);
       const b = new THREE.Mesh(g, fixed); b.position.set(s * (10 + depth / 2), h / 2, z - d / 2); b.castShadow = b.receiveShadow = true; T.add(b);
