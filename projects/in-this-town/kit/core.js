@@ -49,6 +49,13 @@ export function createCore(canvas) {
   composer.setSize(W, H);
   composer.addPass(new RenderPass(scene, camera));
   const bokeh = new BokehPass(scene, camera, { focus: 10, aperture: 0.0, maxblur: 0.0 });
+  // in-focus zone: nothing within +-range of the focus distance blurs (the stock shader blurs everything
+  // in proportion to its distance from the focus plane, which softened the subject's own face)
+  bokeh.uniforms.range = { value: 1.6 };
+  bokeh.materialBokeh.fragmentShader = bokeh.materialBokeh.fragmentShader
+    .replace('uniform float focus;', 'uniform float focus;\nuniform float range;')
+    .replace('float factor = ( focus + viewZ );', 'float d0 = focus + viewZ; float factor = sign(d0) * max(0.0, abs(d0) - range);');
+  bokeh.materialBokeh.needsUpdate = true;
   composer.addPass(bokeh);
   // grade from the style bible: lifted, purple-tinted blacks (black point ~0.16), pastel saturation
   const grade = new ShaderPass({

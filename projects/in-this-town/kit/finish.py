@@ -4,8 +4,8 @@
       --voice episodes/01_shadow/voice.mp3 --out renders/ep01_test/ep01_test.mp4 --fps 60 [--to 5.5]
 
 Caption spec (measured on the reference sheets, colour changed to white on request):
-one word at a time, lowercase, centred at about 62% of the height, Poppins ExtraBold 112 px, white fill,
-13 px black outline, soft drop shadow; each word pops 0.6 -> 1.15 -> 1.0 over 4 frames.
+one word at a time, lowercase, centred at about 62% of the height, Poppins ExtraBold 56 px (halved on request), white fill,
+7 px black outline, soft drop shadow; each word pops 0.6 -> 1.15 -> 1.0 over 4 frames.
 """
 import argparse
 import glob
@@ -28,16 +28,16 @@ def sprite(word, scale):
     key = (word, round(scale, 3))
     if key in _SPR:
         return _SPR[key]
-    size = max(10, int(112 * scale))
+    size = max(10, int(56 * scale))
     f = ImageFont.truetype(FONT, size)
-    stroke = max(2, int(13 * scale))
+    stroke = max(2, int(7 * scale))
     l, t, r, b = f.getbbox(word, stroke_width=stroke)
     pad = 40
     w, h = r - l + pad * 2, b - t + pad * 2
     shadow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    ImageDraw.Draw(shadow).text((pad - l + 4, pad - t + 8), word, font=f, fill=(0, 0, 0, 140), stroke_width=stroke,
+    ImageDraw.Draw(shadow).text((pad - l + 2, pad - t + 4), word, font=f, fill=(0, 0, 0, 140), stroke_width=stroke,
                                 stroke_fill=(0, 0, 0, 140))
-    img = shadow.filter(ImageFilter.GaussianBlur(14 * scale))
+    img = shadow.filter(ImageFilter.GaussianBlur(7 * scale))
     ImageDraw.Draw(img).text((pad - l, pad - t), word, font=f, fill=(255, 255, 255, 255), stroke_width=stroke,
                              stroke_fill=(0, 0, 0, 255))
     _SPR[key] = img
@@ -77,6 +77,8 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--fps", type=int, default=60)
     ap.add_argument("--to", type=float, default=0)
+    ap.add_argument("--music", default="", help="music file; default = built-in original bed")
+    ap.add_argument("--music-vol", type=float, default=0.25, help="music loudness relative to the voice (0.25 = 25%%)")
     a = ap.parse_args()
 
     words = json.load(open(a.words))["words"]
@@ -105,8 +107,14 @@ def main():
     v = np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", a.voice, "-ac", "1", "-ar", str(sr), "-f", "f32le", "-"],
                                      capture_output=True, check=True).stdout, np.float32)[: int(dur * sr)]
     v = np.pad(v, (0, max(0, int(dur * sr) - len(v))))
-    m = music(dur, sr)
-    m *= (np.sqrt(np.mean(v ** 2)) * 10 ** (-12 / 20)) / (np.sqrt(np.mean(m ** 2)) + 1e-9)
+    if a.music:
+        m = np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", a.music, "-ac", "1", "-ar", str(sr), "-f", "f32le", "-"],
+                                         capture_output=True, check=True).stdout, np.float32).astype(np.float64)
+        m = np.tile(m, int(np.ceil(dur * sr / len(m))))[: int(dur * sr)]  # loop if shorter than the video
+    else:
+        m = music(dur, sr)
+    # music RMS = music_vol x voice RMS (0.25 is about 12 dB under the voice)
+    m *= (np.sqrt(np.mean(v ** 2)) * a.music_vol) / (np.sqrt(np.mean(m ** 2)) + 1e-9)
     mix = v + m
     fade = int(0.08 * sr)
     mix[-fade:] *= np.linspace(1, 0, fade)

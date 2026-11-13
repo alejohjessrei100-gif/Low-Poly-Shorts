@@ -87,7 +87,7 @@ window.renderAt = (t) => {
   camera.position.set(...s.from.map((v, i) => lerp(v, s.to[i], k)));
   camera.fov = s.fov; camera.updateProjectionMatrix();
   camera.lookAt(...s.look);
-  if (s.dof) { bokeh.enabled = true; bokeh.uniforms.focus.value = s.dof[0]; bokeh.uniforms.aperture.value = s.dof[1]; bokeh.uniforms.maxblur.value = 0.012; }
+  if (s.dof) { bokeh.enabled = true; bokeh.uniforms.focus.value = s.dof[0]; bokeh.uniforms.aperture.value = s.dof[1]; bokeh.uniforms.maxblur.value = 0.02; }
   else bokeh.enabled = false;
   composer.render();
 };
