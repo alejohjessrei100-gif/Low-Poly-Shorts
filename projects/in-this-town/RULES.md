@@ -15,3 +15,12 @@ Set by the channel owner. Every episode follows these.
 4. **Voice:** ElevenLabs Adam, pitch +4, speed 1.25x. **Captions:** white, Poppins 800 at 56 px, one word at a time.
 5. **Music:** background track at 25% of the voice loudness. **Sound effects:** synthesized in `kit/sfx.py`, cued to words.
 6. **Backgrounds:** detailed, never bare grass (`kit/world.js` suburbs + backdrop).
+7. **New town every episode.** Never reuse a previous episode's town layout, main street, landmark buildings
+   or palette. Each episode gets its own location built for its story (for example a snowy mountain village,
+   a beach town on stilts, a desert canyon town, a floating sky city, a swamp village, a neon night city), with
+   its own terrain, architecture, colours, landmark and lighting. Shared code (avatars, captions, SFX, QA) is
+   fine; what the viewer sees of the world must be new. Keep a list of used settings below.
+
+## Settings used so far
+- Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
+- Ep 2 "Lie Balloons": the same pastel main street and town hall (reused; never again).
