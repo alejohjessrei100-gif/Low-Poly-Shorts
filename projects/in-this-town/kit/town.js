@@ -3,30 +3,30 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { canvasTex } from './core.js';
 
-const PASTELS = ['#f7e7a6', '#c9e7d8', '#d9d0f2', '#bfe0f7', '#f6cfd8', '#fbe0c2', '#e6f2c4', '#cfd9f7'];
+export const PASTELS = ['#f7e7a6', '#c9e7d8', '#d9d0f2', '#bfe0f7', '#f6cfd8', '#fbe0c2', '#e6f2c4', '#cfd9f7'];
 let seed = 7;
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 
-function std(color, extra = {}) { return new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...extra }); }
-function box(w, h, d, m, x, y, z, parent, r = 0) {
+export function std(color, extra = {}) { return new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...extra }); }
+export function box(w, h, d, m, x, y, z, parent, r = 0) {
   const g = r ? new RoundedBoxGeometry(w, h, d, 2, r) : new THREE.BoxGeometry(w, h, d);
   const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; parent.add(o); return o;
 }
 
 // ---------------------------------------------------------------- textures
-const asphalt = () => canvasTex(512, 512, (g, w, h) => {
+export const asphalt = () => canvasTex(512, 512, (g, w, h) => {
   g.fillStyle = '#4a5068'; g.fillRect(0, 0, w, h);
   for (let i = 0; i < 2600; i++) { const v = 60 + rnd() * 40; g.fillStyle = `rgba(${v},${v + 4},${v + 24},.35)`; g.fillRect(rnd() * w, rnd() * h, 2, 2); }
   g.fillStyle = '#f4e9a8'; g.fillRect(w / 2 - 7, 40, 14, 190); g.fillRect(w / 2 - 7, 296, 14, 190); // centre dashes
   g.fillStyle = '#e9edf5'; g.fillRect(14, 0, 9, h); g.fillRect(w - 23, 0, 9, h); // edge lines
 }, [1, 14]);
-const tiles = () => canvasTex(256, 256, (g, w, h) => {
+export const tiles = () => canvasTex(256, 256, (g, w, h) => {
   g.fillStyle = '#e3dcd2'; g.fillRect(0, 0, w, h);
   g.strokeStyle = '#c4b9ad'; g.lineWidth = 4;
   for (let i = 0; i <= 4; i++) { g.beginPath(); g.moveTo(i * 64, 0); g.lineTo(i * 64, h); g.stroke(); g.beginPath(); g.moveTo(0, i * 64); g.lineTo(w, i * 64); g.stroke(); }
   for (let i = 0; i < 300; i++) { g.fillStyle = `rgba(150,130,120,${rnd() * 0.15})`; g.fillRect(rnd() * w, rnd() * h, 3, 3); }
 }, [2, 40]);
-const facade = (base, rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
+export const facade = (base, rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
   g.fillStyle = base; g.fillRect(0, 0, w, h);
   for (let i = 0; i < 500; i++) { g.fillStyle = `rgba(255,255,255,${rnd() * 0.08})`; g.fillRect(rnd() * w, rnd() * h, 4, 2); }
   const top = 30, bottom = shop ? 130 : 30, ch = (h - top - bottom) / rows, cw = w / cols;
@@ -48,7 +48,7 @@ const facade = (base, rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
 // night: the same window grid, lit warm, used as an emissive map (own RNG so the day layout is unchanged)
 let seed2 = 11;
 const rnd2 = () => ((seed2 = (seed2 * 16807) % 2147483647) / 2147483647);
-const facadeGlow = (rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
+export const facadeGlow = (rows, cols, shop) => canvasTex(256, 512, (g, w, h) => {
   g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
   const top = 30, bottom = shop ? 130 : 30, ch = (h - top - bottom) / rows, cw = w / cols;
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
@@ -63,7 +63,7 @@ export function setWindows(k) { for (const m of WINDOW_MATS) m.emissiveIntensity
 export const LAMP_MATS = [];
 export function setLamps(k) { for (const m of LAMP_MATS) m.emissiveIntensity = k; }
 
-const glassTower = () => canvasTex(128, 512, (g, w, h) => {
+export const glassTower = () => canvasTex(128, 512, (g, w, h) => {
   const gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#bfe6ff'); gr.addColorStop(1, '#6fb8ec');
   g.fillStyle = gr; g.fillRect(0, 0, w, h);
   g.fillStyle = 'rgba(255,255,255,.55)';
@@ -72,7 +72,7 @@ const glassTower = () => canvasTex(128, 512, (g, w, h) => {
 });
 
 // ---------------------------------------------------------------- props
-function tree(p, x, z, s = 1) {
+export function tree(p, x, z, s = 1) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); p.add(g);
   box(0.6, 3, 0.6, std(0x8b5a3c), 0, 1.5, 0, g, 0.15);
   const leaf = std(0x6cc76a, { roughness: 0.9 }), leaf2 = std(0x8fdc6b, { roughness: 0.9 });
@@ -80,15 +80,16 @@ function tree(p, x, z, s = 1) {
     const o = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), m); o.position.set(a, b, c); o.castShadow = o.receiveShadow = true; g.add(o);
   });
   box(1.6, 0.3, 1.6, std(0x8a7a6a), 0, 0.15, 0, g); // planter
+  return g;
 }
-function lamp(p, x, z, side) {
+export function lamp(p, x, z, side) {
   const m = std(0x3c4a6b, { metalness: 0.3, roughness: 0.5 });
   box(0.25, 7, 0.25, m, x, 3.5, z, p);
   box(1.6 * side, 0.18, 0.2, m, x - 0.8 * side, 7, z, p);
   const lm = std(0xfff4c8, { emissive: 0xfff0b0, emissiveIntensity: 0.6 }); LAMP_MATS.push(lm);
   box(0.7, 0.35, 0.5, lm, x - 1.5 * side, 6.8, z, p);
 }
-function car(p, x, z, color, rot = 0) {
+export function car(p, x, z, color, rot = 0) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; p.add(g);
   box(2.3, 1.1, 4.6, std(color, { roughness: 0.35 }), 0, 0.95, 0, g, 0.3);
   box(2.0, 0.9, 2.4, std(color, { roughness: 0.35 }), 0, 1.85, -0.2, g, 0.3);
@@ -97,14 +98,15 @@ function car(p, x, z, color, rot = 0) {
     const w = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.4, 16), std(0x25252c)); w.rotation.z = Math.PI / 2; w.position.set(a, 0.48, b); w.castShadow = true; g.add(w);
   });
   box(0.5, 0.25, 0.08, std(0xfff6d0, { emissive: 0xfff6d0, emissiveIntensity: 0.4 }), -0.7, 1.05, 2.3, g); box(0.5, 0.25, 0.08, std(0xfff6d0, { emissive: 0xfff6d0, emissiveIntensity: 0.4 }), 0.7, 1.05, 2.3, g);
+  return g;
 }
-function hydrant(p, x, z) {
+export function hydrant(p, x, z) {
   const m = std(0xe8434f, { roughness: 0.4 });
   const b = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 1.2, 14), m); b.position.set(x, 0.6, z); b.castShadow = true; p.add(b);
   const t = new THREE.Mesh(new THREE.SphereGeometry(0.36, 14, 8, 0, 6.3, 0, 1.6), m); t.position.set(x, 1.2, z); t.castShadow = true; p.add(t);
   box(1.0, 0.22, 0.22, m, x, 0.85, z, p, 0.08);
 }
-function bench(p, x, z, rot) {
+export function bench(p, x, z, rot) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; p.add(g);
   const wood = std(0xc9824f), iron = std(0x34405e);
   box(3.2, 0.18, 0.9, wood, 0, 1.0, 0, g, 0.06); box(3.2, 0.7, 0.16, wood, 0, 1.6, -0.42, g, 0.06);

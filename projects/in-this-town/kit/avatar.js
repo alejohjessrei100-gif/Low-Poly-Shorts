@@ -45,6 +45,10 @@ function face(name, glow = null) {
       case 'blush': eyes(); blush(); smile(36); break;
       case 'love': heart(88, 104, 26); heart(168, 104, 26); blush(); smile(); break;
       case 'cool': g.fillStyle = '#101018'; g.beginPath(); g.roundRect(46, 80, 74, 44, 12); g.roundRect(136, 80, 74, 44, 12); g.fill(); g.fillRect(118, 90, 22, 8); g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(58, 88, 22, 8); g.fillRect(148, 88, 22, 8); g.fillStyle = INK; g.beginPath(); g.moveTo(92, 166); g.quadraticCurveTo(140, 196, 176, 150); g.stroke(); break;
+      case 'squeeze': g.lineWidth = 11; g.beginPath(); g.moveTo(66, 88); g.lineTo(104, 106); g.lineTo(66, 124); g.moveTo(190, 88); g.lineTo(152, 106); g.lineTo(190, 124); g.stroke(); wobble(); break;
+      case 'squeeze_talk': g.lineWidth = 11; g.beginPath(); g.moveTo(66, 88); g.lineTo(104, 106); g.lineTo(66, 124); g.moveTo(190, 88); g.lineTo(152, 106); g.lineTo(190, 124); g.stroke(); mouthOpen(20, 22); break;
+      case 'smug': g.fillRect(68, 100, 40, 12); g.fillRect(148, 100, 40, 12); dot(88, 112, 13, 9); dot(168, 112, 13, 9); g.lineWidth = 9; g.beginPath(); g.moveTo(60, 74); g.lineTo(108, 80); g.moveTo(148, 80); g.lineTo(196, 70); g.stroke(); g.lineWidth = 11; g.beginPath(); g.moveTo(96, 176); g.quadraticCurveTo(140, 192, 168, 160); g.stroke(); break;
+      case 'smug_talk': g.fillRect(68, 100, 40, 12); g.fillRect(148, 100, 40, 12); dot(88, 112, 13, 9); dot(168, 112, 13, 9); g.lineWidth = 9; g.beginPath(); g.moveTo(60, 74); g.lineTo(108, 80); g.moveTo(148, 80); g.lineTo(196, 70); g.stroke(); mouthOpen(22, 18); break;
       case 'sleepy': g.fillRect(70, 108, 38, 9); g.fillRect(150, 108, 38, 9); dot(128, 182, 10, 8); break;
       case 'glow': g.fillStyle = glow; g.beginPath(); g.ellipse(88, 106, 18, 12, -0.25, 0, 7); g.ellipse(168, 106, 18, 12, 0.25, 0, 7); g.fill(); g.strokeStyle = glow; g.lineWidth = 9; g.beginPath(); g.arc(128, 140, 52, 0.35, Math.PI - 0.35); g.stroke(); break;
       case 'glow_evil': g.fillStyle = glow; g.beginPath(); g.moveTo(62, 92); g.lineTo(112, 112); g.lineTo(66, 120); g.closePath(); g.moveTo(194, 92); g.lineTo(144, 112); g.lineTo(190, 120); g.closePath(); g.fill(); g.strokeStyle = glow; g.lineWidth = 9; g.beginPath(); g.moveTo(76, 160); for (let i = 0; i <= 8; i++) g.lineTo(76 + i * 13, 160 + (i % 2 ? 14 : 0)); g.stroke(); break;
@@ -111,6 +115,13 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
     add(headPivot, rbox(1.4, 0.45, 1.4, 0.1), mat(0x1f2b55), 0, 1.45, 0);
     add(headPivot, rbox(1.45, 0.1, 0.6, 0.04), mat(0x111111), 0, 1.25, 0.7);
     add(headPivot, rbox(0.3, 0.3, 0.06, 0.04), mat(0xf2c14e, { metalness: 0.6, roughness: 0.3 }), 0, 1.5, 0.71);
+  } else if (hat === 'tophat' && !shadowMode) {
+    add(headPivot, new THREE.CylinderGeometry(1.15, 1.15, 0.12, 24), mat(0x16161c), 0, 1.36, 0);
+    add(headPivot, new THREE.CylinderGeometry(0.72, 0.72, 1.3, 24), mat(0x16161c), 0, 2.0, 0);
+    add(headPivot, new THREE.CylinderGeometry(0.735, 0.735, 0.24, 24), mat(0xc8343f), 0, 1.5, 0);
+  } else if (hat === 'hardhat' && !shadowMode) {
+    add(headPivot, new THREE.SphereGeometry(0.82, 20, 10, 0, 6.3, 0, 1.6), mat(0xffc83d, { roughness: 0.4 }), 0, 1.28, 0);
+    add(headPivot, new THREE.CylinderGeometry(0.98, 0.98, 0.1, 24), mat(0xffc83d, { roughness: 0.4 }), 0, 1.3, 0.1);
   } else if (hat === 'chef') {
     add(headPivot, rbox(1.3, 0.4, 1.3, 0.1), mat(0xffffff), 0, 1.45, 0);
     add(headPivot, new THREE.SphereGeometry(0.85, 16, 12), mat(0xffffff), 0, 2.05, 0);
@@ -165,6 +176,13 @@ export const POSES = {
   sitBack: { armL: [-0.2, 0, -0.5], armR: [-0.2, 0, 0.5], legL: [-1.57, 0, 0], legR: [-1.57, 0, 0], head: [-0.15, 0, 0] },
   kneel: { armL: [-0.9, 0, 0.1], armR: [-0.9, 0, -0.1], legL: [-1.57, 0, 0], legR: [0.2, 0, 0], head: [0.5, 0, 0] },
   shy: { armL: [-0.35, 0.6, 0.6], armR: [-0.35, -0.6, -0.6], legL: [0, 0, 0.08], legR: [0, 0, -0.08], head: [0.3, 0, 0] },
+  hug: { armL: [-1.45, 0.75, -0.2], armR: [-1.45, -0.75, 0.2], legL: [0, 0, 0], legR: [0, 0, 0], head: [0.1, 0, 0] },
+  yoga: { armL: [-3.0, 0, 0.12], armR: [-3.0, 0, -0.12], legL: [0, 0, 0], legR: [-0.3, 0, 1.4], head: [-0.1, 0, 0] },
+  float: { armL: [-0.4, 0, -1.9], armR: [-0.4, 0, 1.9], legL: [0.3, 0, -0.45], legR: [-0.2, 0, 0.45], head: [-0.2, 0, 0] },
+  flail: { armL: [-2.6, 0, -0.9], armR: [-2.2, 0, 1.2], legL: [-0.7, 0, -0.3], legR: [0.5, 0, 0.35], head: [-0.3, 0, 0] },
+  kick: { armL: [0.4, 0, -0.5], armR: [-0.6, 0, 0.6], legL: [0.2, 0, 0], legR: [-1.4, 0, 0], head: [0.2, 0, 0] },
+  pull: { armL: [-1.2, 0, 0.1], armR: [-1.2, 0, -0.1], legL: [0.5, 0, 0], legR: [-0.6, 0, 0], head: [-0.15, 0, 0] },
+  push: { armL: [-1.7, 0, 0.1], armR: [-1.7, 0, -0.1], legL: [-0.6, 0, 0], legR: [0.5, 0, 0], head: [0.1, 0, 0] },
   carry: { armL: [-1.3, 0, 0.2], armR: [-1.3, 0, -0.2], legL: [0, 0, 0], legR: [0, 0, 0], head: [0, 0, 0] },
 };
 
