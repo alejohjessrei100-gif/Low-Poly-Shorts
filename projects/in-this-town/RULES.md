@@ -4,9 +4,14 @@ Set by the channel owner. Every episode follows these.
 
 1. **Length 45–60 seconds.** Script about 160–200 words (the +4 / 1.25x voice runs about 3.5 words per second).
 2. **No blur.** Depth of field is switched off in `kit/core.js`; everything in frame stays sharp.
-3. **Check before rendering.** Before any video render, run the automatic clipping check
-   (`node kit/clipcheck.mjs episodes/<ep>`) and fix every hit, then check a still from the start, middle
-   and end of every shot for:
+3. **Check and auto-fix before rendering.** Before any video render:
+   1. `node kit/autofix.mjs episodes/<ep>`: finds camera-in-wall, blocked frames, hidden characters and clipping,
+      and fixes them with the smallest camera move or character nudge. Every change is logged in
+      `episodes/<ep>/autofix.json` (delete it to undo). It never moves seated characters, never pushes anyone
+      out of frame, and never re-aims wide shots (unless run with `--aim`).
+   2. `node kit/clipcheck.mjs episodes/<ep>`: must come back clean, including the frame checks (black frames,
+      one-colour frames, sudden jumps). Intended contacts go in `episodes/<ep>/clip_allow.json`.
+   3. Fix by hand whatever autofix reports as "still needs a human look", then look at a still from every shot for:
    - camera inside a wall, building, car, tree or character
    - characters clipping into walls, floors, furniture or each other
    - props passing through hands, faces or bodies
@@ -15,6 +20,9 @@ Set by the channel owner. Every episode follows these.
 4. **Voice:** ElevenLabs Adam, pitch +4, speed 1.25x. **Captions:** white, Poppins 800 at 56 px, one word at a time.
 5. **Music:** background track at 25% of the voice loudness. **Sound effects:** synthesized in `kit/sfx.py`, cued to words.
 6. **Backgrounds:** detailed, never bare grass (`kit/world.js` suburbs + backdrop).
+8. **No talking animation.** Mouths don't flap and heads don't bob while someone speaks. Each line gets one
+   steady facial expression that fits it (happy, scared, determined, smug...). `talkFace()` in `kit/avatar.js`
+   already does this.
 7. **New town every episode.** Never reuse a previous episode's town layout, main street, landmark buildings
    or palette. Each episode gets its own location built for its story (for example a snowy mountain village,
    a beach town on stilts, a desert canyon town, a floating sky city, a swamp village, a neon night city), with

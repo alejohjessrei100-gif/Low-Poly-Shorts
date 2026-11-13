@@ -154,9 +154,10 @@ export function setFace(av, name) {
   av.faceMat.map = av.shadowMode ? face(name.startsWith('glow') ? name : 'glow', av.glow) : face(name);
 }
 // mouth flaps while a word is being spoken
-export function talkFace(av, words, t, open = 'talk', closed = 'smile') {
-  const w = words.find(([s, e]) => t >= s && t < e);
-  setFace(av, w && Math.floor((t - w[0]) * 9) % 2 === 0 ? open : closed);
+// House rule (Nov 2026): no flapping mouths or bobbing heads while talking. A speaker shows one steady
+// facial expression (the `closed` face) for the line; the open-mouth argument is kept for old call sites only.
+export function talkFace(av, words, t, open = 'talk', closed = 'smile') { // eslint-disable-line no-unused-vars
+  setFace(av, closed);
 }
 
 // ---------------------------------------------------------------- poses (x, y, z radians per part)

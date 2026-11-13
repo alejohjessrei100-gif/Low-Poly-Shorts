@@ -3,6 +3,7 @@ import { createCore, smooth, lerp, clamp01 } from '../../kit/core.js';
 import { makeAvatar, pose, setFace, talkFace, walk, run, reset, shadowCrowd } from '../../kit/avatar.js';
 import { buildTown, setWindows, setLamps } from '../../kit/town.js';
 import * as P from '../../kit/props.js';
+import { loadFixes, setShot, offsetActor, applyCamera } from '../../kit/autofix-runtime.js';
 
 await document.fonts.load('800 40px Poppins');
 const C = createCore(document.getElementById('c'));
@@ -14,6 +15,7 @@ ground.rotation.x = -Math.PI / 2; ground.position.set(300, -0.05, 0); ground.rec
 
 const WORDS = (await (await fetch(new URL('./words.json', import.meta.url))).json()).words;
 const END = WORDS[WORDS.length - 1][1] + 0.45;
+await loadFixes(new URL('./autofix.json', import.meta.url));
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const W = (word, after = 0) => { const w = WORDS.find(([s, , x]) => s >= after - 0.01 && norm(x) === word); if (!w) throw new Error('word ' + word + ' after ' + after); return w[0]; };
 const CUT = (t) => Math.max(0, t - 2 / 60);
@@ -32,7 +34,7 @@ function actor(opts) {
 // place an actor: feet position, facing yaw, k = 1 standing / 0 lying flat on the ground (shadows)
 function put(a, x, y, z, yaw = 0, k = 1) {
   a.wrap.visible = true;
-  a.wrap.position.set(x, y, z); a.wrap.rotation.set(0, yaw, 0);
+  a.wrap.position.set(x, y, z); offsetActor(a.name, a.wrap.position); a.wrap.rotation.set(0, yaw, 0);
   a.tilt.rotation.set(Math.PI / 2 * (1 - k), 0, 0);
   a.av.root.scale.set(1, 1, a.av.shadowMode ? 0.04 + 0.96 * k : 1);
   reset(a.av);
@@ -162,7 +164,7 @@ function leoIntro(t) {
   if (t < 1.55) { pose(leo, 'idle'); setFace(leo, 'smile'); }
   else if (t < 2.2) { pose(leo, 'idle', 'flinch', smooth((t - 1.55) / 0.5) * 0.35); setFace(leo, 'scared'); }
   else if (t < 3.6) { pose(leo, 'idle', 'flinch', 0.35 + 0.65 * smooth((t - 2.2) / 0.3)); setFace(leo, 'scared'); }
-  else { pose(leo, 'flinch', 'idle', smooth((t - 3.6) / 0.35)); leo.wrap.rotation.y = -2.5; leo.headPivot.rotation.y = 0.12 * Math.sin(t * 3); talkFace(leo, WORDS, t, 'scared_talk', 'scared'); }
+  else { pose(leo, 'flinch', 'idle', smooth((t - 3.6) / 0.35)); leo.wrap.rotation.y = -2.5; talkFace(leo, WORDS, t, 'scared_talk', 'scared'); }
   if (t < 3.6) {
     const k = smooth((t - 1.5) / 0.5);
     const p = v3(SH_FEET).lerp(v3(SH_STAND), k);
@@ -507,12 +509,15 @@ window.renderAt = (t) => {
   const k = clamp01((t - s.t) / (t1 - s.t));
   hideAll();
   setLight(s.light, s.c || [0, 0, 0], s.sun);
+  setShot(i);
   s.act(t, k);
   const [from, to, look, lookTo] = s.cam;
   camera.position.set(...from.map((v, j) => lerp(v, to[j], k)));
   camera.fov = s.fov || 45; camera.updateProjectionMatrix();
-  if (s.lookObj) { s.lookObj().updateWorldMatrix(true, false); camera.lookAt(s.lookObj().getWorldPosition(new THREE.Vector3())); }
-  else camera.lookAt(...(lookTo ? look.map((v, j) => lerp(v, lookTo[j], k)) : look));
+  let L;
+  if (s.lookObj) { s.lookObj().updateWorldMatrix(true, false); L = s.lookObj().getWorldPosition(new THREE.Vector3()); }
+  else L = new THREE.Vector3(...(lookTo ? look.map((v, j) => lerp(v, lookTo[j], k)) : look));
+  applyCamera(i, camera, L);
   if (s.cctv) {
     grade.uniforms.cctv.value = 1; grade.uniforms.time.value = t; hudMesh.visible = true; hud.draw(t - s.t);
     const d = 0.5, hh = 2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
@@ -522,10 +527,11 @@ window.renderAt = (t) => {
   for (const l of LIGHTS) l.visible = l.intensity > 0;
   if (s.dof) { bokeh.enabled = true; bokeh.uniforms.focus.value = s.dof[0]; bokeh.uniforms.aperture.value = s.dof[1]; bokeh.uniforms.maxblur.value = 0.02; }
   else bokeh.enabled = false;
-  composer.render();
+  if (!window.__NO_RENDER) composer.render();
 };
 window.SHOT_TIMES = SHOTS.map((s) => s.t);
 window.END = END;
 window.READY = true;
 const NAMES = ['leo', 'shadow', 'mia', 'cop', 'cop2', 'tapeGuy', 'tapeShadow', 'baker', 'bakerShadow', ...FOLK_LOOKS.map((_, i) => 'folk' + i), ...FOLK_LOOKS.map((_, i) => 'folkShadow' + i)];
-window.QA = { scene, camera, THREE, actors: actors.map((a, i) => ({ name: NAMES[i] || 'actor' + i, wrap: a.wrap, head: a.head })) };
+actors.forEach((a, i) => { a.name = NAMES[i] || 'actor' + i; });
+window.QA = { scene, camera, THREE, actors: actors.map((a, i) => ({ name: a.name, wrap: a.wrap, head: a.head, legL: a.legL })) };

@@ -1,0 +1,34 @@
+{
+ "_": "Intended overlaps. Prefix match on the checker's text. Shadows are attached at the feet of their owners.",
+ "*": [
+  "CLIP leo into shadow",
+  "CLIP shadow into leo",
+  "CLIP folk0 into folkShadow0",
+  "CLIP folk1 into folkShadow1",
+  "CLIP folk2 into folkShadow2",
+  "CLIP folk3 into folkShadow3",
+  "CLIP folk4 into folkShadow4",
+  "CLIP folk5 into folkShadow5",
+  "CLIP tapeGuy into tapeShadow",
+  "CLIP baker into bakerShadow"
+ ],
+ "54": [
+  "CLIP shadow into box",
+  "HIDDEN shadow"
+ ],
+ "19": [
+  "CLIP leo into box"
+ ],
+ "21": [
+  "CLIP leo into box"
+ ],
+ "46": [
+  "CLIP leo into box"
+ ],
+ "52": [
+  "CLIP leo into box"
+ ],
+ "53": [
+  "CLIP leo into box"
+ ]
+}

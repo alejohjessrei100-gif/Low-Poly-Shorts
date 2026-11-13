@@ -5,6 +5,7 @@ import { buildTown, townHall, setLamps } from '../../kit/town.js';
 import { suburb, backdrop } from '../../kit/world.js';
 import { cluster, swarm, shreds } from '../../kit/balloons.js';
 import * as P from '../../kit/props.js';
+import { loadFixes, setShot, offsetActor, applyCamera } from '../../kit/autofix-runtime.js';
 import * as Z from '../../kit/sets2.js';
 
 await document.fonts.load('800 40px Poppins');
@@ -17,6 +18,7 @@ ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.05, -60); ground.rec
 
 const WORDS = (await (await fetch(new URL('./words.json', import.meta.url))).json()).words;
 const END = WORDS[WORDS.length - 1][1] + 0.45;
+await loadFixes(new URL('./autofix.json', import.meta.url));
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const W = (word, after = 0) => { const w = WORDS.find(([s, , x]) => s >= after - 0.01 && norm(x) === word); if (!w) throw new Error('word ' + word + ' after ' + after); return w[0]; };
 const CUT = (t) => Math.max(0, t - 2 / 60);
@@ -56,7 +58,7 @@ function actor(name, opts) {
   actors.push(a);
   return a;
 }
-function put(a, x, y, z, yaw = 0) { a.wrap.visible = true; a.wrap.position.set(x, y, z); a.wrap.rotation.set(0, yaw, 0); a.tilt.rotation.set(0, 0, 0); reset(a.av); }
+function put(a, x, y, z, yaw = 0) { a.wrap.visible = true; a.wrap.position.set(x, y, z); offsetActor(a.name, a.wrap.position); a.wrap.rotation.set(0, yaw, 0); a.tilt.rotation.set(0, 0, 0); reset(a.av); }
 const ava = actor('ava', { shirt: 0x5fd3b0, pants: 0x6b7fd9, hair: 0x8a4a2a, hairStyle: 'ponytail', skin: 0xe8b48a });
 const bro = actor('brother', { shirt: 0xff8f6b, pants: 0x3a4a7a, hair: 0x8a4a2a, hairStyle: 'messy', skin: 0xe8b48a, scale: 0.9 });
 const mayor = actor('mayor', { shirt: 0x2b3a6a, pants: 0x22222e, hair: 0x9a9a9a, hairStyle: 'short', skin: 0xf2c9a0, hat: 'tophat', scale: 1.08 });
@@ -228,7 +230,7 @@ S(W('the', 16.2), { ...DAY, c: [6, 0, -30], cam: [[3, 1.6, -18], [3.4, 2.0, -20]
 const tSide = W('sideways', 17.9);
 S(W('he', 17.4), { ...DAY, c: [0, 0, HZ], cam: [[9, 7.5, ST + 17], [8, 7.6, ST + 15.5], [0, 8.5, HZ + 5]], fov: 52, act(t) {
   const k = smooth((t - tSide) / 0.4);
-  put(mayor, lerp(1.6, 0, k), 2, HZ + 6.9 - 0.8 * smooth((t - tSide - 0.6) / 0.8), -Math.PI / 2 * k); pose(mayor, 'idle', 'armsOut', 0.2 * (1 - k)); setFace(mayor, 'smug_talk' && (Math.floor(t * 9) % 2 ? 'smug_talk' : 'smug'));
+  put(mayor, lerp(1.6, 0, k), 2, HZ + 6.9 - 0.8 * smooth((t - tSide - 0.6) / 0.8), -Math.PI / 2 * k); pose(mayor, 'idle', 'armsOut', 0.2 * (1 - k)); setFace(mayor, 'smug');
   balloons(mayor, t, { squash: 1 - 0.55 * k, sway: 0.4 });
 } });
 // 10 "That's when I noticed something strange." - Ava on the sidewalk, suspicious
@@ -296,7 +298,7 @@ function avaTop(t, p) { put(ava, POLE[0] + 0.95, POLE_TOP, POLE[2] + 0.2, Math.P
 // 22 "The mayor is a thief!" - extreme close, shout rings fly toward the hall
 const tThief = W('the', 39.4);
 S(tThief, { ...DAY, c: [POLE[0], 20, POLE[2]], cam: [[POLE[0] + 3.9, POLE_TOP + 5.4, POLE[2] - 1.8], [POLE[0] + 3.6, POLE_TOP + 5.3, POLE[2] - 1.5], [POLE[0] + 0.9, POLE_TOP + 4.8, POLE[2] + 0.2]], fov: 46, act(t) {
-  hallFrame(t); avaTop(t, 'yell'); ava.wrap.rotation.y = Math.PI - 0.6; setFace(ava, Math.floor(t * 8) % 2 ? 'yell' : 'angry');
+  hallFrame(t); avaTop(t, 'yell'); ava.wrap.rotation.y = Math.PI - 0.6; setFace(ava, 'yell');
   rings.forEach((r, i) => { const u = ((t - tThief) * 1.3 - i * 0.25); if (u < 0 || u > 1) return; r.visible = true; r.position.set(POLE[0] + 0.4 - u * 8, POLE_TOP + 4.8 + u * 4, POLE[2] - 0.8 - u * 9); r.scale.setScalar(0.6 + u * 3); r.lookAt(POLE[0] - 10, POLE_TOP + 9, POLE[2] - 10); r.material.opacity = 0.8 * (1 - u); });
 } });
 // 23 "Pop, pop, pop!" - balloons burst
@@ -352,12 +354,14 @@ window.renderAt = (t) => {
   const [from, to, look, lookTo] = s.cam;
   camera.position.set(...from.map((v, j) => lerp(v, to[j], k)));
   camera.fov = s.fov || 45; camera.updateProjectionMatrix();
-  camera.lookAt(...(lookTo ? look.map((v, j) => lerp(v, lookTo[j], k)) : look));
+  const L = new THREE.Vector3(...(lookTo ? look.map((v, j) => lerp(v, lookTo[j], k)) : look));
+  setShot(i);
   s.act(t, k);
+  applyCamera(i, camera, L);
   for (const l of LIGHTS) l.visible = l.intensity > 0;
-  composer.render();
+  if (!window.__NO_RENDER) composer.render();
 };
 window.SHOT_TIMES = SHOTS.map((s) => s.t);
 window.END = END;
-window.QA = { scene, camera, THREE, actors: actors.map((a) => ({ name: a.name, wrap: a.wrap, head: a.head })) };
+window.QA = { scene, camera, THREE, actors: actors.map((a) => ({ name: a.name, wrap: a.wrap, head: a.head, legL: a.legL })) };
 window.READY = true;

@@ -1,0 +1,39 @@
+{
+ "note": "written by kit/autofix.mjs; delete to undo",
+ "shots": {
+  "0": {
+   "cam": [
+    1.2,
+    0,
+    0
+   ]
+  }
+ },
+ "log": [
+  {
+   "shot": 0,
+   "before": [
+    "HIDDEN folk2",
+    "OFFSCREEN folk3",
+    "HIDDEN folk5"
+   ],
+   "changes": [
+    "camera orbit 1.2"
+   ],
+   "after": [
+    "HIDDEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  },
+  {
+   "shot": 28,
+   "before": [
+    "CLIP brother into box"
+   ],
+   "changes": [],
+   "after": [
+    "CLIP brother into box"
+   ]
+  }
+ ]
+}
