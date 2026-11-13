@@ -92,7 +92,7 @@ export function towerInterior(parent, x, z) {
   box(W, H, 0.6, wall, 0, H / 2, -D / 2, g); box(0.6, H, D, wall, -W / 2, H / 2, 0, g); box(0.6, H, D, wall, W / 2, H / 2, 0, g);
   box(W, 0.6, D, stone, 0, H, 0, g);
   // tall arched windows with evening light
-  [-11, 11].forEach((a) => { box(3.2, 9, 0.3, std(0xffc98a, { emissive: 0xffb070, emissiveIntensity: 0.9 }), a, 30, -D / 2 + 0.35, g); box(3.8, 0.5, 0.6, stone, a, 25.3, -D / 2 + 0.5, g); });
+  [-11, 11].forEach((a) => { box(3.2, 9, 0.3, std(0xffc98a, { emissive: 0xffb070, emissiveIntensity: 0.5 }), a, 30, -D / 2 + 0.35, g); box(3.8, 0.5, 0.6, stone, a, 25.3, -D / 2 + 0.5, g); });
   // stairs climbing the left wall up to the walkway (y 18)
   const N = 24;
   for (let i = 0; i < N; i++) box(4, 0.6, 1.4, stone, -W / 2 + 2.3, 0.6 + i * 0.75, D / 2 - 2 - i * 1.0, g);
@@ -110,7 +110,7 @@ export function towerInterior(parent, x, z) {
   const coils = [];
   for (let i = 0; i < 5; i++) { const r = new THREE.Mesh(new THREE.TorusGeometry(5.2, 0.45, 10, 40), glowMat(0x9fe0ff, 1.2)); r.rotation.x = Math.PI / 2; r.position.y = 4.5 + i * 2.6; M.add(r); coils.push(r); }
   cyl(3, 4.5, 3, metal, 0, 16.5, 0, M, 24);
-  [[-7, 0], [7, 0]].forEach(([a]) => { const p = cyl(0.6, 0.6, 30, std(0xb87a4a, { metalness: 0.6, roughness: 0.3 }), a * 1.6, 15, -10, g, 12); });
+  [-15.8, 15.8].forEach((a) => cyl(0.6, 0.6, 30, std(0xb87a4a, { metalness: 0.6, roughness: 0.3 }), a, 15, -12.5, g, 12));
   const gears = [];
   [[-12, 34, 4.5], [-4, 37, 3.2], [10, 35, 4], [15, 28, 2.6]].forEach(([a, b, r]) => {
     const gg = group(g, a, b, -D / 2 + 0.8);
@@ -160,7 +160,7 @@ export function towerInterior(parent, x, z) {
     const m = box(1.4, 1.4, 1.4, glowMat(0xff2a3a, 0.2), a, b, c2, g); alarms.push({ l, m });
   });
   const lamps = [];
-  [[-10, 36, 0], [10, 36, 0], [0, 36, -8]].forEach(([a, b, c2]) => { const l = new THREE.PointLight(0xffc98a, 120, 70, 1.3); l.position.set(a, b, c2); g.add(l); lamps.push(l); box(1.2, 0.6, 1.2, glowMat(0xffe0b0, 1.5), a, b + 0.6, c2, g); });
+  [[-10, 36, 0], [10, 36, 0], [0, 36, -8]].forEach(([a, b, c2]) => { const l = new THREE.PointLight(0xffd9b0, 55, 70, 1.3); l.position.set(a, b, c2); g.add(l); lamps.push(l); box(1.2, 0.6, 1.2, glowMat(0xffe0b0, 1.5), a, b + 0.6, c2, g); });
   return {
     g, W, D, H, pivot, gears, coils, core,
     setNeedle(k) { needle = k; gauge.draw(0); },

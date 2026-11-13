@@ -1,4 +1,4 @@
-<title>Shadow Phone Render</title>
+<title>In This Town Render</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one column, a tall 9:16 preview on top, controls and progress under it. Dark studio, single theme. */
@@ -49,8 +49,8 @@ video { width: 100%; border-radius: 12px; background: #000; max-height: 60vh; }
 
 <main>
   <header>
-    <h1>Your Shadow Is Free</h1>
-    <p class="sub">Episode 1 · renders on this phone's graphics chip · 1:45 · captions, voice and music included</p>
+    <h1 id="ep-title">Gravity Hour</h1>
+    <p class="sub" id="ep-sub">Renders on this phone's graphics chip · captions, voice, music and sound effects included</p>
   </header>
 
   <div class="stage">
@@ -60,10 +60,17 @@ video { width: 100%; border-radius: 12px; background: #000; max-height: 60vh; }
   <canvas id="c" width="1080" height="1920"></canvas>
 
   <fieldset>
+    <legend>Episode</legend>
+    <div class="opts">
+      <label><input type="radio" name="ep" id="ep-2" value="02_gravity" checked><b>2 · Gravity Hour</b><small>1:29</small></label>
+      <label><input type="radio" name="ep" id="ep-1" value="01_shadow"><b>1 · Your Shadow Is Free</b><small>1:45</small></label>
+    </div>
+  </fieldset>
+  <fieldset>
     <legend>Length</legend>
     <div class="opts">
       <label><input type="radio" name="len" id="len-test" value="test" checked><b>5-second test</b><small>About a minute</small></label>
-      <label><input type="radio" name="len" id="len-full" value="full"><b>Full video</b><small>1:45 of footage</small></label>
+      <label><input type="radio" name="len" id="len-full" value="full"><b>Full video</b><small>The whole episode</small></label>
     </div>
   </fieldset>
   <fieldset>
@@ -102,7 +109,7 @@ video { width: 100%; border-radius: 12px; background: #000; max-height: 60vh; }
   <ul class="tips">
     <li>Keep the phone plugged in, the screen on and this page in front. Switching apps pauses the render.</li>
     <li>Phones slow down when hot. Take the case off and keep it somewhere cool.</li>
-    <li>Changing quality after a render needs a page reload.</li>
+    <li>Changing the episode or quality after a render needs a page reload.</li>
   </ul>
 </main>
 
@@ -114,7 +121,9 @@ const msg = (t, cls = '') => { $('msg').textContent = t; $('msg').className = cl
 const val = (name) => document.querySelector(`input[name=${name}]:checked`).value;
 const fmt = (s) => !isFinite(s) ? '–' : s < 60 ? `${Math.ceil(s)} s` : `${Math.floor(s / 60)} m ${String(Math.ceil(s % 60)).padStart(2, '0')} s`;
 
-let loadedScale = null, stopFlag = false, result = null, wake = null;
+let loadedScale = null, loadedEp = null, stopFlag = false, result = null, wake = null, WORDS = null, spans = [];
+const EP_NAMES = { '02_gravity': ['Gravity Hour', 'gravity_hour'], '01_shadow': ['Your Shadow Is Free', 'your_shadow_is_free'] };
+document.querySelectorAll('input[name=ep]').forEach((i) => i.addEventListener('change', () => { $('ep-title').textContent = EP_NAMES[val('ep')][0]; }));
 
 // ---------------- checks
 if (!('VideoEncoder' in window)) {
@@ -134,7 +143,7 @@ const visible = () => document.hidden ? new Promise((r) => {
 const yieldUI = () => new Promise((r) => { const ch = new MessageChannel(); ch.port1.onmessage = () => r(); ch.port2.postMessage(0); });
 
 // ---------------- load the episode (once, at the chosen scale)
-async function loadEpisode(scale) {
+async function loadEpisode(scale, ep) {
   if (loadedScale !== null) return;
   msg('Loading the episode…');
   const font = new FontFace('Poppins', await (await fetch('kit/fonts/Poppins-800.ttf')).arrayBuffer(), { weight: '800' });
@@ -142,18 +151,19 @@ async function loadEpisode(scale) {
   window.RENDER_SCALE = scale;
   const gl = $('c');
   gl.addEventListener('webglcontextlost', (e) => { e.preventDefault(); stopFlag = true; msg('The graphics chip reset (usually memory or the app was switched). Reload and try 720 × 1280.', 'bad'); });
-  await import('./episodes/01_shadow/episode.js');
+  WORDS = await (await fetch(`episodes/${ep}/words.json`)).json();
+  spans = WORDS.words.map(([s, e, w], i, a) => {
+    const nxt = i + 1 < a.length ? a[i + 1][0] : e + 0.4;
+    return [s, nxt - e < 0.45 ? nxt : e + 0.25, w.toLowerCase().replace(/[^\p{L}\p{N}_'$%,-]/gu, '').replace(/,$/, '')];
+  });
+  await import(`./episodes/${ep}/episode.js`);
+  loadedEp = ep;
   if (!window.READY) throw new Error('episode did not finish loading');
   loadedScale = scale;
-  document.querySelectorAll('input[name=res]').forEach((i) => { i.disabled = true; });
+  document.querySelectorAll('input[name=res],input[name=ep]').forEach((i) => { i.disabled = true; });
 }
 
 // ---------------- captions (same spec as kit/finish.py)
-const WORDS = (await (await fetch('episodes/01_shadow/words.json')).json());
-const spans = WORDS.words.map(([s, e, w], i, a) => {
-  const nxt = i + 1 < a.length ? a[i + 1][0] : e + 0.4;
-  return [s, nxt - e < 0.45 ? nxt : e + 0.25, w.toLowerCase().replace(/[^\p{L}\p{N}_'$%-]/gu, '')];
-});
 const pop = (k) => [0.6, 0.95, 1.15, 1.06, 1.0][Math.min(k, 4)];
 function caption(ctx, t, W, H) {
   const cur = spans.find(([s, e]) => s <= t && t < e);
@@ -171,31 +181,15 @@ function caption(ctx, t, W, H) {
   ctx.fillStyle = '#fff'; ctx.fillText(cur[2], x, y);
 }
 
-// ---------------- audio: voice + music at 25 % of the voice's loudness
-async function mixAudio(dur, sr) {
+// ---------------- audio: the episode's final mix (voice + music at 25 % + sound effects), made by kit/sfx.py
+async function mixAudio(dur, sr, ep) {
   const n = Math.round(dur * sr);
-  const dec = async (url) => {
-    const ac = new OfflineAudioContext(1, sr, sr);
-    const b = await ac.decodeAudioData(await (await fetch(url)).arrayBuffer());
-    const out = new Float32Array(b.length);
-    for (let c = 0; c < b.numberOfChannels; c++) { const d = b.getChannelData(c); for (let i = 0; i < d.length; i++) out[i] += d[i] / b.numberOfChannels; }
-    return out;
-  };
-  const v = await dec('audio/voice.mp3'), mu = await dec('audio/music.mp3');
+  const ac = new OfflineAudioContext(1, sr, sr);
+  const b = await ac.decodeAudioData(await (await fetch(`episodes/${ep}/mix.mp3`)).arrayBuffer());
   const mix = new Float32Array(n);
-  let rv = 0, rm = 0;
-  const vn = Math.min(n, v.length);
-  for (let i = 0; i < vn; i++) rv += v[i] * v[i];
-  rv = Math.sqrt(rv / Math.max(1, vn));
-  for (let i = 0; i < n; i++) { const x = mu[i % mu.length]; rm += x * x; }
-  rm = Math.sqrt(rm / n);
-  const g = (rv * 0.25) / (rm + 1e-9);
-  let peak = 1e-9;
-  for (let i = 0; i < n; i++) { mix[i] = (i < v.length ? v[i] : 0) + mu[i % mu.length] * g; }
-  const fade = Math.round(0.08 * sr);
+  for (let c = 0; c < b.numberOfChannels; c++) { const d = b.getChannelData(c); for (let i = 0; i < Math.min(n, d.length); i++) mix[i] += d[i] / b.numberOfChannels; }
+  const fade = Math.round(0.05 * sr);
   for (let i = 0; i < fade; i++) mix[n - fade + i] *= 1 - i / fade;
-  for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(mix[i]));
-  const k = 0.89 / peak; for (let i = 0; i < n; i++) mix[i] *= k;
   return mix;
 }
 
@@ -224,14 +218,15 @@ async function render() {
   document.querySelectorAll('input[name=len],input[name=fps]').forEach((i) => { i.disabled = true; });
   try {
     const scale = loadedScale ?? +val('res');
-    await loadEpisode(scale);
+    const ep = loadedEp ?? val('ep');
+    await loadEpisode(scale, ep);
     await keepAwake();
     const fps = +val('fps'), full = val('len') === 'full';
     const gl = $('c'), W = gl.width, H = gl.height;
     const out = $('out'); out.width = W; out.height = H;
     const ctx = out.getContext('2d', { alpha: false });
     $('idle').hidden = true;
-    const dur = full ? WORDS.duration : 5;
+    const dur = full ? Math.max(WORDS.duration, window.END || 0) : 5;
     const N = +new URLSearchParams(location.search).get('frames') || Math.round(dur * fps); // ?frames= is a local test hook
     const bitrate = Math.round((scale === 1 ? 10e6 : 5.5e6) * (fps === 60 ? 1 : 0.65));
 
@@ -247,7 +242,7 @@ async function render() {
     // audio first, so a decode problem shows up before the long part
     if (acfg) {
       msg('Mixing voice and music…');
-      const mix = await mixAudio(dur, sr);
+      const mix = await mixAudio(dur, sr, ep);
       let aerr = null;
       const ae = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: (e) => { aerr = e; } });
       ae.configure(acfg.cfg);
@@ -312,7 +307,7 @@ let downloads = null;
 $('save').addEventListener('click', async () => {
   if (!result) return;
   if (!downloads) { msg('Saving is not available in this view. Open the page in Chrome or the Claude app and render again.', 'bad'); return; }
-  const name = `your_shadow_is_free_${val('len') === 'full' ? 'full' : 'test'}.mp4`;
+  const name = `${EP_NAMES[loadedEp || val('ep')][1]}_${val('len') === 'full' ? 'full' : 'test'}.mp4`;
   try { await downloads.save({ filename: name, data: result }); msg('Saved. Check your Downloads folder.', 'ok'); }
   catch (e) {
     if (e?.code === 'declined') msg('Save cancelled. Tap Save again when ready.', 'warn');
