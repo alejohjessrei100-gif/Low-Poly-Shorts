@@ -1,2 +1,5 @@
 *.zip
 renders/
+node_modules/
+*.mp3
+__pycache__/
