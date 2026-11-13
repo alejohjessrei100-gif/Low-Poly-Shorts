@@ -295,7 +295,7 @@ export function powerPlantInterior(parent, x, z) {
     c.strokeStyle = '#ff3b4d'; c.lineWidth = 18; c.strokeRect(9, 9, w - 18, h - 18);
     c.fillStyle = flash ? '#ff3b4d' : '#ff6b78'; c.textAlign = 'center';
     c.font = '800 86px Poppins'; c.fillText('CITY', w / 2, 140); c.fillText('BLACKOUT IN', w / 2, 240);
-    c.font = '800 190px Poppins'; c.fillText(`00:${String(Math.max(0, Math.ceil(secs))).padStart(2, '0')}`, w / 2, 520);
+    c.font = '800 190px Poppins'; const sc = Math.max(0, Math.ceil(secs)); c.fillText(`${String(Math.floor(sc / 60)).padStart(2, '0')}:${String(sc % 60).padStart(2, '0')}`, w / 2, 520);
     c.font = '800 54px Poppins'; c.fillText('SECONDS', w / 2, 630);
   });
   const sm = new THREE.Mesh(new THREE.PlaneGeometry(14, 15.75), new THREE.MeshBasicMaterial({ map: screen.tex })); sm.position.set(0, 25, -44.3); g.add(sm);

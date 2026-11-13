@@ -12,7 +12,7 @@ buildTown(scene);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), P.std(0x9ed97c, { roughness: 1 }));
 ground.rotation.x = -Math.PI / 2; ground.position.set(300, -0.05, 0); ground.receiveShadow = true; scene.add(ground);
 
-const WORDS = (await (await fetch('./words.json')).json()).words;
+const WORDS = (await (await fetch(new URL('./words.json', import.meta.url))).json()).words;
 const END = WORDS[WORDS.length - 1][1] + 0.45;
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const W = (word, after = 0) => { const w = WORDS.find(([s, , x]) => s >= after - 0.01 && norm(x) === word); if (!w) throw new Error('word ' + word + ' after ' + after); return w[0]; };

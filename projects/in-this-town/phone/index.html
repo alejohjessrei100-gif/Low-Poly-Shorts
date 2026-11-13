@@ -1,0 +1,323 @@
+<title>Shadow Phone Render</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column, a tall 9:16 preview on top, controls and progress under it. Dark studio, single theme. */
+:root {
+  --bg: #12101c; --panel: #1c1930; --line: #2e2a4a; --fg: #ece9f7; --dim: #9d97bd;
+  --accent: #8f7cff; --go: #5fd39a; --warn: #ffb35c; --bad: #ff6b78;
+  --display: "Poppins", system-ui, sans-serif; --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+html, body { background: var(--bg); color: var(--fg); }
+body { font: 15px/1.5 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px 40px; }
+main { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font: 800 22px/1.2 var(--display); margin: 0; text-wrap: balance; }
+.sub { color: var(--dim); margin: 2px 0 0; font-size: 14px; }
+.stage { position: relative; align-self: center; height: min(62vh, calc((100vw - 32px) * 1.7778)); aspect-ratio: 9 / 16; max-width: 100%; background: #000; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.stage canvas { width: 100%; height: 100%; display: block; }
+.stage .idle { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; color: var(--dim); font-size: 14px; }
+[hidden] { display: none !important; }
+#c { position: absolute; width: 1px; height: 1px; left: -9999px; top: 0; }
+fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px 12px; margin: 0; background: var(--panel); }
+legend { padding: 0 6px; color: var(--dim); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opts label { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.opts label:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.opts input { position: absolute; opacity: 0; pointer-events: none; }
+.opts b { font-weight: 650; }
+.opts small { color: var(--dim); font-size: 12px; }
+.opts label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+button { font: 700 16px var(--body); border: 0; border-radius: 12px; padding: 14px 18px; cursor: pointer; flex: 1 1 auto; }
+button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+button:disabled { opacity: .45; cursor: default; }
+.primary { background: var(--accent); color: #0d0b16; }
+.go { background: var(--go); color: #08160f; }
+.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+.bar { height: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-variant-numeric: tabular-nums; }
+.stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+.stats span { display: block; color: var(--dim); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.stats b { font-size: 17px; }
+#msg { margin: 0; min-height: 1.5em; }
+#msg.warn { color: var(--warn); } #msg.bad { color: var(--bad); } #msg.ok { color: var(--go); }
+ul.tips { margin: 0; padding-left: 18px; color: var(--dim); font-size: 14px; display: grid; gap: 4px; }
+video { width: 100%; border-radius: 12px; background: #000; max-height: 60vh; }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+
+<main>
+  <header>
+    <h1>Your Shadow Is Free</h1>
+    <p class="sub">Episode 1 · renders on this phone's graphics chip · 1:45 · captions, voice and music included</p>
+  </header>
+
+  <div class="stage">
+    <canvas id="out" width="1080" height="1920"></canvas>
+    <div class="idle" id="idle">The preview shows here while it renders.<br>Try the 5-second test first to see the speed.</div>
+  </div>
+  <canvas id="c" width="1080" height="1920"></canvas>
+
+  <fieldset>
+    <legend>Length</legend>
+    <div class="opts">
+      <label><input type="radio" name="len" id="len-test" value="test" checked><b>5-second test</b><small>About a minute</small></label>
+      <label><input type="radio" name="len" id="len-full" value="full"><b>Full video</b><small>1:45 of footage</small></label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Quality</legend>
+    <div class="opts">
+      <label><input type="radio" name="res" id="res-1080" value="1" checked><b>1080 × 1920</b><small>Full quality</small></label>
+      <label><input type="radio" name="res" id="res-720" value="0.6667"><b>720 × 1280</b><small>About 2× faster</small></label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Frame rate</legend>
+    <div class="opts">
+      <label><input type="radio" name="fps" id="fps-60" value="60" checked><b>60 fps</b><small>Smoothest</small></label>
+      <label><input type="radio" name="fps" id="fps-30" value="30"><b>30 fps</b><small>2× faster</small></label>
+    </div>
+  </fieldset>
+
+  <div class="row">
+    <button class="primary" id="start">Start render</button>
+    <button class="ghost" id="stop" disabled>Stop</button>
+  </div>
+
+  <div class="bar"><i id="fill"></i></div>
+  <div class="stats">
+    <div><span>Frames</span><b id="s-frames">0 / 0</b></div>
+    <div><span>Speed</span><b id="s-speed">–</b></div>
+    <div><span>Time left</span><b id="s-eta">–</b></div>
+  </div>
+  <p id="msg" role="status"></p>
+
+  <div id="done" hidden>
+    <div class="row" style="margin-bottom:10px"><button class="go" id="save">Save video to phone</button></div>
+    <video id="player" controls playsinline></video>
+  </div>
+
+  <ul class="tips">
+    <li>Keep the phone plugged in, the screen on and this page in front. Switching apps pauses the render.</li>
+    <li>Phones slow down when hot. Take the case off and keep it somewhere cool.</li>
+    <li>Changing quality after a render needs a page reload.</li>
+  </ul>
+</main>
+
+<script src="lib/mp4-muxer.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const msg = (t, cls = '') => { $('msg').textContent = t; $('msg').className = cls; };
+const val = (name) => document.querySelector(`input[name=${name}]:checked`).value;
+const fmt = (s) => !isFinite(s) ? '–' : s < 60 ? `${Math.ceil(s)} s` : `${Math.floor(s / 60)} m ${String(Math.ceil(s % 60)).padStart(2, '0')} s`;
+
+let loadedScale = null, stopFlag = false, result = null, wake = null;
+
+// ---------------- checks
+if (!('VideoEncoder' in window)) {
+  msg('This browser cannot encode video. Open this page in Chrome on Android (or Safari on iOS 17+).', 'bad');
+  $('start').disabled = true;
+}
+
+async function keepAwake() {
+  try { wake = await navigator.wakeLock?.request('screen'); } catch { wake = null; }
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && $('stop').disabled === false) keepAwake(); });
+const visible = () => document.hidden ? new Promise((r) => {
+  msg('Paused: bring this page back to the front to continue.', 'warn');
+  const f = () => { if (!document.hidden) { document.removeEventListener('visibilitychange', f); msg('Rendering…'); r(); } };
+  document.addEventListener('visibilitychange', f);
+}) : null;
+const yieldUI = () => new Promise((r) => { const ch = new MessageChannel(); ch.port1.onmessage = () => r(); ch.port2.postMessage(0); });
+
+// ---------------- load the episode (once, at the chosen scale)
+async function loadEpisode(scale) {
+  if (loadedScale !== null) return;
+  msg('Loading the episode…');
+  const font = new FontFace('Poppins', await (await fetch('kit/fonts/Poppins-800.ttf')).arrayBuffer(), { weight: '800' });
+  document.fonts.add(await font.load());
+  window.RENDER_SCALE = scale;
+  const gl = $('c');
+  gl.addEventListener('webglcontextlost', (e) => { e.preventDefault(); stopFlag = true; msg('The graphics chip reset (usually memory or the app was switched). Reload and try 720 × 1280.', 'bad'); });
+  await import('./episodes/01_shadow/episode.js');
+  if (!window.READY) throw new Error('episode did not finish loading');
+  loadedScale = scale;
+  document.querySelectorAll('input[name=res]').forEach((i) => { i.disabled = true; });
+}
+
+// ---------------- captions (same spec as kit/finish.py)
+const WORDS = (await (await fetch('episodes/01_shadow/words.json')).json());
+const spans = WORDS.words.map(([s, e, w], i, a) => {
+  const nxt = i + 1 < a.length ? a[i + 1][0] : e + 0.4;
+  return [s, nxt - e < 0.45 ? nxt : e + 0.25, w.toLowerCase().replace(/[^\p{L}\p{N}_'$%-]/gu, '')];
+});
+const pop = (k) => [0.6, 0.95, 1.15, 1.06, 1.0][Math.min(k, 4)];
+function caption(ctx, t, W, H) {
+  const cur = spans.find(([s, e]) => s <= t && t < e);
+  if (!cur || !cur[2]) return;
+  const S = W / 1080, sc = pop(Math.round((t - cur[0]) * 60)) * S;
+  const size = Math.max(10, Math.round(56 * sc)), stroke = Math.max(2, 7 * sc);
+  ctx.font = `800 ${size}px Poppins`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.lineJoin = 'round';
+  const m = ctx.measureText(cur[2]);
+  const x = W / 2, y = Math.round(H * 0.62 + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2);
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 14 * sc; ctx.shadowOffsetX = 2 * S; ctx.shadowOffsetY = 4 * S;
+  ctx.lineWidth = stroke * 2; ctx.strokeStyle = 'rgba(0,0,0,0.55)'; ctx.strokeText(cur[2], x, y);
+  ctx.restore();
+  ctx.lineWidth = stroke * 2; ctx.strokeStyle = '#000'; ctx.strokeText(cur[2], x, y);
+  ctx.fillStyle = '#fff'; ctx.fillText(cur[2], x, y);
+}
+
+// ---------------- audio: voice + music at 25 % of the voice's loudness
+async function mixAudio(dur, sr) {
+  const n = Math.round(dur * sr);
+  const dec = async (url) => {
+    const ac = new OfflineAudioContext(1, sr, sr);
+    const b = await ac.decodeAudioData(await (await fetch(url)).arrayBuffer());
+    const out = new Float32Array(b.length);
+    for (let c = 0; c < b.numberOfChannels; c++) { const d = b.getChannelData(c); for (let i = 0; i < d.length; i++) out[i] += d[i] / b.numberOfChannels; }
+    return out;
+  };
+  const v = await dec('audio/voice.mp3'), mu = await dec('audio/music.mp3');
+  const mix = new Float32Array(n);
+  let rv = 0, rm = 0;
+  const vn = Math.min(n, v.length);
+  for (let i = 0; i < vn; i++) rv += v[i] * v[i];
+  rv = Math.sqrt(rv / Math.max(1, vn));
+  for (let i = 0; i < n; i++) { const x = mu[i % mu.length]; rm += x * x; }
+  rm = Math.sqrt(rm / n);
+  const g = (rv * 0.25) / (rm + 1e-9);
+  let peak = 1e-9;
+  for (let i = 0; i < n; i++) { mix[i] = (i < v.length ? v[i] : 0) + mu[i % mu.length] * g; }
+  const fade = Math.round(0.08 * sr);
+  for (let i = 0; i < fade; i++) mix[n - fade + i] *= 1 - i / fade;
+  for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(mix[i]));
+  const k = 0.89 / peak; for (let i = 0; i < n; i++) mix[i] *= k;
+  return mix;
+}
+
+async function pickVideoCodec(w, h, fps, bitrate) {
+  for (const codec of ['avc1.640033', 'avc1.640032', 'avc1.64002A', 'avc1.4D4033', 'avc1.4D402A', 'avc1.42E033', 'avc1.42E02A']) {
+    for (const hw of ['prefer-hardware', 'no-preference']) {
+      const cfg = { codec, width: w, height: h, bitrate, framerate: fps, hardwareAcceleration: hw, avc: { format: 'avc' } };
+      try { if ((await VideoEncoder.isConfigSupported(cfg)).supported) return cfg; } catch {}
+    }
+  }
+  return null;
+}
+async function pickAudioCodec(sr) {
+  if (!('AudioEncoder' in window)) return null;
+  for (const [codec, mux] of [['mp4a.40.2', 'aac'], ['opus', 'opus']]) {
+    const cfg = { codec, sampleRate: sr, numberOfChannels: 1, bitrate: 160000 };
+    try { if ((await AudioEncoder.isConfigSupported(cfg)).supported) return { cfg, mux }; } catch {}
+  }
+  return null;
+}
+
+// ---------------- render
+async function render() {
+  stopFlag = false; result = null; $('done').hidden = true;
+  $('start').disabled = true; $('stop').disabled = false;
+  document.querySelectorAll('input[name=len],input[name=fps]').forEach((i) => { i.disabled = true; });
+  try {
+    const scale = loadedScale ?? +val('res');
+    await loadEpisode(scale);
+    await keepAwake();
+    const fps = +val('fps'), full = val('len') === 'full';
+    const gl = $('c'), W = gl.width, H = gl.height;
+    const out = $('out'); out.width = W; out.height = H;
+    const ctx = out.getContext('2d', { alpha: false });
+    $('idle').hidden = true;
+    const dur = full ? WORDS.duration : 5;
+    const N = +new URLSearchParams(location.search).get('frames') || Math.round(dur * fps); // ?frames= is a local test hook
+    const bitrate = Math.round((scale === 1 ? 10e6 : 5.5e6) * (fps === 60 ? 1 : 0.65));
+
+    const vcfg = await pickVideoCodec(W, H, fps, bitrate);
+    if (!vcfg) throw new Error('This phone cannot encode H.264 at this size. Try 720 × 1280.');
+    const sr = 48000, acfg = await pickAudioCodec(sr);
+    const muxer = new Mp4Muxer.Muxer({
+      target: new Mp4Muxer.ArrayBufferTarget(), fastStart: 'in-memory', firstTimestampBehavior: 'offset',
+      video: { codec: 'avc', width: W, height: H, frameRate: fps },
+      ...(acfg ? { audio: { codec: acfg.mux, numberOfChannels: 1, sampleRate: sr } } : {}),
+    });
+
+    // audio first, so a decode problem shows up before the long part
+    if (acfg) {
+      msg('Mixing voice and music…');
+      const mix = await mixAudio(dur, sr);
+      let aerr = null;
+      const ae = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: (e) => { aerr = e; } });
+      ae.configure(acfg.cfg);
+      for (let i = 0; i < mix.length; i += 4800) {
+        const part = mix.subarray(i, Math.min(mix.length, i + 4800));
+        const ad = new AudioData({ format: 'f32', sampleRate: sr, numberOfFrames: part.length, numberOfChannels: 1, timestamp: Math.round(i / sr * 1e6), data: part.slice() });
+        ae.encode(ad); ad.close();
+      }
+      await ae.flush(); ae.close();
+      if (aerr) throw aerr;
+    }
+
+    let verr = null;
+    const ve = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: (e) => { verr = e; } });
+    ve.configure({ ...vcfg, latencyMode: 'quality' });
+    msg(acfg ? 'Rendering…' : 'Rendering… (this browser cannot encode audio, so the video will be silent)', acfg ? '' : 'warn');
+    const t0 = performance.now(); let paused = 0;
+    for (let i = 0; i < N; i++) {
+      if (stopFlag) throw new Error('stopped');
+      const p = visible(); if (p) { const tp = performance.now(); await p; paused += performance.now() - tp; await keepAwake(); }
+      const t = i / fps;
+      window.renderAt(t);
+      ctx.drawImage(gl, 0, 0);
+      caption(ctx, t, W, H);
+      const vf = new VideoFrame(out, { timestamp: Math.round(i * 1e6 / fps), duration: Math.round(1e6 / fps) });
+      ve.encode(vf, { keyFrame: i % (fps * 2) === 0 }); vf.close();
+      if (verr) throw verr;
+      while (ve.encodeQueueSize > 4) await new Promise((r) => setTimeout(r, 4));
+      if (i % 6 === 0 || i === N - 1) {
+        const el = (performance.now() - t0 - paused) / 1000, sp = (i + 1) / el;
+        $('fill').style.width = `${((i + 1) / N * 100).toFixed(1)}%`;
+        $('s-frames').textContent = `${i + 1} / ${N}`;
+        $('s-speed').textContent = `${sp.toFixed(1)} fps`;
+        $('s-eta').textContent = fmt((N - i - 1) / sp);
+        await yieldUI();
+      }
+    }
+    msg('Finishing the file…');
+    await ve.flush(); ve.close();
+    muxer.finalize();
+    const mins = (performance.now() - t0 - paused) / 60000;
+    result = new Blob([muxer.target.buffer], { type: 'video/mp4' });
+    $('player').src = URL.createObjectURL(result);
+    $('done').hidden = false;
+    msg(`Done in ${mins < 1 ? Math.round(mins * 60) + ' s' : mins.toFixed(1) + ' min'} · ${(result.size / 1048576).toFixed(0)} MB${acfg ? '' : ' · silent'}. Tap Save to keep it.`, 'ok');
+  } catch (e) {
+    if (e?.message === 'stopped') msg('Stopped.', 'warn');
+    else { console.error(e); msg(`Render failed: ${e?.message || e}`, 'bad'); }
+  } finally {
+    try { await wake?.release(); } catch {}
+    $('start').disabled = false; $('stop').disabled = true;
+    document.querySelectorAll('input[name=len],input[name=fps]').forEach((i) => { i.disabled = false; });
+  }
+}
+
+$('start').addEventListener('click', render);
+$('stop').addEventListener('click', () => { stopFlag = true; });
+
+// ---------------- save
+let downloads = null;
+(async () => { try { downloads = (await window.claude?.use('downloads')) ?? null; } catch { downloads = null; } })();
+$('save').addEventListener('click', async () => {
+  if (!result) return;
+  if (!downloads) { msg('Saving is not available in this view. Open the page in Chrome or the Claude app and render again.', 'bad'); return; }
+  const name = `your_shadow_is_free_${val('len') === 'full' ? 'full' : 'test'}.mp4`;
+  try { await downloads.save({ filename: name, data: result }); msg('Saved. Check your Downloads folder.', 'ok'); }
+  catch (e) {
+    if (e?.code === 'declined') msg('Save cancelled. Tap Save again when ready.', 'warn');
+    else if (e?.code === 'too_large') msg('The file is too big for the app. Render at 720 × 1280 or 30 fps and save again.', 'bad');
+    else msg(`Could not save (${e?.code || e}). Try again in a moment.`, 'bad');
+  }
+});
+</script>

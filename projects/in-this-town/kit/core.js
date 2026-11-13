@@ -6,7 +6,9 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-export const W = 1080, H = 1920;
+// RENDER_SCALE (set before import) renders smaller, e.g. 2/3 = 720x1280 for phones
+const SCALE = globalThis.RENDER_SCALE || 1;
+export const W = Math.round(1080 * SCALE), H = Math.round(1920 * SCALE);
 
 export function createCore(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
