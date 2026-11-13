@@ -4,6 +4,7 @@
 //   CAM_INSIDE / BLOCKED  pull the camera back along its view, raise it, or slide it sideways
 //   HIDDEN                orbit the camera sideways / up so the character's head is clear
 //   CLIP                  push the character out of the prop or the other character (horizontal minimum push)
+//   TOO_TIGHT             (episodes with HOUSE_RULES.framing) pull back until characters fill <= 45% of the frame
 //   ALL_OFFSCREEN         only with --aim: re-aim at the characters' centre, widen the lens (else reported)
 // Results go to episodes/<ep>/autofix.json (read at render time by kit/autofix-runtime.js), with a log of
 // what changed and what is left for a human. Delete the file to undo everything.
@@ -16,15 +17,15 @@ const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i
 const AIM = args.includes('--aim'); // also re-aim shots where no character is in frame
 const only = opt('only', '') ? opt('only').split(',').map(Number) : null;
 const SAMPLES = [0.08, 0.5, 0.92];
-const W = { CAM_INSIDE: 6, BLOCKED: 4, ALL_OFFSCREEN: AIM ? 5 : 0, CLIP: 3, HIDDEN: 2, OFFSCREEN: 3.5 }; // OFFSCREEN is never fixed, only weighted so fixes cannot push people out of frame
-const MAX_CAM = 9, MAX_ACTOR = 3, MAX_ITER = 6;
+const W = { TOO_TIGHT: 3, CAM_INSIDE: 6, BLOCKED: 4, ALL_OFFSCREEN: AIM ? 5 : 0, CLIP: 3, HIDDEN: 2, OFFSCREEN: 3.5 }; // OFFSCREEN is never fixed, only weighted so fixes cannot push people out of frame
+const MAX_CAM = 14, MAX_ACTOR = 3, MAX_ITER = 6;
 const file = path.join(ep, 'autofix.json');
 const prev = !args.includes('--fresh') && fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : { shots: {} };
 const allow = loadAllow(ep);
 
 const { page, close } = await openEpisode(ep);
 await page.evaluate((s) => { window.AUTOFIX = { shots: s }; window.__NO_RENDER = true; }, prev.shots || {});
-const { st, end } = await page.evaluate(() => ({ st: window.SHOT_TIMES, end: window.END }));
+const { st, end, rules } = await page.evaluate(() => ({ st: window.SHOT_TIMES, end: window.END, rules: window.HOUSE_RULES || null }));
 
 const add = (a, b, k = 1) => [0, 1, 2].map((j) => (a?.[j] || 0) + (b?.[j] || 0) * k);
 const len = (v) => Math.hypot(...(v || [0, 0, 0]));
@@ -37,7 +38,8 @@ async function evaluate(i, fix) {
     window.AUTOFIX.shots[String(i)] = fix; window.__NO_RENDER = true;
     return ts.map((t) => window.QA_CHECK(t));
   }, { i, fix, ts: SAMPLES.map((u) => t0 + (t1 - t0) * u) });
-  const issues = res.flatMap((r) => r.issues).filter((x) => !allowed(allow, i, x.text));
+  const tight = rules && rules.framing && !(rules.close || []).includes(i);
+  const issues = res.flatMap((r) => [...r.issues, ...(tight && r.frac > 0.45 ? [{ type: 'TOO_TIGHT', text: `TOO_TIGHT (${Math.round(r.frac * 100)}%)` }] : [])]).filter((x) => !allowed(allow, i, x.text));
   return { issues, info: res[1], score: issues.reduce((s, x) => s + (W[x.type] ?? 1), 0) };
 }
 
@@ -50,6 +52,7 @@ function candidates(fix, ev) {
     for (const d of [0.8, 1.6, 3]) cam([0, d, 0], null, `camera up ${d}`);
     for (const s of [-2, -1, 1, 2]) cam(right.map((v) => v * s), right.map((v) => v * s), `camera slide ${s}`);
   }
+  if (types.has('TOO_TIGHT')) for (const d of [1.5, 3, 5, 8, 12]) cam(fwd.map((v) => -v * d), null, `camera back ${d} (framing)`);
   if (types.has('HIDDEN')) {
     for (const s of [-2.4, -1.2, -0.6, 0.6, 1.2, 2.4]) cam(right.map((v) => v * s), null, `camera orbit ${s}`);
     for (const d of [1, 2.5]) cam([0, d, 0], null, `camera up ${d}`);

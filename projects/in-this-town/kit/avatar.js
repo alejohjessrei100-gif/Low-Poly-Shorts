@@ -64,8 +64,11 @@ function face(name, glow = null) {
 // ---------------------------------------------------------------- avatar
 export const SHADOW_COLOR = 0x241a40;
 
+// House rule 9 (from episode 3): 1 world unit = 1 stud and an adult avatar is 3.5 studs tall.
+// The unscaled avatar is 5.3 units from sole to head top; pass { studs: true } (kids: scale 0.8 on top).
+export const STUD_HEIGHT = 3.5, BASE_HEIGHT = 5.3, STUD_SCALE = STUD_HEIGHT / BASE_HEIGHT;
 export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74, shoes = 0x30303a, hair = 0x5a3a22,
-  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1 } = {}) {
+  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false } = {}) {
   const mat = (c, extra = {}) => shadowMode
     ? new THREE.MeshBasicMaterial({ color: SHADOW_COLOR, ...extra })
     : new THREE.MeshStandardMaterial({ color: c, roughness: 0.62, metalness: 0, ...extra });
@@ -73,7 +76,7 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
   const body = new THREE.Group(); // hips pivot (jumps/flips), origin at hip height
   body.position.y = 2;
   root.add(body);
-  root.scale.setScalar(scale);
+  root.scale.setScalar(scale * (studs ? STUD_SCALE : 1)); // studs: adult = 3.5 studs tall (house rule 9)
   const add = (parent, g, m, x, y, z) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = !shadowMode; o.receiveShadow = !shadowMode; parent.add(o); return o; };
 
   const torso = add(body, rbox(2, 2, 1, 0.14), mat(shirt), 0, 1, 0);

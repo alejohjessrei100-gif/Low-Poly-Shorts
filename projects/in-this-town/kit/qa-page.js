@@ -72,10 +72,19 @@
       for (let j = k + 1; j < vis.length; j++) { const B = boxes[j].clone().expandByScalar(-0.25); const ov = shrink.clone().intersect(B); if (!ov.isEmpty()) { const s = ov.getSize(new THREE.Vector3()); if (Math.min(s.x, s.y, s.z) > 0.35) issues.push({ type: 'CLIP', actor: vis[j].name, other: a.name, mtv: mtv(B, shrink), text: `CLIP ${a.name} into ${vis[j].name}` }); } }
     });
     if (vis.length && !onCount) issues.push({ type: 'ALL_OFFSCREEN', text: 'ALL_OFFSCREEN (no character in frame)' });
+    // framing: tallest on-screen character as a fraction of the frame height (house rule 10)
+    let frac = 0;
+    vis.forEach((a, k) => { const bb = boxes[k], c = bb.getCenter(new THREE.Vector3());
+      const top = new THREE.Vector3(c.x, bb.max.y, c.z).project(camera), bot = new THREE.Vector3(c.x, bb.min.y, c.z).project(camera);
+      if (top.z < 1 && Math.abs(c.clone().project(camera).x) <= 1) frac = Math.max(frac, Math.min(2, Math.abs(top.y - bot.y)) / 2); });
+    // detail: triangles of everything inside the view (house rule 11)
+    const fr = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    let tris = 0;
+    scene.traverse((o) => { if ((o.isMesh || o.isInstancedMesh) && visibleDeep(o) && o.geometry) { if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); const sph = o.geometry.boundingSphere.clone().applyMatrix4(o.matrixWorld); if (o.isInstancedMesh || fr.intersectsSphere(sph)) { const n = (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; tris += n * (o.isInstancedMesh ? o.count : 1); } } });
     mats.forEach((side, m) => (m.side = side));
     const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
     const right = new THREE.Vector3().crossVectors(fwd, camera.up).normalize();
-    return { issues, cam: { pos: camera.position.toArray(), fwd: fwd.toArray(), right: right.toArray() }, centroid: vis.length ? cen.divideScalar(vis.length).toArray() : null, look: camera.position.clone().add(fwd.clone().multiplyScalar(10)).toArray() };
+    return { frac, tris, issues, cam: { pos: camera.position.toArray(), fwd: fwd.toArray(), right: right.toArray() }, centroid: vis.length ? cen.divideScalar(vis.length).toArray() : null, look: camera.position.clone().add(fwd.clone().multiplyScalar(10)).toArray() };
   };
 
   /** rendered-frame checks at t: mean luma, contrast, and jump to the next frame */

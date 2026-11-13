@@ -1,29 +1,24 @@
 {
- "bad": 3,
+ "bad": 0,
  "report": [
   {
    "shot": 0,
    "t": 0.07,
    "issues": [
-    "HIDDEN folk2 (behind SphereGeometry at 51.8)",
-    "OFFSCREEN folk3",
-    "HIDDEN folk5 (behind BoxGeometry at 77.7)"
+    "OFFSCREEN folk3"
    ]
   },
   {
    "shot": 0,
    "t": 0.42,
    "issues": [
-    "HIDDEN folk2 (behind SphereGeometry at 46.1)",
-    "OFFSCREEN folk3",
-    "HIDDEN folk5 (behind ConeGeometry at 72.5)"
+    "OFFSCREEN folk3"
    ]
   },
   {
    "shot": 0,
    "t": 0.78,
    "issues": [
-    "HIDDEN folk2 (behind SphereGeometry at 40.3)",
     "OFFSCREEN folk3"
    ]
   },
@@ -90,5 +85,6 @@
     "OFFSCREEN folk3"
    ]
   }
- ]
+ ],
+ "framing": []
 }
