@@ -4,7 +4,7 @@
   python measure.py renders/ours.mp4 --out measure/ours --sheets
 
 Per video it writes <out>/<name>.json (per-shot + per-frame numbers) and, with --sheets,
-contact sheets: one image per 2 s of video, all 60 frames tiled 10x6 with frame numbers.
+contact sheets: every frame, 60 per image (2 s at 30 fps) tiled 10x6 with frame numbers.
 Over all inputs it writes <out>/summary.json and <out>/summary.md (medians across videos).
 
 What it measures and why (each was a gap that made a clone look cheap):
@@ -192,13 +192,14 @@ GAP = 8  # frames between slow-motion samples
 
 
 def analyse(path, out_dir, sheets):
+    print("measuring", path, file=sys.stderr, flush=True)
     fps, h = probe(path)
     name = os.path.splitext(os.path.basename(path))[0]
     sdir = os.path.join(out_dir, name + "_sheets")
     if sheets:
         os.makedirs(sdir, exist_ok=True)
     per, ring, hprev, buf, cut_idx = [], [], None, [], [0]
-    per_sheet = max(1, int(round(2 * fps)))
+    per_sheet = 60  # one sheet = 60 frames (2 s at 30 fps, 1 s at 60 fps)
     for i, f in enumerate(frames(path, h)):
         y = luma(f)
         hcur = hist(f)
@@ -306,13 +307,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("videos", nargs="+")
     ap.add_argument("--out", default="measure")
-    ap.add_argument("--sheets", action="store_true", help="also write 60-frame contact sheets per 2 s")
+    ap.add_argument("--sheets", action="store_true", help="also write 60-frame contact sheets")
+    ap.add_argument("--jobs", type=int, default=1, help="videos measured in parallel (one CPU each)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    rows = []
-    for v in a.videos:
-        print("measuring", v, file=sys.stderr)
-        rows.append(analyse(v, a.out, a.sheets))
+    if a.jobs > 1:
+        from multiprocessing import Pool
+        with Pool(a.jobs) as pool:
+            rows = pool.starmap(analyse, [(v, a.out, a.sheets) for v in a.videos])
+    else:
+        rows = [analyse(v, a.out, a.sheets) for v in a.videos]
     keys = [k for k, val in rows[0].items() if isinstance(val, (int, float)) and not isinstance(val, bool)]
     agg = {k: float(np.median([r[k] for r in rows])) for k in keys}
     for k in ("shadow_hue", "highlight_hue"):
