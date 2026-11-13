@@ -68,7 +68,7 @@ export const SHADOW_COLOR = 0x241a40;
 // The unscaled avatar is 5.3 units from sole to head top; pass { studs: true } (kids: scale 0.8 on top).
 export const STUD_HEIGHT = 3.5, BASE_HEIGHT = 5.3, STUD_SCALE = STUD_HEIGHT / BASE_HEIGHT;
 export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74, shoes = 0x30303a, hair = 0x5a3a22,
-  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false } = {}) {
+  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false, beanieCol = 0xe8434f, scarf = null } = {}) {
   const mat = (c, extra = {}) => shadowMode
     ? new THREE.MeshBasicMaterial({ color: SHADOW_COLOR, ...extra })
     : new THREE.MeshStandardMaterial({ color: c, roughness: 0.62, metalness: 0, ...extra });
@@ -128,10 +128,15 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
   } else if (hat === 'hardhat' && !shadowMode) {
     add(headPivot, new THREE.SphereGeometry(0.82, 20, 10, 0, 6.3, 0, 1.6), mat(0xffc83d, { roughness: 0.4 }), 0, 1.28, 0);
     add(headPivot, new THREE.CylinderGeometry(0.98, 0.98, 0.1, 24), mat(0xffc83d, { roughness: 0.4 }), 0, 1.3, 0.1);
+  } else if (hat === 'beanie' && !shadowMode) {
+    add(headPivot, rbox(1.42, 0.62, 1.42, 0.22), mat(beanieCol), 0, 1.36, 0);
+    add(headPivot, rbox(1.46, 0.22, 1.46, 0.08), mat(new THREE.Color(beanieCol).multiplyScalar(0.8)), 0, 1.1, 0);
+    add(headPivot, new THREE.SphereGeometry(0.26, 12, 8), mat(0xffffff), 0, 1.78, 0);
   } else if (hat === 'chef') {
     add(headPivot, rbox(1.3, 0.4, 1.3, 0.1), mat(0xffffff), 0, 1.45, 0);
     add(headPivot, new THREE.SphereGeometry(0.85, 16, 12), mat(0xffffff), 0, 2.05, 0);
   }
+  if (scarf && !shadowMode) { add(body, rbox(2.15, 0.45, 1.15, 0.18), mat(scarf), 0, 3.85, 0); add(body, rbox(0.45, 1.1, 0.16, 0.08), mat(scarf), 0.45, 3.2, 0.6); }
   if (glasses && !shadowMode) add(headPivot, rbox(1.1, 0.3, 0.06, 0.04), mat(0x111118, { roughness: 0.2 }), 0, 0.82, 0.66);
   if (backpack) {
     const bp = add(torso, rbox(1.5, 1.6, 0.6, 0.18), mat(backpack), 0, 0.05, -0.75);

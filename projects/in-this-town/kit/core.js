@@ -89,6 +89,8 @@ export function createCore(canvas) {
     morning: { top: 0x5aa8f0, bot: 0xffe2c8, hemiS: 0xffe6d0, hemiG: 0x9a86d0, hemi: 1.0, sun: 2.8, sunC: 0xffd9a8, fog: 0xffe2c8, exp: 1.0 },
     dusk: { top: 0x3b4fa0, bot: 0xffa071, hemiS: 0xffb08a, hemiG: 0x5a4a90, hemi: 0.8, sun: 2.4, sunC: 0xff9a5c, fog: 0xd88a80, exp: 0.95 },
     seaside: { top: 0x2f8ff0, bot: 0xd6efff, hemiS: 0xd8ecff, hemiG: 0xa08fd0, hemi: 1.05, sun: 3.1, sunC: 0xfff2dc, fog: 0xcfe9ff, exp: 1.0 },
+    alpine: { top: 0x3f8fe8, bot: 0xe2f1ff, hemiS: 0xe6f2ff, hemiG: 0x9a90c8, hemi: 1.1, sun: 3.0, sunC: 0xfff4e4, fog: 0xdcecfa, exp: 1.0, fogNear: 220, fogFar: 1500 },
+    storm: { top: 0x3a4a6a, bot: 0x9aa8bf, hemiS: 0xb8c4dc, hemiG: 0x5a5080, hemi: 1.0, sun: 1.4, sunC: 0xdfe6ff, fog: 0xa4b0c4, exp: 1.0, fogNear: 160, fogFar: 1000 },
     night: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x4a68c0, hemiG: 0x221a50, hemi: 0.95, sun: 0.55, sunC: 0x9fb8ff, fog: 0x15245a, exp: 1.05 },
     indoor: { top: 0x3d9bf0, bot: 0xc4e6ff, hemiS: 0xfff1de, hemiG: 0xa08fd0, hemi: 1.2, sun: 1.6, sunC: 0xfff0d8, fog: 0xbfe2ff, exp: 1.0 },
     indoorNight: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x5a7ad0, hemiG: 0x2a2060, hemi: 1.15, sun: 0.35, sunC: 0x9fb8ff, fog: 0x101a40, exp: 1.2 },
@@ -101,7 +103,7 @@ export function createCore(canvas) {
     sun.color.set(p.sunC); sun.intensity = p.sun;
     sun.target.position.set(...center);
     sun.position.set(center[0] + sunDir[0], center[1] + sunDir[1], center[2] + sunDir[2]);
-    scene.fog.color.set(p.fog);
+    scene.fog.color.set(p.fog); scene.fog.near = p.fogNear || 150; scene.fog.far = p.fogFar || 460;
     renderer.toneMappingExposure = p.exp;
     sky.position.set(center[0], 0, center[2]);
   }

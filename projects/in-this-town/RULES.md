@@ -20,36 +20,25 @@ Set by the channel owner. Every episode follows these.
 4. **Voice:** ElevenLabs Adam, pitch +4, speed 1.25x. **Captions:** white, Poppins 800 at 56 px, one word at a time.
 5. **Music:** background track at 25% of the voice loudness. **Sound effects:** synthesized in `kit/sfx.py`, cued to words.
 6. **Backgrounds:** detailed, never bare grass (`kit/world.js` suburbs + backdrop).
-8. **No talking animation.** Mouths don't flap and heads don't bob while someone speaks. Each line gets one
-   steady facial expression that fits it (happy, scared, determined, smug...). `talkFace()` in `kit/avatar.js`
-   already does this.
-9. **True scale (from episode 3).** 1 world unit = 1 stud. Adults are **3.5 studs** tall (`makeAvatar({ studs: true })`),
-   kids about 2.8. Build the world to match:
-
-   | thing | studs |
-   |---|---|
-   | door | 5 tall, 2.6 wide |
-   | floor to floor | 6 |
-   | window sill | 1.8 |
-   | bench seat / table top | 1.1 / 1.9 |
-   | car | 3.2 tall, 7 long |
-   | lamp post | 9 |
-   | street / sidewalk | 16 / 5 wide |
-10. **Show the world.** At least half the shots are wide (characters at most 25% of the frame height), the rest
-    medium (at most 45%). At most 4 close-ups per episode, only on key beats, listed in
-    `window.HOUSE_RULES.close`. Every scene opens on an establishing shot. Lens 50-60 degrees. `clipcheck` reports
-    `TOO_TIGHT` and counts the wide shots; `autofix` pulls tight cameras back.
-11. **Detail.** Streets and sets are dressed with clutter (benches, bins, signs, bikes, crates, pots, stalls),
-    real 3D window frames, doors, balconies and roof detail, and ambient life (background crowd, birds,
-    vehicles or boats, smoke, flags, setting particles). `clipcheck` warns `DETAIL_LOW` when a non-close shot
-    has too little in view. Static detail is baked, moving detail is instanced, so phones stay fast.
 7. **New town every episode.** Never reuse a previous episode's town layout, main street, landmark buildings
    or palette. Each episode gets its own location built for its story (for example a snowy mountain village,
    a beach town on stilts, a desert canyon town, a floating sky city, a swamp village, a neon night city), with
    its own terrain, architecture, colours, landmark and lighting. Shared code (avatars, captions, SFX, QA) is
    fine; what the viewer sees of the world must be new. Keep a list of used settings below.
-
+8. **No talking animation.** Mouths don't flap and heads don't bob while someone speaks. Each line gets one
+   steady facial expression that fits it (happy, scared, determined, smug...). `talkFace()` in `kit/avatar.js`
+   already does this.
+9. **Show the world (not zoomed in).** At least half the shots are wide (characters at most 25% of the frame height), the rest
+    medium (at most 45%). At most 4 close-ups per episode, only on key beats, listed in
+    `window.HOUSE_RULES.close`. Every scene opens on an establishing shot. Lens 50-60 degrees. `clipcheck` reports
+    `TOO_TIGHT` and counts the wide shots; `autofix` pulls tight cameras back.
+10. **Detail.** Streets and sets are dressed with clutter (benches, bins, signs, bikes, crates, pots, stalls),
+    real 3D window frames, doors, balconies and roof detail, and ambient life (background crowd, birds,
+    vehicles or boats, smoke, flags, setting particles). `clipcheck` warns `DETAIL_LOW` when a non-close shot
+    has too little in view. Static detail is baked, moving detail is instanced, so phones stay fast.
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
 - Ep 2 "Lie Balloons": seaside harbor town (`kit/harbor.js`): gabled row houses, cobblestones, quay, boats,
   lighthouse, terraced hillside with a church, stone-and-verdigris town hall.
+- Ep 3 "The Mountain Whisper": snowy alpine village (`kit/alpine.js`): timber chalets with lit windows, balconies and
+  icicles, Echo Point lookout on a cliff, frozen pond, cable car, pine forests, a giant talking mountain, snowfall.

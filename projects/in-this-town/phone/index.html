@@ -49,7 +49,7 @@ video { width: 100%; border-radius: 12px; background: #000; max-height: 60vh; }
 
 <main>
   <header>
-    <h1 id="ep-title">Lie Balloons</h1>
+    <h1 id="ep-title">The Mountain Whisper</h1>
     <p class="sub" id="ep-sub">Renders on this phone's graphics chip · captions, voice, music and sound effects included</p>
   </header>
 
@@ -62,7 +62,8 @@ video { width: 100%; border-radius: 12px; background: #000; max-height: 60vh; }
   <fieldset>
     <legend>Episode</legend>
     <div class="opts">
-      <label><input type="radio" name="ep" id="ep-2" value="02_lie_balloons" checked><b>2 · Lie Balloons</b><small>0:53</small></label>
+      <label><input type="radio" name="ep" id="ep-3" value="03_mountain_whisper" checked><b>3 · The Mountain Whisper</b><small>0:52</small></label>
+      <label><input type="radio" name="ep" id="ep-2" value="02_lie_balloons"><b>2 · Lie Balloons</b><small>0:53</small></label>
       <label><input type="radio" name="ep" id="ep-1" value="01_shadow"><b>1 · Your Shadow Is Free</b><small>1:45</small></label>
     </div>
   </fieldset>
@@ -122,7 +123,7 @@ const val = (name) => document.querySelector(`input[name=${name}]:checked`).valu
 const fmt = (s) => !isFinite(s) ? '–' : s < 60 ? `${Math.ceil(s)} s` : `${Math.floor(s / 60)} m ${String(Math.ceil(s % 60)).padStart(2, '0')} s`;
 
 let loadedScale = null, loadedEp = null, stopFlag = false, result = null, wake = null, WORDS = null, spans = [];
-const EP_NAMES = { '02_lie_balloons': ['Lie Balloons', 'lie_balloons'], '01_shadow': ['Your Shadow Is Free', 'your_shadow_is_free'] };
+const EP_NAMES = { '03_mountain_whisper': ['The Mountain Whisper', 'mountain_whisper'], '02_lie_balloons': ['Lie Balloons', 'lie_balloons'], '01_shadow': ['Your Shadow Is Free', 'your_shadow_is_free'] };
 document.querySelectorAll('input[name=ep]').forEach((i) => i.addEventListener('change', () => { $('ep-title').textContent = EP_NAMES[val('ep')][0]; }));
 
 // ---------------- checks

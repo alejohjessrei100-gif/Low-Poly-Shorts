@@ -1,0 +1,172 @@
+{
+ "note": "written by kit/autofix.mjs; delete to undo",
+ "shots": {
+  "7": {
+   "actors": {
+    "folk1": [
+     0,
+     0,
+     2.06
+    ],
+    "folk3": [
+     0,
+     0,
+     2.06
+    ],
+    "folk6": [
+     0,
+     0,
+     -2.06
+    ],
+    "folk5": [
+     2.09,
+     0,
+     0
+    ]
+   }
+  },
+  "12": {
+   "cam": [
+    1.51,
+    0.22,
+    2.58
+   ]
+  },
+  "15": {
+   "cam": [
+    -2.52,
+    0.72,
+    4.26
+   ]
+  },
+  "18": {
+   "actors": {
+    "folk5": [
+     0,
+     0,
+     -2.05
+    ]
+   },
+   "cam": [
+    0,
+    0.24,
+    2.99
+   ]
+  },
+  "20": {
+   "cam": [
+    -2.58,
+    1.29,
+    11.65
+   ]
+  },
+  "21": {
+   "cam": [
+    0.04,
+    -1.52,
+    4.76
+   ]
+  },
+  "25": {
+   "cam": [
+    -0.01,
+    -0.22,
+    1.48
+   ]
+  }
+ },
+ "log": [
+  {
+   "shot": 7,
+   "before": [
+    "CLIP folk0 into folk1",
+    "CLIP folk1 into folk2",
+    "CLIP folk2 into folk3",
+    "CLIP folk3 into folk4",
+    "CLIP folk4 into folk5",
+    "CLIP folk5 into folk6"
+   ],
+   "changes": [
+    "move folk1 0,0,2.06",
+    "move folk3 0,0,2.06",
+    "move folk6 0,0,-2.06",
+    "move folk5 2.09,0,0"
+   ],
+   "after": []
+  },
+  {
+   "shot": 12,
+   "before": [
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 3 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 15,
+   "before": [
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 5 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 18,
+   "before": [
+    "CLIP folk1 into folk5",
+    "OFFSCREEN folk3",
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "move folk5 0,0,-2.05",
+    "camera back 3 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 20,
+   "before": [
+    "OFFSCREEN folk0",
+    "OFFSCREEN folk2",
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 12 (framing)"
+   ],
+   "after": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 21,
+   "before": [
+    "OFFSCREEN pip",
+    "ALL_OFFSCREEN",
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 5 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 25,
+   "before": [
+    "OFFSCREEN folk0",
+    "OFFSCREEN folk1",
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 1.5 (framing)"
+   ],
+   "after": [
+    "OFFSCREEN folk0",
+    "OFFSCREEN folk1"
+   ]
+  }
+ ]
+}
