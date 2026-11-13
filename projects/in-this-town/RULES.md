@@ -31,4 +31,5 @@ Set by the channel owner. Every episode follows these.
 
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
-- Ep 2 "Lie Balloons": the same pastel main street and town hall (reused; never again).
+- Ep 2 "Lie Balloons": seaside harbor town (`kit/harbor.js`): gabled row houses, cobblestones, quay, boats,
+  lighthouse, terraced hillside with a church, stone-and-verdigris town hall.

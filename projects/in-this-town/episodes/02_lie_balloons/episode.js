@@ -1,8 +1,8 @@
 // Episode 02 "Lie Balloons" (53 s). Deterministic: window.renderAt(t). House rules: no blur, 45-60 s, clip-checked.
 import { createCore, smooth, lerp, clamp01 } from '../../kit/core.js';
 import { makeAvatar, pose, setFace, talkFace, walk, reset } from '../../kit/avatar.js';
-import { buildTown, townHall, setLamps } from '../../kit/town.js';
-import { suburb, backdrop } from '../../kit/world.js';
+import { townHall, setLamps } from '../../kit/town.js';
+import { buildHarbor, seaBackdrop } from '../../kit/harbor.js';
 import { cluster, swarm, shreds } from '../../kit/balloons.js';
 import * as P from '../../kit/props.js';
 import { loadFixes, setShot, offsetActor, applyCamera } from '../../kit/autofix-runtime.js';
@@ -12,9 +12,9 @@ await document.fonts.load('800 40px Poppins');
 const C = createCore(document.getElementById('c'));
 const { THREE, scene, camera, composer, grade, setLight } = C;
 scene.add(camera);
-buildTown(scene, { hall: false });
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), P.std(0x9ed97c, { roughness: 1 }));
-ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.05, -60); ground.receiveShadow = true; scene.add(ground);
+buildHarbor(scene);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(2000, 4000), P.std(0x9ed97c, { roughness: 1 })); // land east of the quay; the sea is west
+ground.rotation.x = -Math.PI / 2; ground.position.set(964, -0.05, -60); ground.receiveShadow = true; scene.add(ground);
 
 const WORDS = (await (await fetch(new URL('./words.json', import.meta.url))).json()).words;
 const END = WORDS[WORDS.length - 1][1] + 0.45;
@@ -26,11 +26,9 @@ const SIDE = 0.3;
 const v3 = (a) => new THREE.Vector3(...a);
 
 // ---------------------------------------------------------------- world
-suburb(scene, { x0: 30, x1: 182, z0: -190, z1: 20, s: 5 });
-suburb(scene, { x0: -182, x1: -30, z0: -190, z1: 20, s: 9 });
-backdrop(scene, 0, -70, 340);
+seaBackdrop(scene);
 const HZ = -122;
-const HALL = townHall(scene, HZ);
+const HALL = townHall(scene, HZ, { stone: 0xf3ead8, steps: 0xcfc4b3, dome: 0x5fb8a0, metal: 0.3 });
 const hallClock = Z.clockFace(256); HALL.clock.material = new THREE.MeshStandardMaterial({ map: hallClock.tex, roughness: 0.6 }); HALL.clock.scale.setScalar(0.78); HALL.clock.position.y = 22.0; HALL.clock.position.z = 3.1;
 P.box(4, 6.2, 0.1, P.std(0x1c1826, { roughness: 1 }), 0, 5.1, 5.02, HALL.g); P.box(4.8, 0.6, 0.4, P.std(0xf2c14e, { metalness: 0.5 }), 0, 8.4, 5.1, HALL.g);
 const pit = P.box(34, 0.12, 15, P.std(0x8a6a4a, { roughness: 1 }), 0, 0.06, HZ - 1, scene);
@@ -175,7 +173,7 @@ function confettiAt(c, u) {
 // ---------------------------------------------------------------- shots
 const SHOTS = [];
 const S = (t, o) => SHOTS.push({ t: CUT(t), ...o });
-const DAY = { light: 'day' };
+const DAY = { light: 'seaside' };
 const ST = HZ + 8; // front edge of the hall steps (z = -114)
 
 // 0 "In this town," aerial: everyone walks around with balloons over their heads

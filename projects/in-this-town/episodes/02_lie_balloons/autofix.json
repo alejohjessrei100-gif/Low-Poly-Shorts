@@ -1,12 +1,41 @@
 {
  "note": "written by kit/autofix.mjs; delete to undo",
  "shots": {
-  "0": {
-   "cam": [
-    1.2,
-    0,
-    0
-   ]
+  "3": {
+   "actors": {
+    "folk0": [
+     1.47,
+     0,
+     0
+    ]
+   }
+  },
+  "10": {
+   "actors": {
+    "ava": [
+     0,
+     0,
+     0.54
+    ]
+   }
+  },
+  "11": {
+   "actors": {
+    "mayor": [
+     0,
+     0,
+     -1.2
+    ]
+   }
+  },
+  "15": {
+   "actors": {
+    "mayor": [
+     0,
+     0,
+     -0.54
+    ]
+   }
   }
  },
  "log": [
@@ -17,23 +46,52 @@
     "OFFSCREEN folk3",
     "HIDDEN folk5"
    ],
-   "changes": [
-    "camera orbit 1.2"
-   ],
+   "changes": [],
    "after": [
     "HIDDEN folk2",
-    "OFFSCREEN folk3"
+    "OFFSCREEN folk3",
+    "HIDDEN folk5"
    ]
   },
   {
-   "shot": 28,
+   "shot": 3,
    "before": [
-    "CLIP brother into box"
+    "CLIP folk0 into box"
    ],
-   "changes": [],
-   "after": [
-    "CLIP brother into box"
-   ]
+   "changes": [
+    "move folk0 1.47,0,0"
+   ],
+   "after": []
+  },
+  {
+   "shot": 10,
+   "before": [
+    "CLIP ava into box"
+   ],
+   "changes": [
+    "move ava 0,0,0.54"
+   ],
+   "after": []
+  },
+  {
+   "shot": 11,
+   "before": [
+    "CLIP mayor into box"
+   ],
+   "changes": [
+    "move mayor 0,0,-1.2"
+   ],
+   "after": []
+  },
+  {
+   "shot": 15,
+   "before": [
+    "CLIP mayor into box"
+   ],
+   "changes": [
+    "move mayor 0,0,-0.54"
+   ],
+   "after": []
   }
  ]
 }

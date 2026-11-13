@@ -88,6 +88,7 @@ export function createCore(canvas) {
     day: { top: 0x3d9bf0, bot: 0xc4e6ff, hemiS: 0xcfe6ff, hemiG: 0x9a86d0, hemi: 1.0, sun: 3.0, sunC: 0xfff0d8, fog: 0xbfe2ff, exp: 1.0 },
     morning: { top: 0x5aa8f0, bot: 0xffe2c8, hemiS: 0xffe6d0, hemiG: 0x9a86d0, hemi: 1.0, sun: 2.8, sunC: 0xffd9a8, fog: 0xffe2c8, exp: 1.0 },
     dusk: { top: 0x3b4fa0, bot: 0xffa071, hemiS: 0xffb08a, hemiG: 0x5a4a90, hemi: 0.8, sun: 2.4, sunC: 0xff9a5c, fog: 0xd88a80, exp: 0.95 },
+    seaside: { top: 0x2f8ff0, bot: 0xd6efff, hemiS: 0xd8ecff, hemiG: 0xa08fd0, hemi: 1.05, sun: 3.1, sunC: 0xfff2dc, fog: 0xcfe9ff, exp: 1.0 },
     night: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x4a68c0, hemiG: 0x221a50, hemi: 0.95, sun: 0.55, sunC: 0x9fb8ff, fog: 0x15245a, exp: 1.05 },
     indoor: { top: 0x3d9bf0, bot: 0xc4e6ff, hemiS: 0xfff1de, hemiG: 0xa08fd0, hemi: 1.2, sun: 1.6, sunC: 0xfff0d8, fog: 0xbfe2ff, exp: 1.0 },
     indoorNight: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x5a7ad0, hemiG: 0x2a2060, hemi: 1.15, sun: 0.35, sunC: 0x9fb8ff, fog: 0x101a40, exp: 1.2 },

@@ -112,14 +112,18 @@ export function bench(p, x, z, rot) {
   box(3.2, 0.18, 0.9, wood, 0, 1.0, 0, g, 0.06); box(3.2, 0.7, 0.16, wood, 0, 1.6, -0.42, g, 0.06);
   [-1.3, 1.3].forEach((a) => box(0.16, 1.0, 0.9, iron, a, 0.5, 0, g));
 }
-export function townHall(p, z) {
+export function townHall(p, z, { stone = 0xf6f4f0, steps = 0xdcd6cc, dome: domeCol = 0xf2c14e, metal = 0.5 } = {}) {
   const g = new THREE.Group(); g.position.set(0, 0, z); p.add(g);
-  const white = std(0xf6f4f0), gold = std(0xf2c14e, { metalness: 0.5, roughness: 0.3 });
-  box(36, 2, 16, std(0xdcd6cc), 0, 1, 0, g); // steps
+  const white = std(stone), gold = std(domeCol, { metalness: metal, roughness: 0.3 });
+  box(36, 2, 16, std(steps), 0, 1, 0, g); // steps
   box(32, 14, 12, white, 0, 9, -1, g);
   for (let i = 0; i < 8; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.85, 12, 16), white); c.position.set(-12.25 + i * 3.5, 8, 6.2); c.castShadow = c.receiveShadow = true; g.add(c); }
   box(34, 1.6, 14, white, 0, 16.6, 0, g);
-  const roof = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 18.5, 5, 4, 1), white); roof.rotation.y = Math.PI / 4; roof.scale.set(1, 1, 0.42); roof.position.set(0, 19.9, 0); roof.castShadow = true; g.add(roof);
+  // flat roof with a low parapet (the old flattened pyramid showed as a stray triangle under the clock)
+  const trim = std(new THREE.Color(stone).multiplyScalar(0.9).getHex());
+  box(34.4, 0.9, 0.5, trim, 0, 17.85, 6.8, g); box(34.4, 0.9, 0.5, trim, 0, 17.85, -6.8, g);
+  box(0.5, 0.9, 14, trim, -16.95, 17.85, 0, g); box(0.5, 0.9, 14, trim, 16.95, 17.85, 0, g);
+  box(11, 0.6, 11, trim, 0, 17.7, -2, g); // clock tower base
   box(10, 6, 10, white, 0, 21, -2, g);
   const dome = new THREE.Mesh(new THREE.SphereGeometry(4.6, 32, 16, 0, 6.3, 0, 1.6), gold); dome.position.set(0, 24, -2); dome.castShadow = true; g.add(dome);
   // clock
