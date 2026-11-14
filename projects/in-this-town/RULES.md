@@ -54,3 +54,5 @@ Set by the channel owner. Every episode follows these.
   lighthouse, terraced hillside with a church, stone-and-verdigris town hall.
 - Ep 3 "The Mountain Whisper": snowy alpine village (`kit/alpine.js`): timber chalets with lit windows, balconies and
   icicles, Echo Point lookout on a cliff, frozen pond, cable car, pine forests, a giant talking mountain, snowfall.
+- Ep 4 "Pineapple Crime": neon night city (`kit/neon.js`): wet reflective street, lit towers, neon shop and blade signs,
+  fire escapes, lanterns, giant street screen, Slice Palace pizzeria with a secret pineapple room.

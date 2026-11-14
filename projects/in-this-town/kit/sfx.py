@@ -327,6 +327,26 @@ def sparkle(d=1.5):
     return out
 
 
+def vineboom(d=1.4):
+    """meme-style deep 'boom' hit (our own synth, sound-alike)"""
+    t = t_(d)
+    f = 62 * (1 + 2.5 * np.exp(-30 * t))
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-2.6 * t)
+    x += 0.5 * np.sin(2 * np.pi * np.cumsum(f * 2.01) / SR) * np.exp(-5 * t)
+    x = np.tanh(2.2 * x)
+    tail = lp(noise(d), 400) * np.exp(-3.5 * t) * 0.25
+    return (x + tail) * 0.9
+
+
+def scratch(d=0.6):
+    """record scratch: two quick pitch swoops of filtered noise + tone"""
+    t = t_(d)
+    sw = np.where(t < d / 2, np.linspace(1, 3, len(t)), np.linspace(3, 0.6, len(t)))
+    tone = np.sign(np.sin(2 * np.pi * np.cumsum(180 * sw) / SR)) * 0.4
+    x = hp(lp(noise(d) * 0.7 + tone, 3500), 300) * env(len(t), 0.01, 0.12)
+    return x * 0.9
+
+
 KINDS = {k: v for k, v in globals().items() if callable(v) and k not in ('t_', 'env', 'lp', 'hp', 'noise', 'sweep', 'main', 'load')}
 
 

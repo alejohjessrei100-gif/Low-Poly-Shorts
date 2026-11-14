@@ -94,7 +94,7 @@ export function buildNeon(scene) {
   box(2.4, 0.25, 12, std(0x2a5a3a), 7.9, 4.7, -1, P).rotation.z = -0.25;
   const baked = bake(tmp); scene.add(baked);
   // steam vents (animated by the episode with the life kit's smoke)
-  const vents = [[-3, 0.1, -20], [4, 0.1, -64], [-2, 0.1, -110], [3, 0.1, -150]].map((v) => new THREE.Vector3(...v));
+  const vents = [[-6.5, 0.1, -96], [6.5, 0.1, -128], [-6.5, 0.1, -160]].map((v) => new THREE.Vector3(...v));
   return { T, vents, shopDoor: new THREE.Vector3(-12.9, 0, -36) };
 }
 

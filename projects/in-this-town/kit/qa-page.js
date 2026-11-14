@@ -41,7 +41,15 @@
       rc.set(camera.position, new THREE.Vector3(...d)); rc.near = 0; rc.far = 0.35;
       const h = rc.intersectObjects(T, false)[0]; if (h) inside = Math.min(inside, h.distance);
     }
-    if (inside < 0.35) issues.push({ type: 'CAM_INSIDE', text: `CAM_INSIDE (geometry ${inside.toFixed(2)} from lens)` });
+    // inside a big closed object (a building): most rays first hit the INSIDE of a face
+    let backs = 0;
+    for (const d of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0.7, 0, 0.7], [-0.7, 0, -0.7]]) {
+      const dir = new THREE.Vector3(...d).normalize(); rc.set(camera.position, dir); rc.near = 0; rc.far = 300;
+      const h = rc.intersectObjects(T, false).find((x) => x.object.geometry.type !== 'PlaneGeometry' && x.face);
+      if (h) { const n = h.face.normal.clone().transformDirection(h.object.matrixWorld); if (n.dot(dir) > 0.2) backs++; }
+    }
+    if (backs >= 5) inside = Math.min(inside, 0);
+    if (inside < 0.35) issues.push({ type: 'CAM_INSIDE', text: inside === 0 ? 'CAM_INSIDE (camera is inside a closed object)' : `CAM_INSIDE (geometry ${inside.toFixed(2)} from lens)` });
     if (near / total > 0.22) issues.push({ type: 'BLOCKED', text: `BLOCKED (${Math.round(near / total * 100)}% of frame within 2.5u)` });
     const S = solids();
     const vis = actors.filter((a) => visibleDeep(a.wrap) && a.wrap.position.y > -40);

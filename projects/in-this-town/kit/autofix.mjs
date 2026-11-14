@@ -51,6 +51,7 @@ function candidates(fix, ev) {
     for (const d of [0.6, 1.2, 2, 3, 4.5, 6]) cam(fwd.map((v) => -v * d), null, `camera back ${d}`);
     for (const d of [0.8, 1.6, 3]) cam([0, d, 0], null, `camera up ${d}`);
     for (const s of [-2, -1, 1, 2]) cam(right.map((v) => v * s), right.map((v) => v * s), `camera slide ${s}`);
+    for (const d of [2, 4, 7, 10]) cam(fwd.map((v) => v * d), null, `camera forward ${d}`); // out of a building, toward the subject
   }
   if (types.has('TOO_TIGHT')) for (const d of [1.5, 3, 5, 8, 12]) cam(fwd.map((v) => -v * d), null, `camera back ${d} (framing)`);
   if (types.has('HIDDEN')) {

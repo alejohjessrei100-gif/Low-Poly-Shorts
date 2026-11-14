@@ -1,0 +1,27 @@
+{
+ "_": "Intended contact.",
+ "2": [
+  "CLIP cop0 into folk1",
+  "CLIP cop1 into folk1"
+ ],
+ "5": [
+  "CLIP marco into box"
+ ],
+ "18": [
+  "CLIP marco into box",
+  "CLIP marco into chiefChef"
+ ],
+ "8": [
+  "CLIP cop0 into box",
+  "CLIP cop1 into box"
+ ],
+ "13": [
+  "CLIP marco into box"
+ ],
+ "16": [
+  "HIDDEN folk"
+ ],
+ "0": [
+  "HIDDEN folk"
+ ]
+}

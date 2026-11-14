@@ -1,0 +1,261 @@
+{
+ "bad": 0,
+ "report": [
+  {
+   "shot": 0,
+   "t": 0.07,
+   "issues": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 0,
+   "t": 0.42,
+   "issues": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 0,
+   "t": 0.78,
+   "issues": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 1,
+   "t": 1.03,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3",
+    "OFFSCREEN folk5"
+   ]
+  },
+  {
+   "shot": 1,
+   "t": 2.01,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3",
+    "OFFSCREEN folk5"
+   ]
+  },
+  {
+   "shot": 1,
+   "t": 2.98,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3",
+    "OFFSCREEN folk5"
+   ]
+  },
+  {
+   "shot": 3,
+   "t": 6.68,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  },
+  {
+   "shot": 3,
+   "t": 7.57,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  },
+  {
+   "shot": 3,
+   "t": 8.46,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  },
+  {
+   "shot": 4,
+   "t": 8.87,
+   "issues": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 4,
+   "t": 10.13,
+   "issues": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 4,
+   "t": 11.39,
+   "issues": [
+    "OFFSCREEN folk2"
+   ]
+  },
+  {
+   "shot": 12,
+   "t": 23.48,
+   "issues": [
+    "OFFSCREEN cop0"
+   ]
+  },
+  {
+   "shot": 12,
+   "t": 24.17,
+   "issues": [
+    "OFFSCREEN cop0"
+   ]
+  },
+  {
+   "shot": 12,
+   "t": 24.86,
+   "issues": [
+    "OFFSCREEN cop0"
+   ]
+  },
+  {
+   "shot": 15,
+   "t": 28.38,
+   "issues": [
+    "OFFSCREEN cop0"
+   ]
+  },
+  {
+   "shot": 15,
+   "t": 28.89,
+   "issues": [
+    "OFFSCREEN cop0"
+   ]
+  },
+  {
+   "shot": 15,
+   "t": 29.39,
+   "issues": [
+    "OFFSCREEN cop0"
+   ]
+  },
+  {
+   "shot": 17,
+   "t": 32.22,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  },
+  {
+   "shot": 17,
+   "t": 33.11,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  },
+  {
+   "shot": 17,
+   "t": 34,
+   "issues": [
+    "OFFSCREEN folk2",
+    "OFFSCREEN folk3"
+   ]
+  }
+ ],
+ "framing": [
+  {
+   "shot": 0,
+   "frac": 0.11177438995371325,
+   "close": false
+  },
+  {
+   "shot": 1,
+   "frac": 0.11126435926791939,
+   "close": false
+  },
+  {
+   "shot": 2,
+   "frac": 0.2373414288920084,
+   "close": false
+  },
+  {
+   "shot": 3,
+   "frac": 0.39918963412266245,
+   "close": false
+  },
+  {
+   "shot": 4,
+   "frac": 0.19757959379698087,
+   "close": false
+  },
+  {
+   "shot": 5,
+   "frac": 0.39286212379418395,
+   "close": false
+  },
+  {
+   "shot": 6,
+   "frac": 0.2032578389289209,
+   "close": false
+  },
+  {
+   "shot": 7,
+   "frac": 0.21922874686341004,
+   "close": false
+  },
+  {
+   "shot": 8,
+   "frac": 0.25392483631529494,
+   "close": false
+  },
+  {
+   "shot": 9,
+   "frac": 0.193034930213003,
+   "close": false
+  },
+  {
+   "shot": 10,
+   "frac": 0.3781651730167789,
+   "close": false
+  },
+  {
+   "shot": 11,
+   "frac": 1,
+   "close": true
+  },
+  {
+   "shot": 12,
+   "frac": 0.22457210056979723,
+   "close": false
+  },
+  {
+   "shot": 13,
+   "frac": 0.6971728070236898,
+   "close": true
+  },
+  {
+   "shot": 14,
+   "frac": 0.27685881522920935,
+   "close": false
+  },
+  {
+   "shot": 15,
+   "frac": 0.2606597571322779,
+   "close": false
+  },
+  {
+   "shot": 16,
+   "frac": 0.23821139871196084,
+   "close": false
+  },
+  {
+   "shot": 17,
+   "frac": 0.201211599967481,
+   "close": false
+  },
+  {
+   "shot": 18,
+   "frac": 0.41349084223540766,
+   "close": false
+  }
+ ]
+}
