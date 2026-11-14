@@ -47,6 +47,14 @@ Set by the channel owner. Every episode follows these.
     Most clips there are user uploads of other people's audio, so they can trigger copyright claims or demonetize a
     video. Prefer our own synthesized sound-alikes in `kit/sfx.py`; list any downloaded clip in the episode's
     `sfx_sources.txt` so it can be swapped out if a platform flags it.
+14. **Real-world scale.** New sets are built in metres: people 1.75 m, floors 3.2 m, doors 2.3 m, street lamps 6 m,
+    cars at their real length (4.5-5 m), a two-lane road 10 m. Characters must look small next to buildings, never
+    taller than a door. Episodes in metres set `window.QA.scale = 1/3` so the QA thresholds match.
+15. **CC0 asset library.** Characters, cars and food come from `assets/cc0/` through `kit/assets.js` (Kenney Blocky
+    Characters, Car Kit and Food Kit, Quaternius; all CC0, credits in `assets/cc0/NOTICE.txt`). Use their real body
+    animations (walk, sprint, idle, sit, emote-yes/no, interact, holding, pick-up, kick...) and vary them from shot to
+    shot; `poseArms()` mixes two clips (walk while carrying). Their faces are printed on, which fits rule 8. The phone
+    page ships each model as `<name>.glb.txt` (base64) because artifact hosting does not serve `.glb`.
 
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
@@ -56,3 +64,4 @@ Set by the channel owner. Every episode follows these.
   icicles, Echo Point lookout on a cliff, frozen pond, cable car, pine forests, a giant talking mountain, snowfall.
 - Ep 4 "Pineapple Crime": neon night city (`kit/neon.js`): wet reflective street, lit towers, neon shop and blade signs,
   fire escapes, lanterns, giant street screen, Slice Palace pizzeria with a secret pineapple room.
+  Rebuilt in metres with the CC0 characters and cars (v2).

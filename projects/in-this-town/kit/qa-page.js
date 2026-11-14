@@ -2,6 +2,7 @@
 // Needs window.QA = { scene, camera, THREE, actors: [{ name, wrap, head }] } and window.renderAt(t).
 (() => {
   const { scene, camera, THREE, actors } = window.QA;
+  const U = window.QA.scale || 1; // world units per 'classic' unit (metre episodes: 1/3)
   const rc = new THREE.Raycaster();
   const isActorMesh = new Set();
   actors.forEach((a) => a.wrap.traverse((o) => { if (o.isMesh) isActorMesh.add(o); }));
@@ -21,7 +22,7 @@
   const mtv = (A, B) => {
     const ov = A.clone().intersect(B).getSize(new THREE.Vector3());
     const ca = A.getCenter(new THREE.Vector3()), cb = B.getCenter(new THREE.Vector3());
-    return ov.x < ov.z ? [(ov.x + 0.25) * (ca.x >= cb.x ? 1 : -1), 0, 0] : [0, 0, (ov.z + 0.25) * (ca.z >= cb.z ? 1 : -1)];
+    return ov.x < ov.z ? [(ov.x + 0.25 * U) * (ca.x >= cb.x ? 1 : -1), 0, 0] : [0, 0, (ov.z + 0.25 * U) * (ca.z >= cb.z ? 1 : -1)];
   };
 
   /** geometry checks at time t; returns { issues, cam, centroid } (no rendering when window.__NO_RENDER) */
@@ -35,10 +36,10 @@
     for (let y = -1; y <= 1.001; y += 0.25) for (let x = -1; x <= 1.001; x += 0.25) {
       rc.setFromCamera(new THREE.Vector2(x * 0.98, y * 0.98), camera); rc.near = camera.near; rc.far = 40;
       const h = rc.intersectObjects(T, false)[0]; total++;
-      if (h) { inside = Math.min(inside, h.distance); if (h.distance < 2.5 && !isActorMesh.has(h.object)) near++; }
+      if (h) { inside = Math.min(inside, h.distance); if (h.distance < 2.5 * U && !isActorMesh.has(h.object)) near++; }
     }
     for (const d of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
-      rc.set(camera.position, new THREE.Vector3(...d)); rc.near = 0; rc.far = 0.35;
+      rc.set(camera.position, new THREE.Vector3(...d)); rc.near = 0; rc.far = 0.35 * U;
       const h = rc.intersectObjects(T, false)[0]; if (h) inside = Math.min(inside, h.distance);
     }
     // inside a big closed object (a building): most rays first hit the INSIDE of a face
@@ -49,8 +50,8 @@
       if (h) { const n = h.face.normal.clone().transformDirection(h.object.matrixWorld); if (n.dot(dir) > 0.2) backs++; }
     }
     if (backs >= 5) inside = Math.min(inside, 0);
-    if (inside < 0.35) issues.push({ type: 'CAM_INSIDE', text: inside === 0 ? 'CAM_INSIDE (camera is inside a closed object)' : `CAM_INSIDE (geometry ${inside.toFixed(2)} from lens)` });
-    if (near / total > 0.22) issues.push({ type: 'BLOCKED', text: `BLOCKED (${Math.round(near / total * 100)}% of frame within 2.5u)` });
+    if (inside < 0.35 * U) issues.push({ type: 'CAM_INSIDE', text: inside === 0 ? 'CAM_INSIDE (camera is inside a closed object)' : `CAM_INSIDE (geometry ${inside.toFixed(2)} from lens)` });
+    if (near / total > 0.22) issues.push({ type: 'BLOCKED', text: `BLOCKED (${Math.round(near / total * 100)}% of frame close to the lens)` });
     const S = solids();
     const vis = actors.filter((a) => visibleDeep(a.wrap) && a.wrap.position.y > -40);
     const boxes = vis.map(actorBox);
@@ -65,19 +66,19 @@
       if (anyOn) onCount++; else issues.push({ type: 'OFFSCREEN', actor: a.name, text: `OFFSCREEN ${a.name}` });
       if (on) {
         const dir = hp.clone().sub(camera.position); const dist = dir.length(); dir.normalize();
-        rc.set(camera.position, dir); rc.near = 0.1; rc.far = dist - 0.9;
+        rc.set(camera.position, dir); rc.near = 0.1 * U; rc.far = dist - 0.9 * U;
         const h = rc.intersectObjects(T.filter((o) => !isActorMesh.has(o)), false)[0];
         if (h) issues.push({ type: 'HIDDEN', actor: a.name, text: `HIDDEN ${a.name} (behind ${h.object.name || h.object.geometry.type} at ${h.distance.toFixed(1)})` });
       }
       if (!anyOn) return; // clipping nobody can see is not a problem
       const seated = Math.abs(a.legL?.rotation.x || 0) > 1.2; // sitting or kneeling: never slide them off the seat
-      const shrink = boxes[k].clone().expandByScalar(-0.25);
+      const shrink = boxes[k].clone().expandByScalar(-0.25 * U);
       // resting contact (sitting, lying, standing on something): the character is on top and the overlap is thin
-      const resting = (sb, ov) => ov.y <= 0.6 && shrink.min.y >= sb.max.y - 0.65;
+      const resting = (sb, ov) => ov.y <= 0.6 * U && shrink.min.y >= sb.max.y - 0.65 * U;
       // a held prop sits entirely inside the character's own outline: not clipping
-      const held = (sb) => boxes[k].clone().expandByScalar(0.3).containsBox(sb);
-      for (const [o, sb] of S) if (shrink.intersectsBox(sb)) { const ov = shrink.clone().intersect(sb).getSize(new THREE.Vector3()); if (Math.min(ov.x, ov.y, ov.z) > 0.15 && !resting(sb, ov) && !held(sb)) { issues.push({ type: 'CLIP', actor: a.name, other: 'box', mtv: seated ? null : mtv(shrink, sb), text: `CLIP ${a.name} into ${o.name || 'box'} (${ov.toArray().map((v) => v.toFixed(1)).join('x')})` }); break; } }
-      for (let j = k + 1; j < vis.length; j++) { const B = boxes[j].clone().expandByScalar(-0.25); const ov = shrink.clone().intersect(B); if (!ov.isEmpty()) { const s = ov.getSize(new THREE.Vector3()); if (Math.min(s.x, s.y, s.z) > 0.35) issues.push({ type: 'CLIP', actor: vis[j].name, other: a.name, mtv: mtv(B, shrink), text: `CLIP ${a.name} into ${vis[j].name}` }); } }
+      const held = (sb) => boxes[k].clone().expandByScalar(0.3 * U).containsBox(sb);
+      for (const [o, sb] of S) if (shrink.intersectsBox(sb)) { const ov = shrink.clone().intersect(sb).getSize(new THREE.Vector3()); if (Math.min(ov.x, ov.y, ov.z) > 0.15 * U && !resting(sb, ov) && !held(sb)) { issues.push({ type: 'CLIP', actor: a.name, other: 'box', mtv: seated ? null : mtv(shrink, sb), text: `CLIP ${a.name} into ${o.name || 'box'} (${ov.toArray().map((v) => v.toFixed(1)).join('x')})` }); break; } }
+      for (let j = k + 1; j < vis.length; j++) { const B = boxes[j].clone().expandByScalar(-0.25 * U); const ov = shrink.clone().intersect(B); if (!ov.isEmpty()) { const s = ov.getSize(new THREE.Vector3()); if (Math.min(s.x, s.y, s.z) > 0.35 * U) issues.push({ type: 'CLIP', actor: vis[j].name, other: a.name, mtv: mtv(B, shrink), text: `CLIP ${a.name} into ${vis[j].name}` }); } }
     });
     if (vis.length && !onCount) issues.push({ type: 'ALL_OFFSCREEN', text: 'ALL_OFFSCREEN (no character in frame)' });
     // framing: tallest on-screen character as a fraction of the frame height (house rule 10)

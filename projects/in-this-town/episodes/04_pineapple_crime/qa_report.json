@@ -23,33 +23,6 @@
    ]
   },
   {
-   "shot": 1,
-   "t": 1.03,
-   "issues": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3",
-    "OFFSCREEN folk5"
-   ]
-  },
-  {
-   "shot": 1,
-   "t": 2.01,
-   "issues": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3",
-    "OFFSCREEN folk5"
-   ]
-  },
-  {
-   "shot": 1,
-   "t": 2.98,
-   "issues": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3",
-    "OFFSCREEN folk5"
-   ]
-  },
-  {
    "shot": 3,
    "t": 6.68,
    "issues": [
@@ -77,6 +50,7 @@
    "shot": 4,
    "t": 8.87,
    "issues": [
+    "OFFSCREEN marco",
     "OFFSCREEN folk2"
    ]
   },
@@ -98,42 +72,48 @@
    "shot": 12,
    "t": 23.48,
    "issues": [
-    "OFFSCREEN cop0"
+    "OFFSCREEN cop0",
+    "OFFSCREEN cop1"
    ]
   },
   {
    "shot": 12,
    "t": 24.17,
    "issues": [
-    "OFFSCREEN cop0"
+    "OFFSCREEN cop0",
+    "OFFSCREEN cop1"
    ]
   },
   {
    "shot": 12,
    "t": 24.86,
    "issues": [
-    "OFFSCREEN cop0"
+    "OFFSCREEN cop0",
+    "OFFSCREEN cop1"
    ]
   },
   {
    "shot": 15,
    "t": 28.38,
    "issues": [
-    "OFFSCREEN cop0"
+    "OFFSCREEN cop0",
+    "OFFSCREEN cop1"
    ]
   },
   {
    "shot": 15,
    "t": 28.89,
    "issues": [
-    "OFFSCREEN cop0"
+    "OFFSCREEN cop0",
+    "OFFSCREEN cop1"
    ]
   },
   {
    "shot": 15,
    "t": 29.39,
    "issues": [
-    "OFFSCREEN cop0"
+    "OFFSCREEN cop0",
+    "OFFSCREEN cop1"
    ]
   },
   {
@@ -157,64 +137,65 @@
    "t": 34,
    "issues": [
     "OFFSCREEN folk2",
-    "OFFSCREEN folk3"
+    "OFFSCREEN folk3",
+    "OFFSCREEN folk4"
    ]
   }
  ],
  "framing": [
   {
    "shot": 0,
-   "frac": 0.11177438995371325,
+   "frac": 0.03168629856690122,
    "close": false
   },
   {
    "shot": 1,
-   "frac": 0.11126435926791939,
+   "frac": 0,
    "close": false
   },
   {
    "shot": 2,
-   "frac": 0.2373414288920084,
+   "frac": 0.1238647446638673,
    "close": false
   },
   {
    "shot": 3,
-   "frac": 0.39918963412266245,
+   "frac": 0.2775901805975846,
    "close": false
   },
   {
    "shot": 4,
-   "frac": 0.19757959379698087,
+   "frac": 0.09999685592852242,
    "close": false
   },
   {
    "shot": 5,
-   "frac": 0.39286212379418395,
+   "frac": 0.2890094519541294,
    "close": false
   },
   {
    "shot": 6,
-   "frac": 0.2032578389289209,
+   "frac": 0.1242618962397862,
    "close": false
   },
   {
    "shot": 7,
-   "frac": 0.21922874686341004,
+   "frac": 0.1564721855037926,
    "close": false
   },
   {
    "shot": 8,
-   "frac": 0.25392483631529494,
+   "frac": 0.1359631556887671,
    "close": false
   },
   {
    "shot": 9,
-   "frac": 0.193034930213003,
+   "frac": 0.13767968504242042,
    "close": false
   },
   {
    "shot": 10,
-   "frac": 0.3781651730167789,
+   "frac": 0.2173305171417759,
    "close": false
   },
   {
@@ -224,37 +205,37 @@
   },
   {
    "shot": 12,
-   "frac": 0.22457210056979723,
+   "frac": 0.18835140357866215,
    "close": false
   },
   {
    "shot": 13,
-   "frac": 0.6971728070236898,
+   "frac": 0.46651458265390416,
    "close": true
   },
   {
    "shot": 14,
-   "frac": 0.27685881522920935,
+   "frac": 0.19629734540176788,
    "close": false
   },
   {
    "shot": 15,
-   "frac": 0.2606597571322779,
+   "frac": 0.26891632206788596,
    "close": false
   },
   {
    "shot": 16,
-   "frac": 0.23821139871196084,
+   "frac": 0.20381966676281263,
    "close": false
   },
   {
    "shot": 17,
-   "frac": 0.201211599967481,
+   "frac": 0.16267442453093656,
    "close": false
   },
   {
    "shot": 18,
-   "frac": 0.41349084223540766,
+   "frac": 0.4318500799069978,
    "close": false
   }
  ]

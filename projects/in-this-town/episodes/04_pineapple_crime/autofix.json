@@ -1,300 +1,43 @@
 {
  "note": "written by kit/autofix.mjs; delete to undo",
  "shots": {
-  "0": {
-   "actors": {
-    "folk4": [
-     -0.59,
-     0,
-     0
-    ]
-   }
-  },
-  "1": {
-   "actors": {
-    "folk4": [
-     -0.59,
-     0,
-     0
-    ]
-   }
-  },
-  "2": {
-   "actors": {
-    "cop1": [
-     0,
-     0,
-     -1.54
-    ]
-   }
-  },
-  "3": {
-   "cam": [
-    1.16,
-    0.12,
-    0.95
-   ]
-  },
-  "5": {
-   "cam": [
-    0.61,
-    0.25,
-    1.35
-   ]
-  },
   "6": {
    "cam": [
-    -5.72,
-    -1.31,
-    -8.09
-   ],
-   "actors": {
-    "cop1": [
-     0,
-     0,
-     1.13
-    ],
-    "cop2": [
-     0,
-     0,
-     2.26
-    ],
-    "cop0": [
-     2.19,
-     0,
-     0
-    ]
-   }
-  },
-  "7": {
-   "cam": [
-    -1.53,
+    -0.15,
     0,
-    1.29
-   ],
-   "look": [
-    -1.53,
-    0,
-    1.29
-   ],
-   "actors": {
-    "cop0": [
-     1.3,
-     0,
-     0
-    ],
-    "cop1": [
-     1.3,
-     0,
-     0
-    ]
-   }
-  },
-  "8": {
-   "cam": [
-    -5.21,
-    -0.58,
-    1.62
-   ],
-   "actors": {
-    "cop1": [
-     0,
-     0,
-     -0.73
-    ]
-   }
+    0.13
+   ]
   },
   "9": {
    "actors": {
-    "cop1": [
-     -1.25,
-     0,
-     0
-    ],
     "cop0": [
-     -1.44,
      0,
-     0
+     0,
+     0.22
+    ],
+    "cop1": [
+     0,
+     0,
+     -0.22
     ]
    }
   },
-  "10": {
-   "cam": [
-    -3.91,
-    -0.99,
-    5.72
-   ]
-  },
-  "12": {
-   "cam": [
-    -1.57,
-    0,
-    1.24
-   ],
-   "look": [
-    -1.57,
-    0,
-    1.24
-   ]
-  },
-  "13": {
-   "cam": [
-    -0.6,
-    0,
-    -0.8
-   ],
-   "look": [
-    -0.6,
-    0,
-    -0.8
-   ]
-  },
-  "14": {
-   "cam": [
-    5.85,
-    1.59,
-    -7.95
-   ]
-  },
-  "16": {
-   "cam": [
-    3.59,
-    0.55,
-    -5.98
-   ]
-  },
   "18": {
-   "actors": {
-    "chiefChef": [
-     0,
-     0,
-     1.21
-    ]
-   },
    "cam": [
-    -1.95,
-    1.59,
-    4.32
+    -0.04,
+    0.16,
+    0.47
    ]
   }
  },
  "log": [
   {
-   "shot": 0,
-   "before": [
-    "OFFSCREEN folk2",
-    "CLIP folk4 into box"
-   ],
-   "changes": [
-    "move folk4 -0.59,0,0"
-   ],
-   "after": [
-    "OFFSCREEN folk2"
-   ]
-  },
-  {
-   "shot": 1,
-   "before": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3",
-    "CLIP folk4 into box",
-    "OFFSCREEN folk5"
-   ],
-   "changes": [
-    "move folk4 -0.59,0,0"
-   ],
-   "after": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3",
-    "OFFSCREEN folk5"
-   ]
-  },
-  {
-   "shot": 2,
-   "before": [
-    "CLIP cop0 into cop1"
-   ],
-   "changes": [
-    "move cop1 0,0,-1.54"
-   ],
-   "after": []
-  },
-  {
-   "shot": 3,
-   "before": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3",
-    "TOO_TIGHT"
-   ],
-   "changes": [
-    "camera back 1.5 (framing)"
-   ],
-   "after": [
-    "OFFSCREEN folk2",
-    "OFFSCREEN folk3"
-   ]
-  },
-  {
-   "shot": 5,
-   "before": [
-    "TOO_TIGHT"
-   ],
-   "changes": [
-    "camera back 1.5 (framing)"
-   ],
-   "after": []
-  },
-  {
    "shot": 6,
    "before": [
-    "CAM_INSIDE",
-    "HIDDEN cop0",
-    "CLIP cop0 into cop1",
-    "HIDDEN cop1",
-    "CLIP cop1 into cop2",
-    "HIDDEN cop2",
-    "CLIP cop0 into box"
-   ],
-   "changes": [
-    "camera forward 10",
-    "move cop1 0,0,1.13",
-    "move cop2 0,0,2.26",
-    "move cop0 2.19,0,0"
-   ],
-   "after": []
-  },
-  {
-   "shot": 7,
-   "before": [
-    "CAM_INSIDE",
-    "BLOCKED",
-    "HIDDEN owner",
-    "CLIP owner into cop0",
-    "CLIP owner into cop1",
-    "HIDDEN cop0",
     "HIDDEN cop1"
    ],
    "changes": [
-    "camera slide -2",
-    "move cop0 1.3,0,0",
-    "move cop1 1.3,0,0"
-   ],
-   "after": []
-  },
-  {
-   "shot": 8,
-   "before": [
-    "CAM_INSIDE",
-    "HIDDEN cop0",
-    "CLIP cop0 into cop1",
-    "HIDDEN cop1",
-    "BLOCKED"
-   ],
-   "changes": [
-    "camera forward 4",
-    "move cop1 0,0,-0.73",
-    "camera orbit -1.2",
-    "camera orbit -2.4"
+    "camera orbit -0.20"
    ],
    "after": []
   },
@@ -305,86 +48,18 @@
     "CLIP cop1 into box"
    ],
    "changes": [
-    "move cop1 -1.25,0,0",
-    "move cop0 -1.44,0,0"
-   ],
-   "after": []
-  },
-  {
-   "shot": 10,
-   "before": [
-    "CAM_INSIDE",
-    "HIDDEN marco",
-    "HIDDEN chief"
-   ],
-   "changes": [
-    "camera forward 7"
-   ],
-   "after": []
-  },
-  {
-   "shot": 12,
-   "before": [
-    "CAM_INSIDE",
-    "BLOCKED",
-    "HIDDEN chief",
-    "OFFSCREEN cop0",
-    "OFFSCREEN cop1"
-   ],
-   "changes": [
-    "camera slide -2"
-   ],
-   "after": [
-    "OFFSCREEN cop0"
-   ]
-  },
-  {
-   "shot": 13,
-   "before": [
-    "CAM_INSIDE"
-   ],
-   "changes": [
-    "camera slide 1"
-   ],
-   "after": []
-  },
-  {
-   "shot": 14,
-   "before": [
-    "CAM_INSIDE",
-    "BLOCKED",
-    "HIDDEN folk0",
-    "HIDDEN folk1",
-    "HIDDEN folk2",
-    "HIDDEN folk3",
-    "HIDDEN folk4",
-    "HIDDEN folk5"
-   ],
-   "changes": [
-    "camera forward 10"
-   ],
-   "after": []
-  },
-  {
-   "shot": 16,
-   "before": [
-    "CAM_INSIDE",
-    "BLOCKED"
-   ],
-   "changes": [
-    "camera forward 7"
+    "move cop0 0,0,0.22",
+    "move cop1 0,0,-0.22"
    ],
    "after": []
   },
   {
    "shot": 18,
    "before": [
-    "CLIP chiefChef into box",
     "TOO_TIGHT"
    ],
    "changes": [
-    "move chiefChef 0,0,1.21",
-    "camera back 5 (framing)"
+    "camera back 0.5 (framing)"
    ],
    "after": []
   }

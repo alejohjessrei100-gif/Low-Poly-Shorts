@@ -25,7 +25,7 @@ const allow = loadAllow(ep);
 
 const { page, close } = await openEpisode(ep);
 await page.evaluate((s) => { window.AUTOFIX = { shots: s }; window.__NO_RENDER = true; }, prev.shots || {});
-const { st, end, rules } = await page.evaluate(() => ({ st: window.SHOT_TIMES, end: window.END, rules: window.HOUSE_RULES || null }));
+const { st, end, rules, U } = await page.evaluate(() => ({ st: window.SHOT_TIMES, end: window.END, rules: window.HOUSE_RULES || null, U: window.QA.scale || 1 }));
 
 const add = (a, b, k = 1) => [0, 1, 2].map((j) => (a?.[j] || 0) + (b?.[j] || 0) * k);
 const len = (v) => Math.hypot(...(v || [0, 0, 0]));
@@ -48,15 +48,15 @@ function candidates(fix, ev) {
   const { fwd, right } = ev.info.cam;
   const cam = (d, look = null, why) => out.push({ why, f: { ...clone(fix), cam: round(add(fix.cam, d)), ...(look ? { look: round(add(fix.look, look)) } : {}) } });
   if (types.has('CAM_INSIDE') || types.has('BLOCKED')) {
-    for (const d of [0.6, 1.2, 2, 3, 4.5, 6]) cam(fwd.map((v) => -v * d), null, `camera back ${d}`);
-    for (const d of [0.8, 1.6, 3]) cam([0, d, 0], null, `camera up ${d}`);
-    for (const s of [-2, -1, 1, 2]) cam(right.map((v) => v * s), right.map((v) => v * s), `camera slide ${s}`);
-    for (const d of [2, 4, 7, 10]) cam(fwd.map((v) => v * d), null, `camera forward ${d}`); // out of a building, toward the subject
+    for (const d of [0.6, 1.2, 2, 3, 4.5, 6].map((v) => v * U)) cam(fwd.map((v) => -v * d), null, `camera back ${d.toFixed(2)}`);
+    for (const d of [0.8, 1.6, 3].map((v) => v * U)) cam([0, d, 0], null, `camera up ${d.toFixed(2)}`);
+    for (const s of [-2, -1, 1, 2].map((v) => v * U)) cam(right.map((v) => v * s), right.map((v) => v * s), `camera slide ${s}`);
+    for (const d of [2, 4, 7, 10].map((v) => v * U)) cam(fwd.map((v) => v * d), null, `camera forward ${d.toFixed(2)}`); // out of a building, toward the subject
   }
-  if (types.has('TOO_TIGHT')) for (const d of [1.5, 3, 5, 8, 12]) cam(fwd.map((v) => -v * d), null, `camera back ${d} (framing)`);
+  if (types.has('TOO_TIGHT')) for (const d of [1.5, 3, 5, 8, 12].map((v) => v * U)) cam(fwd.map((v) => -v * d), null, `camera back ${d} (framing)`);
   if (types.has('HIDDEN')) {
-    for (const s of [-2.4, -1.2, -0.6, 0.6, 1.2, 2.4]) cam(right.map((v) => v * s), null, `camera orbit ${s}`);
-    for (const d of [1, 2.5]) cam([0, d, 0], null, `camera up ${d}`);
+    for (const s of [-2.4, -1.2, -0.6, 0.6, 1.2, 2.4].map((v) => v * U)) cam(right.map((v) => v * s), null, `camera orbit ${s.toFixed(2)}`);
+    for (const d of [1, 2.5].map((v) => v * U)) cam([0, d, 0], null, `camera up ${d}`);
   }
   for (const x of ev.issues.filter((x) => x.type === 'CLIP' && x.mtv)) {
     for (const k of [1, 1.6]) {
@@ -69,7 +69,7 @@ function candidates(fix, ev) {
     out.push({ why: 'aim at the characters', f: { ...clone(fix), look: round(add(fix.look, d)) } });
     out.push({ why: 'aim at the characters, wider lens', f: { ...clone(fix), look: round(add(fix.look, d)), fov: (fix.fov || 0) + 8 } });
   }
-  return out.filter((c) => len(c.f.cam) <= MAX_CAM && Object.values(c.f.actors || {}).every((v) => len(v) <= MAX_ACTOR));
+  return out.filter((c) => len(c.f.cam) <= MAX_CAM * U && Object.values(c.f.actors || {}).every((v) => len(v) <= MAX_ACTOR * U));
 }
 
 const shots = clone(prev.shots), log = [];
