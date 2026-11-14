@@ -9,7 +9,7 @@ import * as P from '../../kit/props.js';
 import { loadFixes, setShot, offsetActor, applyCamera } from '../../kit/autofix-runtime.js';
 
 await document.fonts.load('800 40px Poppins');
-const C = createCore(document.getElementById('c'));
+const C = createCore(document.getElementById('c'), { look: window.LOOK || 'blender' });
 const { THREE, scene, camera, composer, grade, setLight } = C;
 scene.add(camera);
 

@@ -5,18 +5,22 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 // RENDER_SCALE (set before import) renders smaller, e.g. 2/3 = 720x1280 for phones
 const SCALE = globalThis.RENDER_SCALE || 1;
 export const W = Math.round(1080 * SCALE), H = Math.round(1920 * SCALE);
 
-export function createCore(canvas) {
+// look: 'classic' (episodes 1-3 as published) or 'blender' (AgX colour, sky image lighting, ambient occlusion, bloom)
+export function createCore(canvas, { look = 'classic' } = {}) {
+  const BL = look === 'blender';
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(1);
   renderer.setSize(W, H, false);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.toneMapping = BL ? THREE.AgXToneMapping : THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.0;
 
   const scene = new THREE.Scene();
@@ -50,6 +54,8 @@ export function createCore(canvas) {
   composer.setPixelRatio(1);
   composer.setSize(W, H);
   composer.addPass(new RenderPass(scene, camera));
+  let gtao = null;
+  if (BL) { gtao = new GTAOPass(scene, camera, W, H); gtao.blendIntensity = 0.85; gtao.updateGtaoMaterial({ radius: 1.6, distanceExponent: 1.4, thickness: 1.2, scale: 1.0 }); composer.addPass(gtao); }
   const bokeh = new BokehPass(scene, camera, { focus: 10, aperture: 0.0, maxblur: 0.0 });
   // in-focus zone: nothing within +-range of the focus distance blurs (the stock shader blurs everything
   // in proportion to its distance from the focus plane, which softened the subject's own face)
@@ -80,6 +86,7 @@ export function createCore(canvas) {
         o = mix(o, vec3(1.), flash);
         gl_FragColor = vec4(o, c.a); }`,
   });
+  if (BL) composer.addPass(new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.22, 0.35, 1.02));
   composer.addPass(grade);
   composer.addPass(new OutputPass());
 
@@ -96,6 +103,18 @@ export function createCore(canvas) {
     indoorNight: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x5a7ad0, hemiG: 0x2a2060, hemi: 1.15, sun: 0.35, sunC: 0x9fb8ff, fog: 0x101a40, exp: 1.2 },
     plant: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x7a9ae8, hemiG: 0x3a2a6a, hemi: 1.5, sun: 0.4, sunC: 0x9fb8ff, fog: 0x0e1638, exp: 1.25 },
   };
+  // sky image lighting (like Blender's World HDRI), generated from the preset's own sky colours, cached per preset
+  const pmrem = BL ? new THREE.PMREMGenerator(renderer) : null, ENV = {};
+  function envFor(name, p) {
+    if (ENV[name]) return ENV[name];
+    const es = new THREE.Scene();
+    es.add(new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide,
+      uniforms: { top: { value: new THREE.Color(p.top) }, bot: { value: new THREE.Color(p.bot) }, gnd: { value: new THREE.Color(p.hemiG) } },
+      vertexShader: 'varying vec3 vp; void main(){ vp = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }',
+      fragmentShader: 'uniform vec3 top; uniform vec3 bot; uniform vec3 gnd; varying vec3 vp; void main(){ float h = normalize(vp).y; vec3 c = h > 0. ? mix(bot, top, pow(h, .7)) : mix(bot, gnd * .8, clamp(-h * 3., 0., 1.)); gl_FragColor = vec4(c, 1.); }' })));
+    const disc = new THREE.Mesh(new THREE.SphereGeometry(4, 16, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color(p.sunC).multiplyScalar(6) })); disc.position.set(-18, 40, -30).setLength(45); es.add(disc);
+    ENV[name] = pmrem.fromScene(es, 0.03).texture; return ENV[name];
+  }
   function setLight(name, center = [0, 0, 0], sunDir = [-18, 40, -30]) {
     const p = P[name];
     sky.material.uniforms.top.value.set(p.top); sky.material.uniforms.bot.value.set(p.bot);
@@ -105,10 +124,11 @@ export function createCore(canvas) {
     sun.position.set(center[0] + sunDir[0], center[1] + sunDir[1], center[2] + sunDir[2]);
     scene.fog.color.set(p.fog); scene.fog.near = p.fogNear || 150; scene.fog.far = p.fogFar || 460;
     renderer.toneMappingExposure = p.exp;
+    if (BL) { scene.environment = envFor(name, p); scene.environmentIntensity = 0.35; hemi.intensity = p.hemi * 0.5; sun.intensity = p.sun * 1.1; renderer.toneMappingExposure = p.exp * 0.9; grade.uniforms.lift.value.set(0.03, 0.025, 0.05); grade.uniforms.sat.value = 1.45; }
     sky.position.set(center[0], 0, center[2]);
   }
 
-  return { THREE, renderer, scene, camera, composer, bokeh, sun, hemi, sky, grade, setLight };
+  return { THREE, renderer, scene, camera, composer, bokeh, sun, hemi, sky, grade, setLight, gtao, look };
 }
 
 // canvas texture helper

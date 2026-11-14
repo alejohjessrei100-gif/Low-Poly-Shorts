@@ -2,7 +2,8 @@
 
 Set by the channel owner. Every episode follows these.
 
-1. **Length 45–60 seconds.** Script about 160–200 words (the +4 / 1.25x voice runs about 3.5 words per second).
+1. **Length 30–45 seconds** (from episode 4). Script about 100–150 words (the +4 / 1.25x voice runs about 3.4 words per
+   second).
 2. **No blur.** Depth of field is switched off in `kit/core.js`; everything in frame stays sharp.
 3. **Check and auto-fix before rendering.** Before any video render:
    1. `node kit/autofix.mjs episodes/<ep>`: finds camera-in-wall, blocked frames, hidden characters and clipping,
@@ -36,6 +37,17 @@ Set by the channel owner. Every episode follows these.
     real 3D window frames, doors, balconies and roof detail, and ambient life (background crowd, birds,
     vehicles or boats, smoke, flags, setting particles). `clipcheck` warns `DETAIL_LOW` when a non-close shot
     has too little in view. Static detail is baked, moving detail is instanced, so phones stay fast.
+11. **Hook = absurd + debate bait.** The first line must be a rule that is both absurd and something people will
+    argue about in the comments (take a side, say it's unfair, say they'd break it): kids vote and adults don't,
+    pineapple pizza is a crime, kids grade their parents. Keep it harmless: no real politics, religion, real people,
+    slurs, or anything dangerous to copy.
+12. **Look.** New episodes use `createCore(canvas, { look: 'blender' })`: AgX colour, sky image lighting, ambient
+    occlusion and bloom on lamps and glowing things.
+13. **Meme sound effects** may come from myinstants.com when they fit the beat (one or two per video, on the joke).
+    Most clips there are user uploads of other people's audio, so they can trigger copyright claims or demonetize a
+    video. Prefer our own synthesized sound-alikes in `kit/sfx.py`; list any downloaded clip in the episode's
+    `sfx_sources.txt` so it can be swapped out if a platform flags it.
+
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
 - Ep 2 "Lie Balloons": seaside harbor town (`kit/harbor.js`): gabled row houses, cobblestones, quay, boats,
