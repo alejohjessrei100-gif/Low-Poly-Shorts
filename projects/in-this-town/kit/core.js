@@ -98,6 +98,7 @@ export function createCore(canvas, { look = 'classic' } = {}) {
     seaside: { top: 0x2f8ff0, bot: 0xd6efff, hemiS: 0xd8ecff, hemiG: 0xa08fd0, hemi: 1.05, sun: 3.1, sunC: 0xfff2dc, fog: 0xcfe9ff, exp: 1.0 },
     alpine: { top: 0x3f8fe8, bot: 0xe2f1ff, hemiS: 0xe6f2ff, hemiG: 0x9a90c8, hemi: 1.1, sun: 3.0, sunC: 0xfff4e4, fog: 0xdcecfa, exp: 1.0, fogNear: 220, fogFar: 1500 },
     storm: { top: 0x3a4a6a, bot: 0x9aa8bf, hemiS: 0xb8c4dc, hemiG: 0x5a5080, hemi: 1.0, sun: 1.4, sunC: 0xdfe6ff, fog: 0xa4b0c4, exp: 1.0, fogNear: 160, fogFar: 1000 },
+    neon: { top: 0x0e0822, bot: 0x3a1a5a, hemiS: 0x7a6ae0, hemiG: 0x2a1a40, hemi: 1.0, sun: 0.6, sunC: 0x9fb0ff, fog: 0x24163e, exp: 1.15, fogNear: 70, fogFar: 420 },
     night: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x4a68c0, hemiG: 0x221a50, hemi: 0.95, sun: 0.55, sunC: 0x9fb8ff, fog: 0x15245a, exp: 1.05 },
     indoor: { top: 0x3d9bf0, bot: 0xc4e6ff, hemiS: 0xfff1de, hemiG: 0xa08fd0, hemi: 1.2, sun: 1.6, sunC: 0xfff0d8, fog: 0xbfe2ff, exp: 1.0 },
     indoorNight: { top: 0x070d2a, bot: 0x1d3270, hemiS: 0x5a7ad0, hemiG: 0x2a2060, hemi: 1.15, sun: 0.35, sunC: 0x9fb8ff, fog: 0x101a40, exp: 1.2 },

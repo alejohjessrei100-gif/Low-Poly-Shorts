@@ -50,9 +50,10 @@ function home(p, x, z, yaw) {
 // merge every static mesh under `group` by material, keeping position/normal/uv
 export function bake(group) {
   group.updateMatrixWorld(true);
-  const buckets = new Map();
+  const buckets = new Map(), keepAsIs = [];
   group.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh) return;
+    if (Array.isArray(o.material)) { keepAsIs.push(o); return; } // multi-material meshes (facades) are kept, not merged
     const m = o.material, key = [m.type, m.color?.getHex(), m.emissive?.getHex(), m.emissiveIntensity, m.map?.uuid, m.roughness, m.metalness, m.transparent].join('|');
     let g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
     g.applyMatrix4(o.matrixWorld);
@@ -65,6 +66,7 @@ export function bake(group) {
   for (const { m, gs } of buckets.values()) {
     const mesh = new THREE.Mesh(mergeGeometries(gs), m); mesh.castShadow = mesh.receiveShadow = true; out.add(mesh);
   }
+  for (const o of keepAsIs) { const m = new THREE.Mesh(o.geometry, o.material); o.matrixWorld.decompose(m.position, m.quaternion, m.scale); m.castShadow = o.castShadow; m.receiveShadow = o.receiveShadow; out.add(m); }
   return out;
 }
 
