@@ -1,0 +1,40 @@
+{
+ "_": "Intended: shots with nobody in frame (the porch insert, the cutaway, the road, the melted patch, the empty town); Todd inside the hole touches its walls and the root; Eric's arms reach into the hole. Background townsfolk in the aerials pass behind houses; grandma runs in from off-screen in shot 15.",
+ "3": [
+  "OFFSCREEN",
+  "HIDDEN folk"
+ ],
+ "4": [
+  "ALL_OFFSCREEN"
+ ],
+ "6": [
+  "HIDDEN todd",
+  "OFFSCREEN todd"
+ ],
+ "7": [
+  "ALL_OFFSCREEN"
+ ],
+ "8": [
+  "ALL_OFFSCREEN"
+ ],
+ "9": [
+  "ALL_OFFSCREEN"
+ ],
+ "17": [
+  "ALL_OFFSCREEN"
+ ],
+ "18": [
+  "ALL_OFFSCREEN"
+ ],
+ "*": [
+  "CLIP todd into",
+  "HIDDEN todd"
+ ],
+ "16": [
+  "HIDDEN folk",
+  "OFFSCREEN"
+ ],
+ "15": [
+  "OFFSCREEN grandma"
+ ]
+}

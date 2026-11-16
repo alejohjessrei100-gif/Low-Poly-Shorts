@@ -432,6 +432,44 @@ def yawn(d=1.0):
     f = 520 * (0.55 + 0.45 * np.exp(-2.5 * t))
     return lp(np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(t), 0.1, 0.4), 900)
 
+
+def hiss(d=3.0):
+    """steam hissing out of the ground"""
+    t = t_(d)
+    x = hp(lp(noise(d), 7000), 2500) * (0.75 + 0.25 * np.sin(2 * np.pi * 0.7 * t))
+    return x * env(len(t), 0.4, 0.6)
+
+
+def crumble(d=1.6):
+    """ground giving way: low crack, then falling dirt and stones"""
+    t = t_(d)
+    x = lp(noise(d), 160) * np.exp(-2.5 * t) * 2.5
+    x[: int(0.05 * SR)] += hp(noise(0.05), 800) * 1.5
+    for i in range(40):
+        tt = t_(0.05)
+        s = lp(noise(0.05), 900 + 1500 * rng.random()) * np.exp(-60 * tt) * (0.4 + rng.random())
+        j = int((0.05 + rng.random() * (d - 0.2)) * SR)
+        x[j:j + len(s)] += s
+    return np.tanh(x)
+
+
+def crackle(d=3.0):
+    """fire crackling underground"""
+    t = t_(d)
+    x = lp(noise(d), 300) * 0.25 * (0.6 + 0.4 * np.sin(2 * np.pi * 0.5 * t))
+    for i in range(int(d * 26)):
+        tt = t_(0.012)
+        s = hp(noise(0.012), 1800) * np.exp(-300 * tt) * rng.random()
+        j = int(rng.random() * (d - 0.02) * SR)
+        x[j:j + len(s)] += s
+    return x * env(len(t), 0.3, 0.5)
+
+
+def gasp(d=0.5):
+    """breathy inhale"""
+    t = t_(d)
+    return hp(lp(noise(d), 3500), 700) * np.sin(np.pi * t / d) ** 2 * 0.8
+
 KINDS = {k: v for k, v in globals().items() if callable(v) and k not in ('t_', 'env', 'lp', 'hp', 'noise', 'sweep', 'main', 'load')}
 
 

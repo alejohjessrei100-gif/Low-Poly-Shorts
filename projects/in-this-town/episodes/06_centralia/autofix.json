@@ -1,0 +1,141 @@
+{
+ "note": "written by kit/autofix.mjs; delete to undo",
+ "shots": {
+  "2": {
+   "cam": [
+    0.42,
+    0.1,
+    1.61
+   ]
+  },
+  "6": {
+   "cam": [
+    0.4,
+    -0.05,
+    0.3
+   ]
+  },
+  "9": {
+   "cam": [
+    -0.51,
+    0,
+    0.43
+   ],
+   "look": [
+    -0.51,
+    0,
+    0.43
+   ]
+  },
+  "11": {
+   "cam": [
+    0,
+    0.27,
+    0
+   ]
+  },
+  "14": {
+   "cam": [
+    0.66,
+    0.18,
+    0.73
+   ]
+  },
+  "15": {
+   "cam": [
+    2.01,
+    0.53,
+    1.67
+   ]
+  }
+ },
+ "log": [
+  {
+   "shot": 2,
+   "before": [
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 1.6666666666666665 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 3,
+   "before": [
+    "HIDDEN folk1"
+   ],
+   "changes": [],
+   "after": [
+    "HIDDEN folk1"
+   ]
+  },
+  {
+   "shot": 6,
+   "before": [
+    "ALL_OFFSCREEN",
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 0.5 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 9,
+   "before": [
+    "CAM_INSIDE",
+    "BLOCKED"
+   ],
+   "changes": [
+    "camera slide -0.6666666666666666"
+   ],
+   "after": []
+  },
+  {
+   "shot": 11,
+   "before": [
+    "BLOCKED"
+   ],
+   "changes": [
+    "camera up 0.27"
+   ],
+   "after": []
+  },
+  {
+   "shot": 14,
+   "before": [
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 1 (framing)"
+   ],
+   "after": []
+  },
+  {
+   "shot": 15,
+   "before": [
+    "OFFSCREEN grandma",
+    "TOO_TIGHT"
+   ],
+   "changes": [
+    "camera back 2.6666666666666665 (framing)"
+   ],
+   "after": [
+    "OFFSCREEN grandma"
+   ]
+  },
+  {
+   "shot": 16,
+   "before": [
+    "HIDDEN folk1",
+    "HIDDEN folk3"
+   ],
+   "changes": [],
+   "after": [
+    "HIDDEN folk1",
+    "HIDDEN folk3"
+   ]
+  }
+ ]
+}

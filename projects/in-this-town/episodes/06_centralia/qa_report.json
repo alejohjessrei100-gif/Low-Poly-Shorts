@@ -1,0 +1,109 @@
+{
+ "bad": 0,
+ "report": [
+  {
+   "shot": 12,
+   "t": 25.94,
+   "issues": [
+    "OFFSCREEN eric"
+   ]
+  }
+ ],
+ "framing": [
+  {
+   "shot": 0,
+   "frac": 0.3691173233206393,
+   "close": false
+  },
+  {
+   "shot": 1,
+   "frac": 0.1951042615115481,
+   "close": false
+  },
+  {
+   "shot": 2,
+   "frac": 0.3792876644244478,
+   "close": false
+  },
+  {
+   "shot": 3,
+   "frac": 0.019788541293537965,
+   "close": false
+  },
+  {
+   "shot": 4,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 5,
+   "frac": 0.05704066007214645,
+   "close": false
+  },
+  {
+   "shot": 6,
+   "frac": 0.381764537460211,
+   "close": false
+  },
+  {
+   "shot": 7,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 8,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 9,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 10,
+   "frac": 0.38706204689766266,
+   "close": true
+  },
+  {
+   "shot": 11,
+   "frac": 0.4234795553663262,
+   "close": true
+  },
+  {
+   "shot": 12,
+   "frac": 0.24051764541033038,
+   "close": false
+  },
+  {
+   "shot": 13,
+   "frac": 0.09627026718385027,
+   "close": true
+  },
+  {
+   "shot": 14,
+   "frac": 0.40064267222861893,
+   "close": false
+  },
+  {
+   "shot": 15,
+   "frac": 0.4218243266693391,
+   "close": false
+  },
+  {
+   "shot": 16,
+   "frac": 0.022641763307800405,
+   "close": false
+  },
+  {
+   "shot": 17,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 18,
+   "frac": 0,
+   "close": false
+  }
+ ]
+}
