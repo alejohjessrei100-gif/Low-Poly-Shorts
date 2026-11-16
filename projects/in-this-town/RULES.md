@@ -50,15 +50,21 @@ Set by the channel owner. Every episode follows these.
 14. **Real-world scale.** New sets are built in metres: people 1.75 m, floors 3.2 m, doors 2.3 m, street lamps 6 m,
     cars at their real length (4.5-5 m), a two-lane road 10 m. Characters must look small next to buildings, never
     taller than a door. Episodes in metres set `window.QA.scale = 1/3` so the QA thresholds match.
-15. **CC0 asset library.** Characters, cars and food come from `assets/cc0/` through `kit/assets.js` (Kenney Blocky
-    Characters, Car Kit and Food Kit, Quaternius; all CC0, credits in `assets/cc0/NOTICE.txt`). Use their real body
-    animations (walk, sprint, idle, sit, emote-yes/no, interact, holding, pick-up, kick...) and vary them from shot to
-    shot; `poseArms()` mixes two clips (walk while carrying). Their faces are printed on, which fits rule 8. The phone
-    page ships each model as `<name>.glb.txt` (base64) because artifact hosting does not serve `.glb`.
+15. **Characters = our classic avatars, at real size.** From episode 6 the cast is the original avatars
+    (`kit/avatar.js`: rounded boxes, drawn faces, hair, hats) through `kit/rig.js`: grown-ups 1.7-1.85 m, kids
+    1.3-1.45 m, animated with named clips (walk, sprint, idle, cheer, emote-yes/no, interact, holding, pick-up, sit,
+    wave, clap, shrug, facepalm...) that keep the feet on the ground; vary them from shot to shot, `poseArms()` mixes
+    two clips. One steady face per line via `c.setFace()` (rule 8). Cars, trees, food and props still come from the
+    CC0 library in `assets/cc0/` via `kit/assets.js` (Kenney, Quaternius; credits in `assets/cc0/NOTICE.txt`); the
+    phone page ships each model as `<name>.glb.txt` (base64) because artifact hosting does not serve `.glb`.
 16. **YouTube title = "In this town, X".** Every upload title starts with "In this town," followed by the rule
     from the hook (e.g. "In this town, nobody gets a phone until 18 📵"). Keep it under about 60 characters,
     at most one emoji. Description: what happens, then the debate question, then the series line. Hashtags: 3-5
     starting with #shorts #viral. Tags: specific to the episode's rule, characters and setting.
+17. **Scripts carry ElevenLabs audio tags.** Every script line that needs a delivery gets a tag in square brackets
+    for the Eleven v3 model: [excited] on the hook, [sarcastic] on the jokes, [whispers] on secrets, [gasps] on the
+    trigger, [laughs] / [sighs] where they fit, [excited] on the payoff. About one tag per sentence or two, never more.
+    Word count (without tags) 110-130, which lands at 30-45 s after the 1.25x speed-up.
 
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
