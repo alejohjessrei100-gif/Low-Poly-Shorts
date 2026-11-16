@@ -55,6 +55,10 @@ Set by the channel owner. Every episode follows these.
     animations (walk, sprint, idle, sit, emote-yes/no, interact, holding, pick-up, kick...) and vary them from shot to
     shot; `poseArms()` mixes two clips (walk while carrying). Their faces are printed on, which fits rule 8. The phone
     page ships each model as `<name>.glb.txt` (base64) because artifact hosting does not serve `.glb`.
+16. **YouTube title = "In this town, X".** Every upload title starts with "In this town," followed by the rule
+    from the hook (e.g. "In this town, nobody gets a phone until 18 📵"). Keep it under about 60 characters,
+    at most one emoji. Description: what happens, then the debate question, then the series line. Hashtags: 3-5
+    starting with #shorts #viral. Tags: specific to the episode's rule, characters and setting.
 
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
