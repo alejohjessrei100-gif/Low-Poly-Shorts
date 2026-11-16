@@ -1,0 +1,178 @@
+{
+ "bad": 0,
+ "report": [
+  {
+   "shot": 1,
+   "t": 1.11,
+   "issues": [
+    "OFFSCREEN maya"
+   ]
+  },
+  {
+   "shot": 2,
+   "t": 3.48,
+   "issues": [
+    "OFFSCREEN grandpa",
+    "OFFSCREEN mom"
+   ]
+  },
+  {
+   "shot": 2,
+   "t": 4.84,
+   "issues": [
+    "OFFSCREEN grandpa",
+    "OFFSCREEN mom"
+   ]
+  },
+  {
+   "shot": 2,
+   "t": 6.19,
+   "issues": [
+    "OFFSCREEN grandpa",
+    "OFFSCREEN mom"
+   ]
+  },
+  {
+   "shot": 3,
+   "t": 6.59,
+   "issues": [
+    "OFFSCREEN grocer",
+    "OFFSCREEN mom"
+   ]
+  },
+  {
+   "shot": 3,
+   "t": 7.37,
+   "issues": [
+    "OFFSCREEN grocer",
+    "OFFSCREEN mom"
+   ]
+  },
+  {
+   "shot": 3,
+   "t": 8.14,
+   "issues": [
+    "OFFSCREEN grocer",
+    "OFFSCREEN mom"
+   ]
+  },
+  {
+   "shot": 13,
+   "t": 25.03,
+   "issues": [
+    "OFFSCREEN dad"
+   ]
+  },
+  {
+   "shot": 13,
+   "t": 26.11,
+   "issues": [
+    "OFFSCREEN dad"
+   ]
+  },
+  {
+   "shot": 13,
+   "t": 27.18,
+   "issues": [
+    "OFFSCREEN dad"
+   ]
+  }
+ ],
+ "framing": [
+  {
+   "shot": 0,
+   "frac": 0.025642467725791762,
+   "close": false
+  },
+  {
+   "shot": 1,
+   "frac": 0.23537483965360945,
+   "close": false
+  },
+  {
+   "shot": 2,
+   "frac": 0.23817240131872033,
+   "close": false
+  },
+  {
+   "shot": 3,
+   "frac": 0.2678613264077463,
+   "close": false
+  },
+  {
+   "shot": 4,
+   "frac": 0.3021434795213218,
+   "close": false
+  },
+  {
+   "shot": 5,
+   "frac": 0.21864368481208807,
+   "close": false
+  },
+  {
+   "shot": 6,
+   "frac": 0,
+   "close": true
+  },
+  {
+   "shot": 7,
+   "frac": 0.17738743386467773,
+   "close": false
+  },
+  {
+   "shot": 8,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 9,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 10,
+   "frac": 0,
+   "close": true
+  },
+  {
+   "shot": 11,
+   "frac": 0.21946820521732383,
+   "close": false
+  },
+  {
+   "shot": 12,
+   "frac": 0.20782744346187512,
+   "close": false
+  },
+  {
+   "shot": 13,
+   "frac": 0.09995497400382036,
+   "close": false
+  },
+  {
+   "shot": 14,
+   "frac": 0.15911350756309156,
+   "close": false
+  },
+  {
+   "shot": 15,
+   "frac": 0.17344249418712043,
+   "close": false
+  },
+  {
+   "shot": 16,
+   "frac": 0.2626956088535809,
+   "close": false
+  },
+  {
+   "shot": 17,
+   "frac": 0.17556629580043306,
+   "close": false
+  },
+  {
+   "shot": 18,
+   "frac": 0.3896382564071459,
+   "close": false
+  }
+ ]
+}

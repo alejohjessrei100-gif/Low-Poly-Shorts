@@ -347,6 +347,91 @@ def scratch(d=0.6):
     return x * 0.9
 
 
+
+def thunder(d=3.0):
+    """crack then a long low rumble"""
+    t = t_(d)
+    crack = hp(noise(d), 900) * np.exp(-14 * t) * 0.9
+    rumble = lp(noise(d), 120) * (1 - np.exp(-8 * t)) * np.exp(-1.1 * t) * 3.2
+    rumble *= 0.7 + 0.3 * np.sin(2 * np.pi * 3.1 * t) * np.sin(2 * np.pi * 1.3 * t)
+    return np.tanh(1.6 * (crack + rumble))
+
+
+def rain(d=4.0):
+    """steady rain: band noise plus random drops"""
+    t = t_(d)
+    x = hp(lp(noise(d), 5000), 600) * 0.35
+    for i in range(int(d * 60)):
+        tt = t_(0.02)
+        s = hp(noise(0.02), 2500) * np.exp(-250 * tt) * (0.3 + 0.4 * rng.random())
+        j = int(rng.random() * (d - 0.03) * SR)
+        x[j:j + len(s)] += s
+    return x * env(len(t), 0.3, 0.6)
+
+
+def static(d=0.5):
+    """walkie-talkie squelch: click + crackly band-passed noise + short beep"""
+    t = t_(d)
+    x = hp(lp(noise(d), 3200), 900) * (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 37 * t))) * env(len(t), 0.005, 0.08)
+    b = int(0.07 * SR)
+    x[:b] += np.sin(2 * np.pi * 1700 * t[:b]) * 0.5
+    return x
+
+
+def coo(d=0.9):
+    """pigeon coo: two soft warbling low tones"""
+    t = t_(d)
+    f = 340 + 60 * np.sin(2 * np.pi * 9 * t) + np.where(t < d * 0.45, 40, -30)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) + 0.3 * np.sin(2 * np.pi * np.cumsum(2 * f) / SR)
+    gate = np.where(t < d * 0.42, 1.0, 0.0) + np.where((t > d * 0.5) & (t < d * 0.95), 1.0, 0.0)
+    return lp(x * gate, 1200) * env(len(t), 0.03, 0.1)
+
+
+def flaps(d=0.8, rate=11):
+    """wing flaps: short airy bursts"""
+    out = np.zeros(int(d * SR))
+    for i in range(int(d * rate)):
+        tt = t_(0.06)
+        s = lp(noise(0.06), 1400) * np.exp(-45 * tt)
+        j = int(i / rate * SR)
+        out[j:j + len(s)] += s[: len(out) - j]
+    return out
+
+
+def rustle(d=0.7):
+    """paper map unfolding"""
+    t = t_(d)
+    x = hp(lp(noise(d), 6000), 1500) * (0.5 + 0.5 * np.abs(np.sin(2 * np.pi * 7 * t + np.sin(2 * np.pi * 3 * t))))
+    return x * env(len(t), 0.02, 0.15)
+
+
+def zap(d=1.0):
+    """electric crackle + falling hum"""
+    t = t_(d)
+    x = hp(noise(d), 2000) * (rng.random(len(t)) < 0.08) * 1.5
+    x += np.sign(np.sin(2 * np.pi * np.cumsum(120 * np.exp(-2 * t)) / SR)) * 0.25 * np.exp(-3 * t)
+    return x * env(len(t), 0.002, 0.3)
+
+
+def whistle(d=0.6, f=2600):
+    t = t_(d)
+    trill = 1 + 0.03 * np.sign(np.sin(2 * np.pi * 28 * t))
+    return (np.sin(2 * np.pi * np.cumsum(f * trill) / SR) * 0.6 + hp(noise(d), 3000) * 0.05) * env(len(t), 0.01, 0.08)
+
+
+def buzz(d=0.6):
+    """phone vibrating"""
+    t = t_(d)
+    g = (np.sin(2 * np.pi * 6 * t) > -0.2).astype(float)
+    return np.sign(np.sin(2 * np.pi * 150 * t)) * 0.4 * lp(g, 60) * env(len(t), 0.01, 0.05)
+
+
+def yawn(d=1.0):
+    """tiny sleepy 'mmh' (pigeon yawn): falling soft tone"""
+    t = t_(d)
+    f = 520 * (0.55 + 0.45 * np.exp(-2.5 * t))
+    return lp(np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(t), 0.1, 0.4), 900)
+
 KINDS = {k: v for k, v in globals().items() if callable(v) and k not in ('t_', 'env', 'lp', 'hp', 'noise', 'sweep', 'main', 'load')}
 
 

@@ -1,0 +1,35 @@
+{
+ "_": "Intended: wide establishing shots with nobody in frame (0, 8, 9), the phone insert (10); background townsfolk who pass behind buildings or each other (0, 4, 7, 11).",
+ "0": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN",
+  "HIDDEN"
+ ],
+ "8": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN"
+ ],
+ "9": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN"
+ ],
+ "10": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN",
+  "BLOCKED"
+ ],
+ "4": [
+  "OFFSCREEN grocer",
+  "HIDDEN grandpa",
+  "OFFSCREEN grandpa"
+ ],
+ "7": [
+  "OFFSCREEN mayor",
+  "HIDDEN lady",
+  "HIDDEN",
+  "OFFSCREEN farmer"
+ ],
+ "11": [
+  "OFFSCREEN lady"
+ ]
+}

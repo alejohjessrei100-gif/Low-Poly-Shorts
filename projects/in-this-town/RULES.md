@@ -65,3 +65,7 @@ Set by the channel owner. Every episode follows these.
 - Ep 4 "Pineapple Crime": neon night city (`kit/neon.js`): wet reflective street, lit towers, neon shop and blade signs,
   fire escapes, lanterns, giant street screen, Slice Palace pizzeria with a secret pineapple room.
   Rebuilt in metres with the CC0 characters and cars (v2).
+- Ep 5 "No Phones Till 18": farm town Pigeon Creek (`kit/farm.js`): brick and clapboard main street with real shop windows,
+  awnings and signs, a columned town hall with a clock tower, swaying instanced cornfields, red barn with silos, windmill
+  pump, water tower, farmhouses, power lines, two cell towers, a storm system (rain, clouds, lightning). Kids are the
+  blocky characters at 1.3-1.4 m; Theo is blocky_c repainted (`skin` option in `kit/assets.js`).
