@@ -65,6 +65,13 @@ Set by the channel owner. Every episode follows these.
     for the Eleven v3 model: [excited] on the hook, [sarcastic] on the jokes, [whispers] on secrets, [gasps] on the
     trigger, [laughs] / [sighs] where they fit, [excited] on the payoff. About one tag per sentence or two, never more.
     Word count (without tags) 110-130, which lands at 30-45 s after the 1.25x speed-up.
+18. **True-story Shorts (a second format next to In This Town).** Real, fact-checked stories (sources in the
+    episode's SOURCES.md; disputed details softened to "about" / "the story goes"). Rule 16's "In this town" title
+    does not apply; these use hook titles with one or two CAPS words and 1-2 emojis ("10-Year-Old Saw The Ocean
+    DISAPPEAR... 🌊😨"). Script built for retention: the first sentence is the most shocking moment (cold open, and
+    the first shot shows it), then who / where / when in one breath, a re-hook around the middle ("But here's the
+    strange part"), the climax, and a last line that lands hard or loops back to the start. Short sentences, no
+    filler. Description ends with "Based on a true story. Some scenes are dramatized."
 
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.

@@ -1,6 +1,6 @@
 # True-story scripts: fact notes and sources
 
-Format reference: @tylerrstories (206K subs) animates real stories in Roblox style, mostly kids doing something
+Format reference (retention rewrite, hook-first; titles are in each .txt): @tylerrstories (206K subs) animates real stories in Roblox style, mostly kids doing something
 brave, strange or survivable; titles like "12-Year-Old Ran INTO A Burning House... 😨🔥". We copy the format, not the
 stories: none of the five below appear in that channel's latest ~40 Shorts (the only ones the page loaded).
 
