@@ -13,27 +13,30 @@ export function rbox(w, h, d, r = 0.12) {
 // ---------------------------------------------------------------- faces (canvas decals)
 const FACES = {};
 const INK = '#1b1b24';
-function face(name, glow = null) {
-  const key = name + (glow || '');
+function face(name, glow = null, ink = null) {
+  const key = name + (glow || '') + (ink || '');
+  const K = ink || INK, light = !!ink, DARK = '#0c0c14'; // light ink: white features on a dark head, mouths stay dark inside
   if (FACES[key]) return FACES[key];
   FACES[key] = canvasTex(256, 256, (g) => {
     g.lineCap = 'round'; g.lineJoin = 'round';
-    g.fillStyle = INK; g.strokeStyle = INK; g.lineWidth = 12;
+    g.fillStyle = K; g.strokeStyle = K; g.lineWidth = 12;
     const dot = (x, y, rx, ry) => { g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 7); g.fill(); };
-    const shine = (x, y, r) => { g.fillStyle = '#fff'; dot(x, y, r, r); g.fillStyle = INK; };
+    const shine = (x, y, r) => { g.fillStyle = light ? DARK : '#fff'; dot(x, y, r, r); g.fillStyle = K; };
     const eyes = (ry = 24) => { dot(88, 104, 15, ry); dot(168, 104, 15, ry); shine(93, 96, 6); shine(173, 96, 6); };
-    const bigEyes = () => { g.fillStyle = '#fff'; dot(88, 104, 26, 32); dot(168, 104, 26, 32); g.fillStyle = INK; dot(88, 108, 11, 13); dot(168, 108, 11, 13); };
+    const bigEyes = () => { g.fillStyle = '#fff'; dot(88, 104, 26, 32); dot(168, 104, 26, 32); g.fillStyle = light ? DARK : INK; dot(88, 108, 11, 13); dot(168, 108, 11, 13); g.fillStyle = K; };
     const brows = (a, b) => { g.lineWidth = 9; g.beginPath(); g.moveTo(60, 62 + a); g.lineTo(108, 52 + b); g.moveTo(148, 52 + b); g.lineTo(196, 62 + a); g.stroke(); g.lineWidth = 12; };
-    const mouthOpen = (w = 26, h = 30) => { dot(128, 182, w, h); g.fillStyle = '#e8606d'; dot(128, 182 + h * 0.45, w * 0.58, h * 0.36); g.fillStyle = INK; };
+    const mouthOpen = (w = 26, h = 30) => { if (light) g.fillStyle = DARK; dot(128, 182, w, h); g.fillStyle = '#e8606d'; dot(128, 182 + h * 0.45, w * 0.58, h * 0.36); g.fillStyle = K; if (light) { g.lineWidth = 7; g.beginPath(); g.ellipse(128, 182, w, h, 0, 0, 7); g.stroke(); g.lineWidth = 12; } };
     const smile = (r = 46) => { g.beginPath(); g.arc(128, 150, r, 0.2, Math.PI - 0.2); g.stroke(); };
     const wobble = () => { g.lineWidth = 10; g.beginPath(); g.moveTo(92, 182); for (let i = 0; i <= 6; i++) g.lineTo(92 + i * 12, 182 + (i % 2 ? -9 : 9)); g.stroke(); g.lineWidth = 12; };
-    const blush = () => { g.fillStyle = 'rgba(255,110,130,.55)'; dot(58, 150, 22, 12); dot(198, 150, 22, 12); g.fillStyle = INK; };
+    const blush = () => { g.fillStyle = 'rgba(255,110,130,.55)'; dot(58, 150, 22, 12); dot(198, 150, 22, 12); g.fillStyle = K; };
     const heart = (x, y, s) => { g.fillStyle = '#ff4d6d'; g.beginPath(); g.moveTo(x, y + s * 0.9); g.bezierCurveTo(x - s * 1.4, y - s * 0.2, x - s * 0.6, y - s * 1.2, x, y - s * 0.4); g.bezierCurveTo(x + s * 0.6, y - s * 1.2, x + s * 1.4, y - s * 0.2, x, y + s * 0.9); g.fill(); g.fillStyle = INK; };
     const happyEyes = () => { g.lineWidth = 11; g.beginPath(); g.arc(88, 112, 18, Math.PI + 0.3, -0.3); g.stroke(); g.beginPath(); g.arc(168, 112, 18, Math.PI + 0.3, -0.3); g.stroke(); g.lineWidth = 12; };
     switch (name) {
       case 'smile': eyes(); smile(); break;
       case 'talk': eyes(); mouthOpen(22, 22); break;
-      case 'happy': happyEyes(); g.beginPath(); g.moveTo(84, 150); g.quadraticCurveTo(128, 215, 172, 150); g.closePath(); g.fill(); break;
+      case 'happy': happyEyes(); g.beginPath(); g.moveTo(84, 150); g.quadraticCurveTo(128, 215, 172, 150); g.closePath(); if (light) { g.fillStyle = DARK; g.fill(); g.lineWidth = 8; g.stroke(); } else g.fill(); break;
+      case 'sad': eyes(20); g.lineWidth = 9; g.beginPath(); g.moveTo(62, 70); g.lineTo(108, 58); g.moveTo(148, 58); g.lineTo(194, 70); g.stroke(); g.lineWidth = 11; g.beginPath(); g.arc(128, 206, 34, Math.PI + 0.55, -0.55); g.stroke(); break;
+      case 'neutral': eyes(); g.fillRect(100, 176, 56, 9); break;
       case 'happy_talk': happyEyes(); mouthOpen(30, 26); break;
       case 'scared': bigEyes(); brows(0, 0); wobble(); break;
       case 'scared_talk': bigEyes(); brows(0, 0); mouthOpen(); break;
@@ -68,7 +71,7 @@ export const SHADOW_COLOR = 0x241a40;
 // The unscaled avatar is 5.3 units from sole to head top; pass { studs: true } (kids: scale 0.8 on top).
 export const STUD_HEIGHT = 3.5, BASE_HEIGHT = 5.3, STUD_SCALE = STUD_HEIGHT / BASE_HEIGHT;
 export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74, shoes = 0x30303a, hair = 0x5a3a22,
-  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false, beanieCol = 0xe8434f, scarf = null } = {}) {
+  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false, beanieCol = 0xe8434f, scarf = null, faceInk = null } = {}) {
   const mat = (c, extra = {}) => shadowMode
     ? new THREE.MeshBasicMaterial({ color: SHADOW_COLOR, ...extra })
     : new THREE.MeshStandardMaterial({ color: c, roughness: 0.62, metalness: 0, ...extra });
@@ -87,7 +90,7 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
   if (apron && !shadowMode) add(torso, rbox(1.6, 1.9, 0.08, 0.05), mat(apron), 0, -0.1, 0.52);
   const headPivot = new THREE.Group(); headPivot.position.set(0, 2, 0); body.add(headPivot);
   const head = add(headPivot, rbox(1.25, 1.25, 1.25, 0.32), mat(skin), 0, 0.68, 0);
-  const faceMat = new THREE.MeshBasicMaterial({ map: face(shadowMode ? 'glow' : 'smile', shadowMode ? '#f4f1ff' : null), transparent: true, depthWrite: false });
+  const faceMat = new THREE.MeshBasicMaterial({ map: face(shadowMode ? 'glow' : 'smile', shadowMode ? '#f4f1ff' : null, shadowMode ? null : faceInk), transparent: true, depthWrite: false });
   const faceP = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 1.05), faceMat);
   faceP.position.set(0, 0.66, 0.632);
   headPivot.add(faceP);
@@ -115,7 +118,13 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
     add(headPivot, rbox(1.36, 0.6, 0.28, 0.1), hm, 0, 1.06, -0.56);
     add(headPivot, new THREE.SphereGeometry(0.42, 16, 12), hm, 0, 1.75, -0.35);
   } else if (hairStyle === 'spiky') {
-    [[-0.4, 1.42], [0, 1.5], [0.4, 1.42]].forEach(([x, y]) => { add(headPivot, rbox(0.42, 0.42, 1.0, 0.08), mat(0), x, y, 0).rotation.z = x * 0.6; });
+    const sm = shadowMode ? mat(0) : hm;
+    [[-0.4, 1.42], [0, 1.5], [0.4, 1.42]].forEach(([x, y]) => { add(headPivot, rbox(0.42, 0.42, 1.0, 0.08), sm, x, y, 0).rotation.z = x * 0.6; });
+    if (!shadowMode) { // fuller anime spikes: a cap plus spikes that lean back and out
+      add(headPivot, rbox(1.36, 0.36, 1.36, 0.16), hm, 0, 1.36, -0.02);
+      [[-0.55, 1.55, 0.25, 0.7], [0.55, 1.55, 0.25, -0.7], [-0.25, 1.75, -0.2, 0.35], [0.3, 1.78, -0.25, -0.3], [0, 1.62, 0.5, 0], [-0.6, 1.35, -0.5, 1.0], [0.6, 1.35, -0.5, -1.0]].forEach(([x, y, z, r]) => { const sp = add(headPivot, new THREE.ConeGeometry(0.26, 0.85, 4), hm, x, y, z); sp.rotation.set(-0.4 + z * 0.4, 0, r); });
+      add(headPivot, rbox(1.36, 0.6, 0.3, 0.1), hm, 0, 1.08, -0.56);
+    }
   }
   if (hat === 'police' && !shadowMode) {
     add(headPivot, rbox(1.4, 0.45, 1.4, 0.1), mat(0x1f2b55), 0, 1.45, 0);
@@ -155,11 +164,11 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
   [legL, legR].forEach((l) => add(l, rbox(1.04, 0.4, 1.12, 0.12), mat(shoes), 0, -1.82, 0.05));
   const handR = new THREE.Group(); handR.position.set(0, -2.05, 0.2); armR.add(handR);
   const handL = new THREE.Group(); handL.position.set(0, -2.05, 0.2); armL.add(handL);
-  return { root, body, headPivot, head, faceMat, armL, armR, legL, legR, handR, handL, shadowMode, glow: '#f4f1ff' };
+  return { root, body, headPivot, head, faceMat, armL, armR, legL, legR, handR, handL, shadowMode, glow: '#f4f1ff', ink: faceInk };
 }
 
 export function setFace(av, name) {
-  av.faceMat.map = av.shadowMode ? face(name.startsWith('glow') ? name : 'glow', av.glow) : face(name);
+  av.faceMat.map = av.shadowMode ? face(name.startsWith('glow') ? name : 'glow', av.glow) : face(name, null, av.ink || null);
 }
 // mouth flaps while a word is being spoken
 // House rule (Nov 2026): no flapping mouths or bobbing heads while talking. A speaker shows one steady

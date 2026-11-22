@@ -470,6 +470,60 @@ def gasp(d=0.5):
     t = t_(d)
     return hp(lp(noise(d), 3500), 700) * np.sin(np.pi * t / d) ** 2 * 0.8
 
+
+def burp(d=0.7):
+    """cartoon burp: low buzzy voice-like tone that wobbles down"""
+    t = t_(d)
+    f = 95 * (1.25 - 0.45 * t / d) * (1 + 0.08 * np.sin(2 * np.pi * 23 * t))
+    x = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.5 + np.sin(2 * np.pi * np.cumsum(f * 2) / SR) * 0.3
+    return lp(x + lp(noise(d), 600) * 0.3, 900) * env(len(t), 0.03, 0.18)
+
+
+def gulp(d=0.35):
+    """swallow: quick downward bloop"""
+    t = t_(d)
+    f = 420 * np.exp(-6 * t) + 90
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-7 * t) * env(len(t), 0.005, 0.05)
+
+
+def munch(d=1.0, rate=7):
+    """chewing: crunchy bursts"""
+    out = np.zeros(int(d * SR))
+    for i in range(int(d * rate)):
+        tt = t_(0.09)
+        s = lp(hp(noise(0.09), 400), 3000) * np.exp(-30 * tt)
+        j = int(i / rate * SR)
+        out[j:j + len(s)] += s[: len(out) - j]
+    return out
+
+
+def pop(d=0.25):
+    """single cartoon pop"""
+    t = t_(d)
+    f = 900 * np.exp(-25 * t) + 300
+    return (np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-18 * t) + hp(noise(d), 2000) * np.exp(-80 * t) * 0.5)
+
+
+def trombone(d=2.2):
+    """sad trombone: four falling notes, the last one wobbles"""
+    out = np.zeros(int(d * SR))
+    notes = [(0.0, 0.42, 233.1), (0.45, 0.42, 220.0), (0.9, 0.42, 207.7), (1.35, d - 1.35, 196.0)]
+    for st, du, f0 in notes:
+        tt = t_(du)
+        f = f0 * (1 + (0.025 * np.sin(2 * np.pi * 6 * tt) if st > 1 else 0)) * (1 - 0.03 * tt / du)
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        s = (np.sin(ph) + 0.5 * np.sin(2 * ph) + 0.3 * np.sin(3 * ph) + 0.15 * np.sin(4 * ph))
+        s = lp(s, 1600) * env(len(tt), 0.03, 0.08)
+        j = int(st * SR)
+        out[j:j + len(s)] += s[: len(out) - j]
+    return out
+
+
+def scribble(d=0.8):
+    """pen writing on paper"""
+    t = t_(d)
+    return hp(lp(noise(d), 5000), 1800) * (0.4 + 0.6 * np.abs(np.sin(2 * np.pi * 9 * t))) * env(len(t), 0.02, 0.1)
+
 KINDS = {k: v for k, v in globals().items() if callable(v) and k not in ('t_', 'env', 'lp', 'hp', 'noise', 'sweep', 'main', 'load')}
 
 

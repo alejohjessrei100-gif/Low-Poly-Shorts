@@ -1,0 +1,1 @@
+all sound effects are synthesized in kit/sfx.py (meme sounds are our own sound-alikes: vine boom, pop, sad trombone)

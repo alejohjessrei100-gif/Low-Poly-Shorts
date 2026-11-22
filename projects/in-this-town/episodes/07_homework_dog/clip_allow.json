@@ -1,0 +1,45 @@
+{
+ "_": "Intended: inserts with nobody in frame (the worksheet, the empty dog bed, the street and school shots where the homework or the dog is the subject); the giant homework covers Kuro on purpose in shot 11. Kuro chews the chair in shot 26; he runs behind the homework in shot 15. In shots 8 and 12 the homework is the subject (eating, leaping out of the window). Kuro walks out of the door at the end of shot 3.",
+ "2": [
+  "ALL_OFFSCREEN"
+ ],
+ "5": [
+  "ALL_OFFSCREEN"
+ ],
+ "13": [
+  "ALL_OFFSCREEN"
+ ],
+ "17": [
+  "ALL_OFFSCREEN"
+ ],
+ "21": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN teacher",
+  "HIDDEN teacher"
+ ],
+ "25": [
+  "ALL_OFFSCREEN"
+ ],
+ "11": [
+  "OFFSCREEN mom"
+ ],
+ "15": [
+  "HIDDEN kuro",
+  "OFFSCREEN kuro"
+ ],
+ "26": [
+  "CLIP kuro into box"
+ ],
+ "8": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN"
+ ],
+ "12": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN"
+ ],
+ "3": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN kuro"
+ ]
+}

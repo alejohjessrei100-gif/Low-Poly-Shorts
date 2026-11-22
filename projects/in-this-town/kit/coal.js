@@ -68,14 +68,14 @@ function windowAt(p, x, y, z, out, w = 0.95, h = 1.35, lit = 0.25) {
   box(0.1, h, 0.05, trim, x + out * 0.07, y, z, p); box(0.24, 0.06, w + 0.3, trim, x + out * 0.12, y - h / 2 - 0.08, z, p);
 }
 /** two-storey frame house, gable to the street; out = +1 faces +x, -1 faces -x. Returns { g, chimney } (not baked) */
-export function house(x, z, out, col, { w = 7, d = 9, porch = true, lit = 0.25 } = {}) {
+export function house(x, z, out, col, { w = 7, d = 9, porch = true, lit = 0.25, roof: roofCol = 0xe8edf3 } = {}) {
   const g = new THREE.Group(); const H = 6.2;
   const wall = new THREE.MeshStandardMaterial({ map: sidingTex(col), roughness: 0.85 }); wall.map.repeat.set(d / 1.2, H / 0.8);
   const fx = x; // facade x; body extends away from the street
   box(d, H, w, wall, fx - out * d / 2, H / 2, z, g);
   // roof: ridge runs along x (gable faces the street), snow on top
   const s = new THREE.Shape(); s.moveTo(-w / 2 - 0.35, 0); s.lineTo(0, 2.6); s.lineTo(w / 2 + 0.35, 0); s.closePath();
-  const roof = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth: d + 0.6, bevelEnabled: false }), std(0xe8edf3, { roughness: 0.9 }));
+  const roof = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth: d + 0.6, bevelEnabled: false }), std(roofCol, { roughness: 0.9 }));
   roof.rotation.y = Math.PI / 2; roof.position.set(fx - out * (d + 0.3) + (out > 0 ? 0 : 0), H, z); if (out > 0) roof.position.x = fx - d - 0.3; else roof.position.x = fx - 0.3; roof.castShadow = true; g.add(roof);
   const gs = new THREE.Shape(); gs.moveTo(-w / 2, 0); gs.lineTo(0, 2.45); gs.lineTo(w / 2, 0); gs.closePath();
   for (const e of [0, 1]) { const gb = new THREE.Mesh(new THREE.ShapeGeometry(gs), wall); gb.position.set(e ? fx + out * 0.01 : fx - out * (d + 0.01), H, z); gb.rotation.y = Math.PI / 2 * (e ? out : -out); g.add(gb); }
@@ -85,7 +85,7 @@ export function house(x, z, out, col, { w = 7, d = 9, porch = true, lit = 0.25 }
   windowAt(g, fx, 2.1, z - w * 0.2, out, 1.0, 1.4, lit); windowAt(g, fx, 4.6, z - w * 0.2, out, 0.95, 1.3, lit); windowAt(g, fx, 4.6, z + w * 0.25, out, 0.95, 1.3, lit);
   windowAt(g, fx, 7.0, z, out, 0.7, 0.9, lit * 0.5);
   if (porch) {
-    box(2.2, 0.55, w, std(0x8a8078), fx + out * 1.1, 0.28, z, g); box(2.4, 0.12, w + 0.2, std(0xe8edf3), fx + out * 1.15, 3.0, z, g);
+    box(2.2, 0.55, w, std(0x8a8078), fx + out * 1.1, 0.28, z, g); box(2.4, 0.12, w + 0.2, std(roofCol), fx + out * 1.15, 3.0, z, g);
     for (const s2 of [-1, 1]) cyl(0.08, 0.08, 2.45, std(0xf4f0e6), fx + out * 2.05, 1.78, z + s2 * (w / 2 - 0.25), g, 8);
     for (let k = 0; k < 6; k++) box(0.05, 0.6, 0.05, std(0xf4f0e6), fx + out * 2.1, 0.85, z - w / 2 + 0.5 + k * 0.5, g);
     box(0.06, 0.06, 3.0, std(0xf4f0e6), fx + out * 2.1, 1.15, z - w / 2 + 1.75, g);

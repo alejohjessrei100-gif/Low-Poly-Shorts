@@ -1,0 +1,149 @@
+{
+ "bad": 0,
+ "report": [
+  {
+   "shot": 9,
+   "t": 17,
+   "issues": [
+    "OFFSCREEN mom"
+   ]
+  }
+ ],
+ "framing": [
+  {
+   "shot": 0,
+   "frac": 0.39473165133770505,
+   "close": false
+  },
+  {
+   "shot": 1,
+   "frac": 0.4020274196246063,
+   "close": false
+  },
+  {
+   "shot": 2,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 3,
+   "frac": 0.24241960146434952,
+   "close": false
+  },
+  {
+   "shot": 4,
+   "frac": 0.21767317396727295,
+   "close": false
+  },
+  {
+   "shot": 5,
+   "frac": 0,
+   "close": true
+  },
+  {
+   "shot": 6,
+   "frac": 0.404138166909504,
+   "close": false
+  },
+  {
+   "shot": 7,
+   "frac": 0.2353674616705904,
+   "close": false
+  },
+  {
+   "shot": 8,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 9,
+   "frac": 0.22043629494546785,
+   "close": false
+  },
+  {
+   "shot": 10,
+   "frac": 0.3957845680252947,
+   "close": false
+  },
+  {
+   "shot": 11,
+   "frac": 0.38520786065921037,
+   "close": false
+  },
+  {
+   "shot": 12,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 13,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 14,
+   "frac": 0.20874792822209723,
+   "close": false
+  },
+  {
+   "shot": 15,
+   "frac": 0.23222808514072588,
+   "close": false
+  },
+  {
+   "shot": 16,
+   "frac": 0.205117557670639,
+   "close": false
+  },
+  {
+   "shot": 17,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 18,
+   "frac": 0.2368342318880573,
+   "close": false
+  },
+  {
+   "shot": 19,
+   "frac": 0.37175517705500516,
+   "close": false
+  },
+  {
+   "shot": 20,
+   "frac": 0.3925311062844604,
+   "close": false
+  },
+  {
+   "shot": 21,
+   "frac": 0,
+   "close": true
+  },
+  {
+   "shot": 22,
+   "frac": 0.407530686562533,
+   "close": false
+  },
+  {
+   "shot": 23,
+   "frac": 0.3969564009684398,
+   "close": false
+  },
+  {
+   "shot": 24,
+   "frac": 0.9977915415405709,
+   "close": true
+  },
+  {
+   "shot": 25,
+   "frac": 0,
+   "close": false
+  },
+  {
+   "shot": 26,
+   "frac": 0.4165289624159313,
+   "close": false
+  }
+ ]
+}
