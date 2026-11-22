@@ -28,7 +28,7 @@ const SX = 200, CX = 400, SZ = ST.SZ;
 R.couch.visible = false; R.lamp.visible = false; R.socks.visible = false;
 { // bedroom additions: bed, pillow, blanket, nightstand clock spot, wardrobe with doors
   const wood = P.std(0x8a5a3a), sheet = P.std(0xf4f0e6);
-  P.box(2.2, 0.4, 1.05, wood, 3.2, 0.2, -2.9, scene); P.box(2.1, 0.12, 0.95, P.std(0x9ab8e8), 3.2, 0.46, -2.9, scene, 0.04); P.box(0.5, 0.13, 0.8, sheet, 4.0, 0.58, -2.9, scene, 0.05); P.box(0.08, 0.9, 1.05, wood, 4.3, 0.45, -2.9, scene);
+  P.box(2.2, 0.4, 1.05, wood, 3.2, 0.2, -2.9, scene); P.box(2.1, 0.12, 0.95, P.std(0x9ab8e8), 3.2, 0.46, -2.9, scene, 0.04); P.box(0.5, 0.13, 0.8, sheet, 3.75, 0.58, -2.9, scene, 0.05); P.box(0.08, 0.9, 1.05, wood, 4.3, 0.45, -2.9, scene);
   P.box(0.4, 0.04, 0.4, wood, 1.65, 0.57, -2.95, scene);
 }
 const blanket = P.box(1.6, 0.14, 1.0, P.std(0xe85a6a, { roughness: 1 }), 0, 0, 0, scene, 0.05);
@@ -74,7 +74,7 @@ FD.track([[0, 'bored'], [21.6, 'suspicious', { look: [0.6, 0] }], [24.4, 'shocke
 const talkV = [[2.72, 3.9], [4.3, 5.6], [6.15, 7.1], [11.8, 12.6], [14.4, 15.8], [19.4, 20.4], [24.0, 25.1], [30.3, 31.1], [38.1, 40.2], [40.7, 44]];
 FV.lipsync(WORDS, AMP, 60, (t) => talkV.some(([a, b]) => t >= a && t < b));
 FT.lipsync(WORDS, AMP, 60, () => false); FD.lipsync(WORDS.filter((w) => w[0] >= 23 && w[0] < 23.9), AMP, 60, () => true);
-AV.keys([[0, 'idle'], [2.7, 'shrug', { dur: 0.3 }], [4.3, 'slump', { dur: 0.3 }], [5.95, 'idle'], [8.9, 'shockRecoil', { dur: 0.2, antic: 0.1 }], [11.9, 'flailUp', { dur: 0.15, antic: 0.08 }], [13.9, 'slump', { dur: 0.25 }], [14.45, 'pickup', { dur: 0.25 }], [15.1, 'idle'], [20.8, 'shockRecoil'], [22.5, 'point', { armR: [-0.9, 0.4, 0.2], dur: 0.25 }], [24.0, 'handsOnHips', { dur: 0.25 }], [25.4, 'shockRecoil', { dur: 0.15 }], [30.3, 'facepalm', { dur: 0.3 }], [33.7, 'slump', { dur: 0.3 }], [38.1, 'point', { dur: 0.2, antic: 0.1 }], [39.5, 'crossArms', { dur: 0.3 }], [40.7, 'idle']]);
+AV.keys([[0, 'idle'], [2.7, 'shrug', { dur: 0.3 }], [4.3, 'slump', { dur: 0.3 }], [3.4, 'idle', { head: [0, 1.25, 1.45], dur: 0.1 }], [5.95, 'idle', { head: [0, 1.25, 1.45] }], [8.9, 'shockRecoil', { dur: 0.2, antic: 0.1 }], [11.9, 'flailUp', { dur: 0.15, antic: 0.08 }], [13.9, 'slump', { dur: 0.25 }], [14.45, 'pickup', { dur: 0.25 }], [15.1, 'idle'], [20.8, 'shockRecoil'], [22.5, 'point', { armR: [-0.9, 0.4, 0.2], dur: 0.25 }], [24.0, 'handsOnHips', { dur: 0.25 }], [25.4, 'shockRecoil', { dur: 0.15 }], [30.3, 'facepalm', { dur: 0.3 }], [33.7, 'slump', { dur: 0.3 }], [38.1, 'point', { dur: 0.2, antic: 0.1 }], [39.5, 'crossArms', { dur: 0.3 }], [40.7, 'idle', { head: [0, 1.25, 1.45], dur: 0.3 }]]);
 AT.keys([[0, 'idle'], [27.7, 'shockRecoil', { dur: 0.2 }], [29.5, 'idle'], [31.3, 'crossArms', { dur: 0.3 }], [36.1, 'point', { armR: [-0.6, 0.3, 0.3], dur: 0.2 }], [37.3, 'idle']]);
 AD.keys([[0, 'idle'], [21.7, 'crossArms', { dur: 0.3 }], [23.0, 'shrug', { dur: 0.25 }], [26.3, 'shockRecoil', { dur: 0.2 }]]);
 AV.squash([[9.5, -0.07, 0.12], [13.82, -0.12, 0.2], [20.0, 0.08, 0.2], [27.6, -0.1, 0.25]]);
@@ -91,8 +91,8 @@ const IN = 'indoor', OUT = 'day';
 const CLK0 = V3(1.65, 0.59, -2.95); // clock on the nightstand
 S(0, [[0, [1.0, 0.95, -0.3], [1.65, 0.85, -2.95], 40], [2.78, [1.2, 1.0, -0.6], [1.65, 0.82, -2.95], 36]], { light: IN, dof: [CLK0.clone().setY(0.8), 0.5], shakes: [[1.92, 0.03, 0.3]], where: 'bed' });
 S(2.78, [[2.78, [0.6, 1.3, 2.0], [0.1, 1.15, -2.6], 38], [3.5, [0.6, 1.3, 1.8], [0.1, 1.15, -2.6], 36]], { light: IN, where: 'standVelo', dof: 'face' });
-S(3.5, [[3.5, [3.0, 1.9, 3.2], [3.2, 0.6, -2.9], 52], [4.38, [3.0, 1.8, 2.8], [3.0, 0.6, -2.9], 50]], { light: IN, where: 'bed', dof: [V3(3.2, 0.6, -2.9), 2.5] });
-S(4.38, [[4.38, [2.6, 1.15, -1.1], [2.4, 0.8, -2.9], 44], [6.22, [2.55, 1.1, -1.4], [2.35, 0.78, -2.9], 40]], { light: IN, where: 'bed', slap: true, dof: [V3(1.65, 0.8, -2.95), 0.8] });
+S(3.5, [[3.5, [3.3, 2.0, -1.0], [3.6, 0.75, -2.9], 46], [4.38, [3.6, 2.1, -1.6], [3.7, 0.75, -2.9], 42]], { light: IN, where: 'bed', dof: [V3(3.2, 0.6, -2.9), 2.5] });
+S(4.38, [[4.38, [2.6, 1.9, -1.3], [3.2, 0.8, -2.9], 46], [6.22, [2.2, 1.8, -1.7], [2.8, 0.85, -2.9], 42]], { light: IN, where: 'bed', slap: true, dof: [V3(1.65, 0.8, -2.95), 0.8] });
 S(6.22, [[6.22, [1.5, 1.0, -1.6], [1.65, 0.83, -2.95], 36], [8.7, [1.45, 0.95, -1.9], [1.65, 0.85, -2.95], 32]], { light: IN, where: 'bed', talkClock: true, dof: [V3(1.65, 0.83, -2.95), 0.35] });
 S(8.8, [[8.8, [-1.5, 1.6, 3.4], [2.2, 0.7, -2.9], 58], [11.88, [-1.2, 1.55, 3.2], [2.0, 0.8, -2.8], 56]], { light: IN, where: 'pull', shakes: [[9.4, 0.04, 0.3]], dof: [V3(2.2, 0.8, -2.8), 5] });
 S(11.88, [[11.88, [3.2, 1.7, 2.5], [1.5, 1.0, -2.8], 58], [13.5, [1.0, 1.4, 2.0], [-0.3, 0.9, -2.8], 54], [13.9, [0.6, 1.3, 1.6], [-0.6, 0.9, -2.9], 50]], { light: IN, where: 'fly', shakes: [[13.82, 0.06, 0.4]], punch: [[13.82, 6, 0.5]], dof: [V3(-0.3, 1, -2.8), 5] });
@@ -111,27 +111,27 @@ S(33.82, [[33.82, [CX + 1.6, 1.2, 4.0], [CX - 0.9, 0.9, 1.4], 44], [36.1, [CX + 
 S(36.18, [[36.18, [CX + 2.3, 1.7, -0.3], [CX + 0.6, 1.0, -2.6], 44], [38.1, [CX + 1.9, 1.4, -0.6], [CX + 0.6, 0.9, -2.5], 36]], { light: IN, where: 'write', dof: [V3(CX + 0.6, 1.0, -2.5), 3] });
 S(38.2, [[38.2, [CX - 3.0, 1.2, 2.6], [CX - 2.4, 1.0, 0.0], 44], [39.46, [CX - 2.9, 1.2, 2.2], [CX - 2.4, 1.0, 0.0], 38]], { light: IN, where: 'angry', talkV: true, dof: 'face' });
 S(39.46, [[39.46, [CX - 1.5, 0.7, 2.4], [CX - 2.1, 0.72, 1.3], 40], [40.7, [CX - 1.6, 0.68, 2.0], [CX - 2.1, 0.72, 1.3], 34]], { light: IN, where: 'angry', onlyClock: true, smug: true, dof: 'clock' });
-S(40.76, [[40.76, [2.2, 1.6, -0.2], [3.2, 0.7, -2.9], 40], [END, [2.5, 1.1, -1.3], [3.3, 0.8, -2.9], 34]], { light: IN, where: 'sleep', dof: [V3(3.2, 0.8, -2.9), 1.8] });
+S(40.76, [[40.76, [3.2, 2.2, -1.3], [3.7, 0.8, -2.9], 40], [END, [3.7, 2.0, -1.8], [3.9, 0.8, -2.9], 34]], { light: IN, where: 'sleep', dof: [V3(3.5, 0.85, -2.9), 2.2] });
 
 function pose(t) {
   let i = 0; SH.forEach((s, j) => { if (t >= s.t) i = j; }); const s = SH[i], w = s.where;
   setLight(s.light, w === 'chase' || w === 'tick' || w === 'board' || w === 'driver' || w === 'inside' || w === 'rip' || w === 'crash' ? [SX, 0, -30] : w.startsWith('class') || w === 'stare' || w === 'write' || w === 'angry' ? [CX, 0, 0] : [0, 0, 0]);
   DUST.hide(); PL.hideContacts();
   [velo, teacher, driver].forEach((c) => (c.root.visible = false)); CLK.g.visible = false; busNose.visible = false; rubble.visible = false; detention.visible = false; shoes.visible = false;
-  bus.position.set(SX - 2, 0, -33.5); bus.rotation.set(0, 0, 0); busDoor.position.set(1.28, 0.8, -3.5); busDoor.rotation.set(0, 0, 0); blanket.position.set(3.1, 0.62, -2.9); blanket.rotation.set(0, 0, 0);
+  bus.position.set(SX - 2, 0, -33.5); bus.rotation.set(0, 0, 0); busDoor.position.set(1.28, 0.8, -3.5); busDoor.rotation.set(0, 0, 0); blanket.position.set(3.05, 0.9, -2.9); blanket.rotation.set(0, 0, 0); blanket.scale.set(0.62, 1, 1.0);
   wdoors.forEach(([d, sg]) => (d.rotation.y = 0)); R.door.rotation.y = 0; ST.doors.forEach((d) => (d.rotation.y = 0));
   const clockOn = !s.onlyTeacher; let cm = { t, mood: 'glare', legsOn: t > 1.9, legScale: t > 1.9 ? 0.4 + 0.6 * Math.min(1.25, 0.5 + 6 * (t - 1.9)) : 0.1 };
   const vk = V3(0, 0, 0);
   let lookAt = null;
   if (w === 'bed' || w === 'standVelo') { /* handled below */ }
   // --- bedroom
-  if (w === 'bed') { lay(velo, 3.5, 0.7, -2.9); velo.root.visible = true; if (t < 3.5) velo.root.visible = false; CLK.g.visible = true; CLK.g.position.copy(CLK0); CLK.g.rotation.y = 0.35; CLK.set({ ...cm, ring: t > 1.9 && t < 2.6 ? 1 : 0 }); }
+  if (w === 'bed') { lay(velo, 2.55, 0.66, -2.9); velo.root.visible = true;  CLK.g.visible = true; CLK.g.position.copy(CLK0); CLK.g.rotation.y = 0.35; CLK.set({ ...cm, ring: t > 1.9 && t < 2.6 ? 1 : 0 }); }
   if (w === 'standVelo') { stand(velo, 0.1, 0, -2.2, 0.15); }
   if (w === 'bed' && t >= 3.5) { blanket.visible = true; }
   if (w === 'bed' && s.slap) { CLK.g.visible = true; CLK.g.position.copy(CLK0); const sn = Math.floor(between(t, 4.4, 5.9) * 5); const u = (between(t, 4.4, 5.9) * 5) % 1; cm.mood = 'glare'; CLK.set({ ...cm, ring: 0 }); CLK.body.scale.y = 1 - 0.2 * Math.max(0, Math.sin(Math.PI * Math.min(1, u * 3))); }
   if (s.talkClock) { CLK.g.visible = true; CLK.g.position.copy(CLK0); CLK.g.rotation.y = 0.2; CLK.set({ t, mood: t > 7.5 && t < 8.6 ? 'talk' : 'glare', legsOn: true, armsUp: 0.9 }); }
-  if (w === 'pull') { lay(velo, 3.5, 0.7, -2.9); velo.root.visible = true; const u = between(t, 9.4, 10.4), pu = between(t, 10.4, 11.9); CLK.g.visible = true; const jx = lerp(1.65, 2.7, ease(between(t, 9.4, 9.9))), jy = 0.59 - 0.59 * ease(between(t, 9.4, 9.8)) + Math.sin(Math.PI * between(t, 9.4, 9.9)) * 0.5; CLK.g.position.set(jx + (t > 10.4 ? -pu * 0.2 : 0), t > 9.9 ? 0.46 : jy, -2.2); CLK.g.rotation.y = -0.4; CLK.set({ t, mood: 'scream', walk: t > 10.4 ? 0.6 : 0, armsUp: 1.6, ring: 0.6 }); blanket.position.set(lerp(3.1, 1.2, ease(pu)), 0.62 + Math.sin(Math.PI * pu) * 0.5, lerp(-2.9, -2.0, ease(pu))); blanket.rotation.set(0, 0, Math.sin(Math.PI * pu) * 0.5); if (t > 11.88) velo.root.visible = false; }
-  if (w === 'fly') { const u = between(t, 11.95, 13.82); const x = lerp(3.4, -0.4, u), y = u < 0.6 ? 0.85 + 1.2 * Math.sin(Math.PI * u / 0.6) : lerp(0.85, 0.7, (u - 0.6) / 0.4); stand(velo, x, t < 11.95 ? 0.85 : t < 13.82 ? y - 0.7 : 0, -2.6 + 0.0, Math.PI - 0.2); velo.root.rotation.z = u < 1 ? -u * 9 : 0; if (t < 11.95) { lay(velo, 3.5, 0.7, -2.9); } if (t > 13.82) { velo.root.rotation.z = 0; stand(velo, -0.4 - between(t, 13.82, 14.2) * 0.3, 0, -2.3, 0.1); } velo.root.visible = true; wdoors.forEach(([d, sg]) => (d.rotation.y = sg * -1.6 * ease(between(t, 13.78, 14.0)))); CLK.g.visible = true; CLK.g.position.set(1.0, 0.0, -1.2); CLK.g.rotation.y = -0.6; CLK.set({ t, mood: 'smug', walk: 0 }); blanket.position.set(1.2, 0.2, -2.0); }
+  if (w === 'pull') { lay(velo, 2.55, 0.66, -2.9); velo.root.visible = true; const u = between(t, 9.4, 10.4), pu = between(t, 10.4, 11.9); CLK.g.visible = true; const jx = lerp(1.65, 2.7, ease(between(t, 9.4, 9.9))), jy = 0.59 - 0.59 * ease(between(t, 9.4, 9.8)) + Math.sin(Math.PI * between(t, 9.4, 9.9)) * 0.5; CLK.g.position.set(jx + (t > 10.4 ? -pu * 0.2 : 0), t > 9.9 ? 0.46 : jy, -2.2); CLK.g.rotation.y = -0.4; CLK.set({ t, mood: 'scream', walk: t > 10.4 ? 0.6 : 0, armsUp: 1.6, ring: 0.6 }); blanket.position.set(lerp(3.05, 1.2, ease(pu)), 0.9 + Math.sin(Math.PI * pu) * 0.5, lerp(-2.9, -2.0, ease(pu))); blanket.rotation.set(0, 0, Math.sin(Math.PI * pu) * 0.5); if (t > 11.88) velo.root.visible = false; }
+  if (w === 'fly') { const u = between(t, 11.95, 13.82); const x = lerp(3.0, -0.4, u), y = u < 0.6 ? 0.85 + 1.2 * Math.sin(Math.PI * u / 0.6) : lerp(0.85, 0.7, (u - 0.6) / 0.4); stand(velo, x, t < 11.95 ? 0.85 : t < 13.82 ? y - 0.7 : 0, -2.6 + 0.0, Math.PI - 0.2); velo.root.rotation.z = u < 1 ? -u * 9 : 0; if (t < 11.95) { lay(velo, 2.55, 0.66, -2.9); } if (t > 13.82) { velo.root.rotation.z = 0; stand(velo, -0.4 - between(t, 13.82, 14.2) * 0.3, 0, -2.3, 0.1); } velo.root.visible = true; wdoors.forEach(([d, sg]) => (d.rotation.y = sg * -1.6 * ease(between(t, 13.78, 14.0)))); CLK.g.visible = true; CLK.g.position.set(1.0, 0.0, -1.2); CLK.g.rotation.y = -0.6; CLK.set({ t, mood: 'smug', walk: 0 }); blanket.position.set(1.2, 0.2, -2.0); }
   if (w === 'shoes') { const u = between(t, 14.5, 15.4), r = between(t, 15.5, 16.25); wdoors.forEach(([d, sg]) => (d.rotation.y = sg * -1.6)); shoes.visible = t < 15.2; shoes.position.set(-0.6, 0.0, -2.4); const x = lerp(-0.6, -4.0, ease(r)), z = lerp(-2.3, 1.0, ease(r)); stand(velo, x, 0, z, r > 0 ? -Math.PI / 2 - 0.9 : 0); R.door.rotation.y = -1.3 * between(t, 15.9, 16.25); }
   // --- street
   if (w === 'chase' || w === 'tick') { const rt = between(t, 16.28, 19.48); const vz = lerp(-8, -27, ease(rt) * 0.4 + rt * 0.6); stand(velo, SX, 0, vz, Math.PI); AV.walk([16.28, 19.48, V3(SX, 0, -8), V3(SX, 0, -27), 1]); CLK.g.visible = true; CLK.g.position.set(SX + 0.2, 0, vz + 2.3); CLK.g.rotation.y = Math.PI; CLK.set({ t, mood: 'scream', walk: 1.1, armsUp: 1.4, ring: 0.8 }); }
@@ -150,7 +150,7 @@ function pose(t) {
   if (w === 'class2') { stand(teacher, CX + 0.6, 0, -3.3, 0.0); stand(velo, CX - 0.9, 0, 0.3, 0.6); CLK.g.visible = true; CLK.g.position.set(CX - 1.5, 0, 1.2); CLK.g.rotation.y = 2.4; CLK.set({ t, mood: t > 34.6 && t < 35.3 ? 'talk' : 'glare', armsUp: t > 34.6 ? 2.2 : 0.4 }); busNose.visible = true; busNose.position.set(CX - 6.4, 1.3, -3.2); }
   if (w === 'write') { stand(teacher, CX + 0.6, 0, -3.3, 0.0); stand(velo, CX - 0.2, 0, 0.7, 0.6); CLK.g.visible = true; CLK.g.position.set(CX - 0.9, 0, 1.2); CLK.g.rotation.y = 2.6; CLK.set({ t, mood: 'smug' }); detention.visible = t > 36.9; detention.position.set(CX + 0.6, 1.75, -3.7); detention.scale.setScalar(0.6 + 0.4 * ease(between(t, 36.9, 37.5))); busNose.visible = true; busNose.position.set(CX - 6.4, 1.3, -3.2); }
   if (w === 'angry') { stand(velo, CX - 2.4, 0, 0.0, 0.2); stand(teacher, CX + 0.6, 0, -3.3, 0.0); CLK.g.visible = true; CLK.g.position.set(CX - 2.1, 0, 1.3); CLK.g.rotation.y = 0.3; CLK.set({ t, mood: s.smug ? 'smug' : 'smug' }); detention.visible = true; detention.position.set(CX + 0.6, 1.75, -3.7); busNose.visible = true; busNose.position.set(CX - 6.4, 1.3, -3.2); }
-  if (w === 'sleep') { lay(velo, 3.5, 0.7, -2.9); velo.root.visible = true; CLK.g.visible = true; CLK.g.position.set(3.35, 0.85 + Math.sin(t * 2.2) * 0.01, -2.9); CLK.g.rotation.y = 0.3; CLK.g.scale.setScalar(0.95); CLK.set({ t, mood: 'smug', legsOn: true, armsUp: 0.2 }); blanket.position.set(2.9, 0.62, -2.9); }
+  if (w === 'sleep') { lay(velo, 2.55, 0.66, -2.9); velo.root.visible = true; CLK.g.visible = true; CLK.g.position.set(3.45, 0.93 + Math.sin(t * 2.2) * 0.012, -2.9); CLK.g.rotation.y = 0.3; CLK.g.scale.setScalar(0.95); CLK.set({ t, mood: 'smug', legsOn: true, armsUp: 0.2 }); blanket.position.set(2.95, 0.9, -2.9); }
   else CLK.g.scale.setScalar(1);
   if (s.onlyTeacher) { CLK.g.visible = false; }
   // actors + faces
