@@ -21,7 +21,7 @@ const A = actor(K, { seed: 3 });
 const PL = polish(C);
 const CAM = cameraRig(camera);
 const LIST = ['neutral', 'happy', 'laughing', 'sad', 'crying', 'angry', 'furious', 'scared', 'shocked', 'smug', 'suspicious', 'embarrassed', 'determined', 'bored', 'dread', 'starstruck'];
-const STEP = 1.05, T0 = LIST.length * STEP + 0.3; // then the lip-sync section
+const STEP = 0.85, T0 = LIST.length * STEP + 0.3; // then the lip-sync section
 const labels = LIST.map((n) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.12), new THREE.MeshBasicMaterial({ map: P.textTex([n.toUpperCase()], { w: 1024, h: 220, bg: '#1b1b24', fg: '#ffffff', radius: 40 }), transparent: true })); m.position.set(0.0, 0.98, 0.9); scene.add(m); return m; });
 const lipLabel = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.12), new THREE.MeshBasicMaterial({ map: P.textTex(['LIP-SYNC'], { w: 1024, h: 220, bg: '#d83a3a', fg: '#ffffff', radius: 40 }), transparent: true })); lipLabel.position.set(0, 0.98, 0.9); scene.add(lipLabel);
 // expression track: each preset keyed a few frames before its slot; then the episode-7 opening with its own acting
