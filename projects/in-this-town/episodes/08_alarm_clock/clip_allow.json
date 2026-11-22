@@ -1,0 +1,31 @@
+{
+ "_": "Intended: characters stand inside the see-through bus (10-13) and the camera sees them through glass; close-ups of the alarm clock where Velo is off-screen or the clock fills the lens (6, 7, 9, 17, 21, 22); Velo tumbles across the room (5, 6).",
+ "5": [
+  "HIDDEN velo",
+  "CLIP velo"
+ ],
+ "10": [
+  "CLIP",
+  "HIDDEN"
+ ],
+ "11": [
+  "CLIP",
+  "HIDDEN"
+ ],
+ "12": [
+  "CLIP",
+  "HIDDEN"
+ ],
+ "13": [
+  "CLIP",
+  "HIDDEN"
+ ],
+ "*": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN",
+  "BLOCKED"
+ ],
+ "2": [
+  "HIDDEN velo"
+ ]
+}

@@ -109,7 +109,7 @@ export function puff(parent, n = 9) {
 }
 
 // ---------------------------------------------------------------- living room (x 0): couch, lamp, socks, dog bed, door, window
-export function livingRoom(scene) {
+export function livingRoom(scene, { plant = true } = {}) {
   const tmp = new THREE.Group(), live = new THREE.Group(); scene.add(live);
   const W = 9, D = 7, H = 2.8;
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshStandardMaterial({ map: canvasTex(256, 256, (g, w, h) => { for (let r = 0; r < 8; r++) { g.fillStyle = pick(['#b8875a', '#a87a50', '#c49466']); g.fillRect(0, r * 32, w, 32); g.fillStyle = 'rgba(60,30,10,.35)'; g.fillRect(0, r * 32, w, 2); g.fillRect(((r * 97) % 200) + 20, r * 32, 2, 32); } }, [3, 3]), roughness: 0.7 }));
@@ -136,7 +136,7 @@ export function livingRoom(scene) {
   box(1.2, 0.06, 0.6, std(0x6a4a34), 0, 0.42, -1.3, tmp); for (const [a, b] of [[-0.55, -0.25], [0.55, -0.25], [-0.55, 0.25], [0.55, 0.25]]) box(0.05, 0.4, 0.05, std(0x4a3424), a, 0.2, -1.3 + b, tmp);
   box(0.45, 0.6, 1.6, std(0x4a3a30), -W / 2 + 0.35, 0.3, -1.6, tmp); box(0.06, 0.65, 1.15, std(0x111118), -W / 2 + 0.4, 0.95, -1.6, tmp); plane(1.05, 0.56, glow(0x3a6aa8, 0.6), -W / 2 + 0.44, 0.95, -1.6, Math.PI / 2, tmp);
   const shelf = new THREE.Group(); shelf.position.set(-2.8, 0, -D / 2 + 0.25); tmp.add(shelf); box(1.2, 1.9, 0.35, std(0x7a5a3a), 0, 0.95, 0, shelf); for (let r = 0; r < 4; r++) for (let k = 0; k < 7; k++) box(0.1, 0.28 + rnd() * 0.08, 0.24, std(pick([0xc8343f, 0x2a6aa8, 0xf2c14e, 0x3a8a5a, 0xe8e4dc])), -0.45 + k * 0.15, 0.3 + r * 0.45, 0.02, shelf);
-  cyl(0.18, 0.14, 0.35, std(0xc8843a), 3.6, 0.17, -2.9, tmp); for (let k = 0; k < 6; k++) { const l = new THREE.Mesh(new THREE.IcosahedronGeometry(0.22, 0), std(0x3a8a4a)); l.position.set(3.6 + Math.sin(k) * 0.15, 0.55 + (k % 3) * 0.18, -2.9 + Math.cos(k) * 0.15); tmp.add(l); }
+  if (plant) cyl(0.18, 0.14, 0.35, std(0xc8843a), 3.6, 0.17, -2.9, tmp); for (let k = 0; plant && k < 6; k++) { const l = new THREE.Mesh(new THREE.IcosahedronGeometry(0.22, 0), std(0x3a8a4a)); l.position.set(3.6 + Math.sin(k) * 0.15, 0.55 + (k % 3) * 0.18, -2.9 + Math.cos(k) * 0.15); tmp.add(l); }
   for (let k = 0; k < 3; k++) { box(0.5, 0.4, 0.04, std(0x3a2a20), -0.8 + k * 0.8, 1.9 + (k % 2) * 0.15, -D / 2 + 0.1, tmp); plane(0.42, 0.32, std(pick([0x9ad0f0, 0xf2c8a0, 0xa8d8a0])), -0.8 + k * 0.8, 1.9 + (k % 2) * 0.15, -D / 2 + 0.125, 0, tmp); }
   const ceil = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.08, 20), glow(0xfff2d0, 1.2)); ceil.position.set(0, H - 0.05, -0.5); tmp.add(ceil);
   const pl = new THREE.PointLight(0xffe6c0, 9, 12, 1.4); pl.position.set(0, H - 0.4, 0); scene.add(pl);
@@ -233,4 +233,51 @@ export function classroom(scene, X = 400) {
   for (const z of [-2, 1.5]) { const f = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.4), glow(0xfafaf0, 0.9)); f.position.set(X, H - 0.03, z); tmp.add(f); }
   scene.add(bake(tmp));
   return { X, desk: TD, door: new THREE.Vector3(X - W / 2 + 0.2, 0, -D / 2 + 0.7) };
+}
+
+// ---------------------------------------------------------------- the alarm clock monster (~0.6 m): red body, bells, arms, legs, moods
+const clockFace = {};
+function clockTex(mood) {
+  if (clockFace[mood]) return clockFace[mood];
+  return (clockFace[mood] = canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#fbf6e8'; g.beginPath(); g.arc(128, 128, 122, 0, 7); g.fill();
+    g.fillStyle = '#2a2a30'; g.font = '800 30px Poppins'; g.textAlign = 'center';
+    for (let i = 1; i <= 12; i++) { const a = i / 12 * Math.PI * 2; g.fillText(String(i), 128 + Math.sin(a) * 104, 138 - Math.cos(a) * 104); }
+    g.strokeStyle = '#1b1b24'; g.lineCap = 'round'; g.lineWidth = 7;
+    // eyes with heavy brows on the dial (hands are the clock's, drawn small)
+    const brow = (a) => { g.beginPath(); g.moveTo(54, 74 + a); g.lineTo(108, 92 - a); g.moveTo(202, 74 + a); g.lineTo(148, 92 - a); g.stroke(); };
+    g.fillStyle = '#fff'; g.lineWidth = 6; for (const x of [88, 168]) { g.beginPath(); g.ellipse(x, 112, 22, mood === 'smug' ? 9 : 26, 0, 0, 7); g.fill(); g.stroke(); }
+    g.fillStyle = '#1b1b24'; for (const x of [88, 168]) { g.beginPath(); g.arc(x + (mood === 'smug' ? 6 : 0), 116, mood === 'scream' ? 7 : 10, 0, 7); g.fill(); }
+    g.lineWidth = 9; if (mood === 'smug') { g.beginPath(); g.moveTo(54, 94); g.lineTo(108, 90); g.moveTo(202, 94); g.lineTo(148, 90); g.stroke(); } else brow(mood === 'scream' ? 22 : 14);
+    g.fillStyle = '#5a1020'; g.lineWidth = 7;
+    if (mood === 'glare') { g.beginPath(); g.moveTo(94, 190); g.lineTo(162, 184); g.stroke(); }
+    else if (mood === 'smug') { g.beginPath(); g.moveTo(92, 182); g.quadraticCurveTo(140, 214, 178, 176); g.stroke(); }
+    else { const o = mood === 'scream' ? 40 : mood === 'talk2' ? 30 : 16; g.beginPath(); g.ellipse(128, 188, 36, o, 0, 0, 7); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.fillRect(100, 188 - o + 2, 56, 9); }
+  }));
+}
+export function alarmClock(parent) {
+  const g = new THREE.Group(); parent.add(g);
+  const red = std(0xd8302f, { roughness: 0.4 }), steel = std(0xb8bcc8, { metalness: 0.8, roughness: 0.3 }), dk = std(0x1b1b24);
+  const body = new THREE.Group(); body.position.y = 0.42; g.add(body);
+  const can = cyl(0.27, 0.27, 0.2, red, 0, 0, 0, body, 28); can.rotation.x = Math.PI / 2;
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.03, 10, 32), steel); rim.position.z = 0.1; body.add(rim);
+  const dial = new THREE.Mesh(new THREE.CircleGeometry(0.24, 32), new THREE.MeshBasicMaterial({ map: clockTex('glare') })); dial.position.z = 0.102; body.add(dial);
+  const bells = [-1, 1].map((s) => { const b = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), steel); b.position.set(s * 0.16, 0.27, 0); b.rotation.z = -s * 0.45; body.add(b); return b; });
+  const hammer = cyl(0.01, 0.01, 0.17, dk, 0, 0.36, 0, body, 6); const hk = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), dk); hk.position.set(0, 0.46, 0); body.add(hk);
+  const arms = [-1, 1].map((s) => { const a = new THREE.Group(); a.position.set(s * 0.27, 0.02, 0); body.add(a); const m = cyl(0.03, 0.03, 0.22, dk, 0, -0.11, 0, a, 8); const f = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 8), std(0xf4f0e6)); f.position.y = -0.23; a.add(f); return a; });
+  const legs = [-1, 1].map((s) => { const l = new THREE.Group(); l.position.set(s * 0.1, 0.17, 0); g.add(l); cyl(0.025, 0.025, 0.2, dk, 0, -0.08, 0, l, 8); box(0.1, 0.05, 0.16, std(0x2a2a30), 0, -0.19, 0.03, l, 0.02); return l; });
+  const grow = legs.map((l) => l); 
+  return {
+    g, body, dial, arms,
+    /** o: t, mood (glare|scream|smug|talk), walk (0..1 run speed, 0 = standing), legsOn, ring 0..1 shake, armsUp (rad) */
+    set({ t = 0, mood = 'glare', walk = 0, legsOn = true, ring = 0, armsUp = 0, talk = false, legScale = 1 } = {}) {
+      const m = mood === 'talk' ? (Math.sin(t * 16) > 0 ? 'talk1' : 'talk2') : mood === 'scream' ? 'scream' : mood;
+      dial.material.map = clockTex(m === 'talk1' || m === 'talk2' || m === 'scream' || m === 'smug' ? m : 'glare');
+      legs.forEach((l, i) => { l.visible = legsOn; l.scale.set(1, legScale, 1); l.rotation.x = walk ? Math.sin(t * 14 * walk + i * Math.PI) * 0.9 : 0; });
+      body.position.y = 0.42 + (walk ? Math.abs(Math.sin(t * 14 * walk)) * 0.05 : 0);
+      const sh = ring ? Math.sin(t * 90) * 0.06 * ring : 0; body.rotation.z = sh; bells.forEach((b, i) => (b.position.y = 0.27 + (ring ? Math.abs(Math.sin(t * 60 + i)) * 0.03 : 0)));
+      hammer.position.x = ring ? Math.sin(t * 80) * 0.1 : 0; hk.position.x = hammer.position.x;
+      arms.forEach((a, i) => { a.rotation.z = (i ? -1 : 1) * (armsUp + (walk ? Math.sin(t * 14 * walk + i * Math.PI) * 0.7 : 0)); });
+    },
+  };
 }

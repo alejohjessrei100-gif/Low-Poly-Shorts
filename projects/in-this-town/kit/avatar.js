@@ -170,8 +170,8 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
     add(j, rbox(0.98, 0.42, 0.98, 0.1), m, 0, 0, 0); // elbow / knee plug: flush with both segments, covers the groove
     return [p, j];
   };
-  const [armL, elbowL] = limb(TP, -1.5, 1.95 + TY, mat(shirt), 2, r15 ? -0.42 : 0);
-  const [armR, elbowR] = limb(TP, 1.5, 1.95 + TY, mat(shirt), 2, r15 ? 0.42 : 0);
+  const [armL, elbowL] = limb(TP, -1.5, 1.95 + TY, mat(shirt), 2, r15 ? -0.72 : 0);
+  const [armR, elbowR] = limb(TP, 1.5, 1.95 + TY, mat(shirt), 2, r15 ? 0.72 : 0); // pivot sits inside the torso, so the arm stays attached when it swings
   [[armL, elbowL], [armR, elbowR]].forEach(([a, e]) => (e ? add(e, rbox(0.97, 0.6, 0.97, 0.14), mat(skin), 0, -0.72, 0) : add(a, rbox(0.98, 0.62, 0.98, 0.14), mat(skin), 0, -1.72, 0)));
   const [legL, kneeL] = limb(body, -0.5, 0, mat(pants));
   const [legR, kneeR] = limb(body, 0.5, 0, mat(pants));
