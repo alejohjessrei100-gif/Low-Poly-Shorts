@@ -85,7 +85,11 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
   // r15: lower torso on the hips + a chest pivot at the waist (upper torso, arms, head bend together)
   const chest = new THREE.Group(); chest.position.y = r15 ? 0.9 : 0; body.add(chest);
   const torso = r15 ? add(chest, rbox(2, 1.12, 1, 0.14), mat(shirt), 0, 0.55, 0) : add(body, rbox(2, 2, 1, 0.14), mat(shirt), 0, 1, 0);
-  if (r15) add(body, rbox(1.94, 0.92, 0.96, 0.14), mat(shirt), 0, 0.46, 0);
+  if (r15) {
+    add(body, rbox(1.94, 0.92, 0.96, 0.14), mat(shirt), 0, 0.46, 0);
+    // waist plug: a slightly wider block that straddles the seam so the two halves read as one body when it bends
+    add(chest, rbox(2, 0.7, 1, 0.1), mat(shirt), 0, 0.03, 0); // same width and colour as the torso, so no groove shows
+  }
   const TP = r15 ? chest : body, TY = r15 ? -0.9 : 0; // parent + y offset for parts that used to hang off the body
   if (!shadowMode && !apron) {
     if (!r15) add(torso, rbox(1.3, 0.55, 0.06, 0.05), mat(new THREE.Color(shirt).multiplyScalar(0.82)), 0, -0.45, 0.5); else add(body, rbox(1.3, 0.5, 0.06, 0.05), mat(new THREE.Color(shirt).multiplyScalar(0.82)), 0, 0.5, 0.5);
@@ -162,6 +166,8 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
     add(o, rbox(1, 1.04, 1, 0.14), m, 0, -0.5, 0); // upper arm / thigh
     const j = new THREE.Group(); j.position.set(0, -1.0, 0); o.add(j); // elbow / knee
     add(j, rbox(0.95, 1.02, 0.95, 0.14), m, 0, -0.5, 0);
+    // joint balls hide the crease: a sphere on the shoulder/hip and one on the elbow/knee, same material as the limb
+    add(j, rbox(0.98, 0.42, 0.98, 0.1), m, 0, 0, 0); // elbow / knee plug: flush with both segments, covers the groove
     return [p, j];
   };
   const [armL, elbowL] = limb(TP, -1.5, 1.95 + TY, mat(shirt), 2, r15 ? -0.42 : 0);

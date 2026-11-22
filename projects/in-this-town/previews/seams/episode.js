@@ -1,0 +1,14 @@
+import { createCore } from '../../kit/core.js';
+import { kuro } from '../../kit/kuro.js';
+import { actor } from '../../kit/act.js';
+import { avatar } from '../../kit/rig.js';
+const C = createCore(document.getElementById('c'), { look: 'blender' });
+const { THREE, scene, camera, composer, setLight } = C;
+const g = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({ color: 0xb8b0c8 })); g.rotation.x = -Math.PI / 2; scene.add(g);
+const K = kuro(scene, 1.45, { r15: true });
+const M = avatar(scene, { skin: 0xf6c89a, shirt: 0x3fa05a, pants: 0x2c3e74, hair: 0xd8743a, hairStyle: 'messy', r15: true }, 1.7);
+const A = actor(K, { seed: 1 }), B = actor(M, { seed: 2 });
+A.keys([[0, 'crouch'], [1, 'pickup'], [2, 'crossArms']]); B.keys([[0, 'crouch'], [1, 'handsOnHips'], [2, 'shrug']]);
+window.SHOT_TIMES = [0]; window.END = 3;
+window.renderAt = (t) => { setLight('day', [0, 0, 0]); K.root.position.set(-0.55, 0, 0); M.root.position.set(0.55, 0, 0); A.update(t); B.update(t); camera.position.set(0, 1.0, 3.2); camera.lookAt(0, 0.8, 0); camera.fov = 38; camera.updateProjectionMatrix(); composer.render(); };
+window.READY = true;
