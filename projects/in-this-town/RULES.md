@@ -4,7 +4,9 @@ Set by the channel owner. Every episode follows these.
 
 1. **Length 30–45 seconds** (from episode 4). Script about 100–150 words (the +4 / 1.25x voice runs about 3.4 words per
    second).
-2. **No blur.** Depth of field is switched off in `kit/core.js`; everything in frame stays sharp.
+2. **Blur only where it helps (changed 22 Nov 2026).** Upgraded episodes call `C.allowBlur(true)`: gentle depth of field
+   focused on the subject (`kit/polish.js` `dof()`), motion blur on fast moves (`C.renderAccum`, 3 sub-frames). Older
+   episodes never opt in, so they stay sharp.
 3. **Check and auto-fix before rendering.** Before any video render:
    1. `node kit/autofix.mjs episodes/<ep>`: finds camera-in-wall, blocked frames, hidden characters and clipping,
       and fixes them with the smallest camera move or character nudge. Every change is logged in
@@ -26,9 +28,13 @@ Set by the channel owner. Every episode follows these.
    a beach town on stilts, a desert canyon town, a floating sky city, a swamp village, a neon night city), with
    its own terrain, architecture, colours, landmark and lighting. Shared code (avatars, captions, SFX, QA) is
    fine; what the viewer sees of the world must be new. Keep a list of used settings below.
-8. **No talking animation.** Mouths don't flap and heads don't bob while someone speaks. Each line gets one
-   steady facial expression that fits it (happy, scared, determined, smug...). `talkFace()` in `kit/avatar.js`
-   already does this.
+8. **Faces act (changed 22 Nov 2026).** The face rig (`kit/face.js`) gives every character separate eyes, pupils, lids,
+   brows and a mouth: named presets (happy, laughing, sad, crying, angry, furious, scared, shocked, smug, suspicious,
+   embarrassed, determined, bored, dread, starstruck) that blend over ~5 frames and are keyed a few frames before the
+   beat, automatic blinks, moving pupils, and lip-sync from the word timings plus the voice loudness (`amp.json`).
+   Personalities set how far faces go: Kuro dramatic, Mom stern, teacher deadpan. Bodies act with `kit/act.js` (R15
+   elbows/knees, anticipation, follow-through, idle breathing/glances, grounded walk cycles, squash & stretch) and the
+   camera eases with punch-ins and shakes on hits.
 9. **Show the world (not zoomed in).** At least half the shots are wide (characters at most 25% of the frame height), the rest
     medium (at most 45%). At most 4 close-ups per episode, only on key beats, listed in
     `window.HOUSE_RULES.close`. Every scene opens on an establishing shot. Lens 50-60 degrees. `clipcheck` reports

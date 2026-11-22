@@ -79,12 +79,13 @@ export function avatar(parent, opts = {}, height = 1.75, { face = 'smile' } = {}
   const apply = (S) => { joints.forEach((j, i) => j.rotation.set(...S[i])); av.body.position.y = S[joints.length][0]; };
   const run = (name, t, once) => {
     av.body.rotation.set(0, 0, 0); av.body.position.set(0, HIP, 0); av.headPivot.rotation.set(0, 0, 0);
+    if (av.r15) { av.chest.rotation.set(0, 0, 0); av.chest.scale.set(1, 1, 1); for (const j of [av.elbowL, av.elbowR, av.kneeL, av.kneeR]) j.rotation.set(0, 0, 0); }
     const f = CLIPS[name]; if (f) f(av, t, s, once);
     else if (POSES[name]) { still(av, POSES[name]); breathe(av, t); }
     else throw new Error(`avatar: no clip "${name}" (has: ${CLIP_NAMES.join(', ')})`);
   };
   return {
-    root, inner: av.root, av, head: av.headPivot, height, scale: s, handR: av.handR, handL: av.handL, face: faceA, top, armL: av.armL, armR: av.armR, legL: av.legL,
+    root, inner: av.root, av, head: av.headPivot, height, scale: s, handR: av.handR, handL: av.handL, face: faceA, top, armL: av.armL, armR: av.armR, legL: av.legL, legR: av.legR, chest: av.chest, elbowL: av.elbowL, elbowR: av.elbowR, kneeL: av.kneeL, kneeR: av.kneeR,
     clips: CLIP_NAMES,
     /** clip a at time ta; optional clip b at tb mixed by w (0..1). once: reach-type clips play once and hold */
     pose(a, ta, b = null, tb = 0, w = 0, { once = false } = {}) {

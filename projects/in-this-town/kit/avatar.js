@@ -71,7 +71,7 @@ export const SHADOW_COLOR = 0x241a40;
 // The unscaled avatar is 5.3 units from sole to head top; pass { studs: true } (kids: scale 0.8 on top).
 export const STUD_HEIGHT = 3.5, BASE_HEIGHT = 5.3, STUD_SCALE = STUD_HEIGHT / BASE_HEIGHT;
 export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74, shoes = 0x30303a, hair = 0x5a3a22,
-  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false, beanieCol = 0xe8434f, scarf = null, faceInk = null } = {}) {
+  hairStyle = 'messy', hat = null, backpack = null, apron = null, glasses = false, shadowMode = false, scale = 1, studs = false, beanieCol = 0xe8434f, scarf = null, faceInk = null, r15 = false } = {}) {
   const mat = (c, extra = {}) => shadowMode
     ? new THREE.MeshBasicMaterial({ color: SHADOW_COLOR, ...extra })
     : new THREE.MeshStandardMaterial({ color: c, roughness: 0.62, metalness: 0, ...extra });
@@ -82,13 +82,17 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
   root.scale.setScalar(scale * (studs ? STUD_SCALE : 1)); // studs: adult = 3.5 studs tall (house rule 9)
   const add = (parent, g, m, x, y, z) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = !shadowMode; o.receiveShadow = !shadowMode; parent.add(o); return o; };
 
-  const torso = add(body, rbox(2, 2, 1, 0.14), mat(shirt), 0, 1, 0);
+  // r15: lower torso on the hips + a chest pivot at the waist (upper torso, arms, head bend together)
+  const chest = new THREE.Group(); chest.position.y = r15 ? 0.9 : 0; body.add(chest);
+  const torso = r15 ? add(chest, rbox(2, 1.12, 1, 0.14), mat(shirt), 0, 0.55, 0) : add(body, rbox(2, 2, 1, 0.14), mat(shirt), 0, 1, 0);
+  if (r15) add(body, rbox(1.94, 0.92, 0.96, 0.14), mat(shirt), 0, 0.46, 0);
+  const TP = r15 ? chest : body, TY = r15 ? -0.9 : 0; // parent + y offset for parts that used to hang off the body
   if (!shadowMode && !apron) {
-    add(torso, rbox(1.3, 0.55, 0.06, 0.05), mat(new THREE.Color(shirt).multiplyScalar(0.82)), 0, -0.45, 0.5);
-    add(torso, rbox(0.06, 1.2, 0.04, 0.02), mat(0xf2f2f2), 0, 0.25, 0.51);
+    if (!r15) add(torso, rbox(1.3, 0.55, 0.06, 0.05), mat(new THREE.Color(shirt).multiplyScalar(0.82)), 0, -0.45, 0.5); else add(body, rbox(1.3, 0.5, 0.06, 0.05), mat(new THREE.Color(shirt).multiplyScalar(0.82)), 0, 0.5, 0.5);
+    add(torso, rbox(0.06, r15 ? 0.95 : 1.2, 0.04, 0.02), mat(0xf2f2f2), 0, r15 ? 0.02 : 0.25, 0.51);
   }
-  if (apron && !shadowMode) add(torso, rbox(1.6, 1.9, 0.08, 0.05), mat(apron), 0, -0.1, 0.52);
-  const headPivot = new THREE.Group(); headPivot.position.set(0, 2, 0); body.add(headPivot);
+  if (apron && !shadowMode) add(torso, rbox(1.6, r15 ? 1.05 : 1.9, 0.08, 0.05), mat(apron), 0, r15 ? 0.0 : -0.1, 0.52);
+  const headPivot = new THREE.Group(); headPivot.position.set(0, 2 + TY, 0); TP.add(headPivot);
   const head = add(headPivot, rbox(1.25, 1.25, 1.25, 0.32), mat(skin), 0, 0.68, 0);
   const faceMat = new THREE.MeshBasicMaterial({ map: face(shadowMode ? 'glow' : 'smile', shadowMode ? '#f4f1ff' : null, shadowMode ? null : faceInk), transparent: true, depthWrite: false });
   const faceP = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 1.05), faceMat);
@@ -145,26 +149,30 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
     add(headPivot, rbox(1.3, 0.4, 1.3, 0.1), mat(0xffffff), 0, 1.45, 0);
     add(headPivot, new THREE.SphereGeometry(0.85, 16, 12), mat(0xffffff), 0, 2.05, 0);
   }
-  if (scarf && !shadowMode) { add(body, rbox(2.15, 0.45, 1.15, 0.18), mat(scarf), 0, 3.85, 0); add(body, rbox(0.45, 1.1, 0.16, 0.08), mat(scarf), 0.45, 3.2, 0.6); }
+  if (scarf && !shadowMode) { add(TP, rbox(2.15, 0.45, 1.15, 0.18), mat(scarf), 0, 1.98 + TY, 0); add(TP, rbox(0.45, 1.1, 0.16, 0.08), mat(scarf), 0.45, 1.35 + TY, 0.6); } // around the neck (it used to float above the head)
   if (glasses && !shadowMode) add(headPivot, rbox(1.1, 0.3, 0.06, 0.04), mat(0x111118, { roughness: 0.2 }), 0, 0.82, 0.66);
   if (backpack) {
     const bp = add(torso, rbox(1.5, 1.6, 0.6, 0.18), mat(backpack), 0, 0.05, -0.75);
     if (!shadowMode) add(bp, rbox(1.1, 0.6, 0.2, 0.08), mat(new THREE.Color(backpack).multiplyScalar(0.8)), 0, -0.3, -0.36);
   }
-  const limb = (x, y, m, len = 2) => {
-    const p = new THREE.Group(); p.position.set(x, y, 0); body.add(p);
-    add(p, rbox(1, len, 1, 0.14), m, 0, -len / 2, 0);
-    return p;
+  const limb = (parent, x, y, m, len = 2, shoulder = 0) => {
+    const p = new THREE.Group(); p.position.set(x - shoulder, y, 0); parent.add(p); // r15 arms pivot at the torso edge
+    if (!r15) { add(p, rbox(1, len, 1, 0.14), m, 0, -len / 2, 0); return [p, null]; }
+    const o = new THREE.Group(); o.position.x = shoulder; p.add(o);
+    add(o, rbox(1, 1.04, 1, 0.14), m, 0, -0.5, 0); // upper arm / thigh
+    const j = new THREE.Group(); j.position.set(0, -1.0, 0); o.add(j); // elbow / knee
+    add(j, rbox(0.95, 1.02, 0.95, 0.14), m, 0, -0.5, 0);
+    return [p, j];
   };
-  const armL = limb(-1.5, 1.95, mat(shirt));
-  const armR = limb(1.5, 1.95, mat(shirt));
-  [armL, armR].forEach((a) => add(a, rbox(0.98, 0.62, 0.98, 0.14), mat(skin), 0, -1.72, 0));
-  const legL = limb(-0.5, 0, mat(pants));
-  const legR = limb(0.5, 0, mat(pants));
-  [legL, legR].forEach((l) => add(l, rbox(1.04, 0.4, 1.12, 0.12), mat(shoes), 0, -1.82, 0.05));
-  const handR = new THREE.Group(); handR.position.set(0, -2.05, 0.2); armR.add(handR);
-  const handL = new THREE.Group(); handL.position.set(0, -2.05, 0.2); armL.add(handL);
-  return { root, body, headPivot, head, faceMat, armL, armR, legL, legR, handR, handL, shadowMode, glow: '#f4f1ff', ink: faceInk };
+  const [armL, elbowL] = limb(TP, -1.5, 1.95 + TY, mat(shirt), 2, r15 ? -0.42 : 0);
+  const [armR, elbowR] = limb(TP, 1.5, 1.95 + TY, mat(shirt), 2, r15 ? 0.42 : 0);
+  [[armL, elbowL], [armR, elbowR]].forEach(([a, e]) => (e ? add(e, rbox(0.97, 0.6, 0.97, 0.14), mat(skin), 0, -0.72, 0) : add(a, rbox(0.98, 0.62, 0.98, 0.14), mat(skin), 0, -1.72, 0)));
+  const [legL, kneeL] = limb(body, -0.5, 0, mat(pants));
+  const [legR, kneeR] = limb(body, 0.5, 0, mat(pants));
+  [[legL, kneeL], [legR, kneeR]].forEach(([l, k]) => (k ? add(k, rbox(1.04, 0.4, 1.12, 0.12), mat(shoes), 0, -0.82, 0.05) : add(l, rbox(1.04, 0.4, 1.12, 0.12), mat(shoes), 0, -1.82, 0.05)));
+  const handR = new THREE.Group(); handR.position.set(0, r15 ? -1.05 : -2.05, 0.2); (elbowR || armR).add(handR);
+  const handL = new THREE.Group(); handL.position.set(0, r15 ? -1.05 : -2.05, 0.2); (elbowL || armL).add(handL);
+  return { root, body, chest, headPivot, head, faceMat, faceP, armL, armR, legL, legR, elbowL, elbowR, kneeL, kneeR, torso, handR, handL, shadowMode, glow: '#f4f1ff', ink: faceInk, r15 };
 }
 
 export function setFace(av, name) {

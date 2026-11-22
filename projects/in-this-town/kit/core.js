@@ -7,6 +7,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { FullScreenQuad } from 'three/addons/postprocessing/Pass.js';
 
 // RENDER_SCALE (set before import) renders smaller, e.g. 2/3 = 720x1280 for phones
 const SCALE = globalThis.RENDER_SCALE || 1;
@@ -68,7 +69,10 @@ export function createCore(canvas, { look = 'classic' } = {}) {
   bokeh.materialBokeh.needsUpdate = true;
   composer.addPass(bokeh);
   // House rule (Nov 2026): no depth-of-field blur. Shots may still set dof; it is ignored.
-  Object.defineProperty(bokeh, 'enabled', { get: () => false, set: () => {} });
+  // House rule (Nov 2026, revised 22 Nov): blur only where an episode opts in with allowBlur(true) - gentle depth of
+  // field on close-ups and motion blur on fast moves. Older episodes never call it, so they stay sharp.
+  const blurGate = { allow: false, on: false };
+  Object.defineProperty(bokeh, 'enabled', { get: () => blurGate.allow && blurGate.on, set: (v) => { blurGate.on = v; } });
   // grade from the style bible: lifted, purple-tinted blacks (black point ~0.16), pastel saturation
   const grade = new ShaderPass({
     uniforms: { tDiffuse: { value: null }, lift: { value: new THREE.Vector3(0.075, 0.06, 0.12) }, sat: { value: 1.3 },
@@ -134,7 +138,26 @@ export function createCore(canvas, { look = 'classic' } = {}) {
     sky.position.set(center[0], 0, center[2]);
   }
 
-  return { THREE, renderer, scene, camera, composer, bokeh, sun, hemi, sky, grade, setLight, gtao, look };
+  // motion blur: average n sub-frames (drawSub(i) poses the scene for sub-frame i) into an accumulation target
+  let acc = null, blendQ = null, copyQ = null;
+  function renderAccum(n, drawSub) {
+    if (!acc) {
+      acc = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType });
+      const vs = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }';
+      blendQ = new FullScreenQuad(new THREE.ShaderMaterial({ uniforms: { tSrc: { value: null }, a: { value: 1 } }, vertexShader: vs, fragmentShader: 'uniform sampler2D tSrc; uniform float a; varying vec2 vUv; void main(){ gl_FragColor = vec4(texture2D(tSrc, vUv).rgb, a); }', transparent: true, depthTest: false, depthWrite: false }));
+      copyQ = new FullScreenQuad(new THREE.ShaderMaterial({ uniforms: { tSrc: { value: null } }, vertexShader: vs, fragmentShader: 'uniform sampler2D tSrc; varying vec2 vUv; void main(){ gl_FragColor = vec4(texture2D(tSrc, vUv).rgb, 1.); }', depthTest: false, depthWrite: false }));
+    }
+    composer.renderToScreen = false;
+    for (let i = 0; i < n; i++) {
+      drawSub(i); composer.render();
+      const out = composer.passes[composer.passes.length - 1].needsSwap ? composer.readBuffer : composer.writeBuffer;
+      blendQ.material.uniforms.tSrc.value = out.texture; blendQ.material.uniforms.a.value = 1 / (i + 1);
+      renderer.setRenderTarget(acc); if (i === 0) renderer.clear(); const ac = renderer.autoClear; renderer.autoClear = false; blendQ.render(renderer); renderer.autoClear = ac; // no clear: we are averaging into acc
+    }
+    composer.renderToScreen = true; renderer.setRenderTarget(null);
+    copyQ.material.uniforms.tSrc.value = acc.texture; copyQ.render(renderer);
+  }
+  return { THREE, renderer, scene, camera, composer, bokeh, sun, hemi, sky, grade, setLight, gtao, look, allowBlur: (v) => (blurGate.allow = v), renderAccum, W, H };
 }
 
 // canvas texture helper

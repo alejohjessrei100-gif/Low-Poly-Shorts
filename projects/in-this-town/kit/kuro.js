@@ -16,8 +16,8 @@ const glow = (c, k = 1.2) => new THREE.MeshStandardMaterial({ color: c, emissive
 const plane = (w, h, mat, x, y, z, ry, p) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat); m.position.set(x, y, z); m.rotation.y = ry; p.add(m); return m; };
 
 // ---------------------------------------------------------------- Kuro: black body, white spiky hair, white face features
-export function kuro(parent, height = 1.45) {
-  return avatar(parent, { skin: 0x2a2a34, shirt: 0x18181f, pants: 0x111117, shoes: 0x0a0a0e, hair: 0xf6f6fa, hairStyle: 'spiky', faceInk: '#f6f6fa' }, height, { face: 'neutral' });
+export function kuro(parent, height = 1.45, extra = {}) {
+  return avatar(parent, { skin: 0x2a2a34, shirt: 0x18181f, pants: 0x111117, shoes: 0x0a0a0e, hair: 0xf6f6fa, hairStyle: 'spiky', faceInk: '#f6f6fa', ...extra }, height, { face: 'neutral' });
 }
 
 // ---------------------------------------------------------------- a blocky dog (~0.7 m), tail wag, walk, sit, glasses, backpack

@@ -28,6 +28,7 @@ const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
 page.on('console', (m) => { if (m.type() === 'error') console.error('page:', m.text()); });
 page.on('pageerror', (e) => console.error('pageerror:', e.message));
 if (opt('look', '')) await page.addInitScript(`window.LOOK = ${JSON.stringify(opt('look'))};`);
+if (opt('scale', '')) await page.addInitScript(`window.RENDER_SCALE = ${+opt('scale')};`); // e.g. 0.5 = 540x960 previews
 await page.goto(`http://localhost:${port}/${ep}/index.html`);
 await page.waitForFunction(() => window.READY === true, null, { timeout: 120000 });
 
