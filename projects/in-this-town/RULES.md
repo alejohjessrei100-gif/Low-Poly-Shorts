@@ -99,3 +99,8 @@ Set by the channel owner. Every episode follows these.
   awnings and signs, a columned town hall with a clock tower, swaying instanced cornfields, red barn with silos, windmill
   pump, water tower, farmhouses, power lines, two cell towers, a storm system (rain, clouds, lightning). Kids are the
   blocky characters at 1.3-1.4 m; Theo is blocky_c repainted (`skin` option in `kit/assets.js`).
+- Ep 10 "Broken Promises Steal Your Colors": canal city (`kit/canal.js`): painted narrow houses on both quays with real
+  window frames, shutters and flower boxes, arched footbridges, boats, laundry lines, a school, a bakery, Dale's shop,
+  a half-built "new bridge", the old gray stone bridge with an underpass, a brick clock tower, plus the top of the tower
+  (bell, rope, gears, the back of the clock face) and the family dining room. Colour drains street by street
+  (`drain()` / `grayable()`), and puddles and the canal use live reflections.

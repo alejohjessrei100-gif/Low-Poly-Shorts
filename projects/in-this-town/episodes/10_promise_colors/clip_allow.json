@@ -1,0 +1,13 @@
+{
+ "_": "Intended: townsfolk walk through Rosa as she fades (nobody can see her, shot 3); the old woman exists only in puddle reflections; close-ups on the four key beats; some shots show a place or a prop with nobody centred.",
+ "*": [
+  "ALL_OFFSCREEN",
+  "OFFSCREEN",
+  "BLOCKED",
+  "HIDDEN"
+ ],
+ "3": [
+  "CLIP rosa into folk0",
+  "CLIP rosa into folk1"
+ ]
+}
