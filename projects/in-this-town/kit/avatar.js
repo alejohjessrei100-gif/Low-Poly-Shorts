@@ -154,7 +154,11 @@ export function makeAvatar({ skin = 0xf6c89a, shirt = 0x3fb6a8, pants = 0x2c3e74
     add(headPivot, new THREE.SphereGeometry(0.85, 16, 12), mat(0xffffff), 0, 2.05, 0);
   }
   if (scarf && !shadowMode) { add(TP, rbox(2.15, 0.45, 1.15, 0.18), mat(scarf), 0, 1.98 + TY, 0); add(TP, rbox(0.45, 1.1, 0.16, 0.08), mat(scarf), 0.45, 1.35 + TY, 0.6); } // around the neck (it used to float above the head)
-  if (glasses && !shadowMode) add(headPivot, rbox(1.1, 0.3, 0.06, 0.04), mat(0x111118, { roughness: 0.2 }), 0, 0.82, 0.66);
+  if (glasses && !shadowMode) { // two open rims and a bridge, so the eyes stay visible (a solid bar looked like a black strip)
+    const gm = mat(0x2a2a34, { roughness: 0.3 });
+    for (const s of [-1, 1]) { const rim = add(headPivot, new THREE.TorusGeometry(0.2, 0.035, 8, 20), gm, s * 0.3, 0.82, 0.68); rim.scale.y = 0.85; }
+    add(headPivot, rbox(0.2, 0.05, 0.05, 0.02), gm, 0, 0.86, 0.68);
+  }
   if (backpack) {
     const bp = add(torso, rbox(1.5, 1.6, 0.6, 0.18), mat(backpack), 0, 0.05, -0.75);
     if (!shadowMode) add(bp, rbox(1.1, 0.6, 0.2, 0.08), mat(new THREE.Color(backpack).multiplyScalar(0.8)), 0, -0.3, -0.36);

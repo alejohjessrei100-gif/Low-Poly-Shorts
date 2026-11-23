@@ -33,7 +33,7 @@ export function dimWood(scene, X = 600) {
   const door = new THREE.Group(); door.position.set(X + path(-72), 0, -72); g.add(door);
   const stone = std(0x5a5a64, { roughness: 1 });
   cyl(1.8, 2.3, 9, bark, 0, 4.5, -1.2, door, 10); box(2.6, 3.6, 0.6, stone, 0, 1.8, 0.4, door); for (const s of [-1, 1]) box(0.5, 3.8, 0.7, stone, s * 1.5, 1.9, 0.4, door); box(3.6, 0.5, 0.7, stone, 0, 3.9, 0.4, door);
-  const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.5), new THREE.MeshStandardMaterial({ map: canvasTex(1024, 160, (c, w, h) => { c.fillStyle = '#4a4a54'; c.fillRect(0, 0, w, h); c.fillStyle = '#e8e4f0'; c.font = '800 96px Poppins'; c.textAlign = 'center'; c.fillText('THE HOUSE OF NAMES', w / 2, 118); }), roughness: 0.9, emissive: 0x2a2a44, emissiveIntensity: 0.5 })); sign.position.set(0, 4.35, 0.78); door.add(sign);
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.5), new THREE.MeshStandardMaterial({ map: canvasTex(1024, 160, (c, w, h) => { c.fillStyle = '#4a4a54'; c.fillRect(0, 0, w, h); c.fillStyle = '#e8e4f0'; c.font = '800 80px Poppins'; c.textAlign = 'center'; c.fillText('THE HOUSE OF NAMES', w / 2, 112); }), roughness: 0.9, emissive: 0x2a2a44, emissiveIntensity: 0.5 })); sign.position.set(0, 4.35, 1.5); door.add(sign);
   const leaf = new THREE.Group(); leaf.position.set(0, 1.55, 0.32); door.add(leaf); box(1.2, 3.0, 0.12, std(0x2a2a30), 0, 0, 0, leaf);
   return { g, path, shoes, doorPos: new THREE.Vector3(X + path(-72), 0, -72), leaf, X, sway(t) { shoes.forEach((s) => (s.rotation.z = Math.sin(t * 1.3 + s.userData.ph) * 0.12)); } };
 }
@@ -77,7 +77,7 @@ const mirrorTex = (kind) => canvasTex(256, 256, (c, w, h) => {
   if (kind === 'eli') { c.beginPath(); c.arc(128, 96, 36, 0, 7); c.fill(); c.fillRect(92, 130, 72, 90); }
   else { // a small hunched shape with no face
     c.beginPath(); c.ellipse(128, 168, 46, 54, 0, 0, 7); c.fill(); c.beginPath(); c.arc(128, 112, 30, 0, 7); c.fill(); c.strokeStyle = '#16141f'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(94, 150); c.lineTo(78, 196); c.moveTo(162, 150); c.lineTo(178, 196); c.stroke();
-    if (kind === 'card') { c.fillStyle = '#f4f4f4'; c.fillRect(150, 150, 70, 46); c.fillStyle = '#1b1b24'; c.font = '800 28px Poppins'; c.textAlign = 'center'; c.fillText('Ash', 185, 182); }
+    if (kind === 'card') { c.fillStyle = '#f4f4f4'; c.fillRect(90, 170, 76, 44); c.fillStyle = '#1b1b24'; c.font = '800 28px Poppins'; c.textAlign = 'center'; c.fillText('Ash', 128, 202); } // centred so it stays inside the frame when the insert pushes in
   }
 });
 export function mirror(parent) {
