@@ -76,6 +76,14 @@ Set by the channel owner. Every episode follows these.
     the first shot shows it), then who / where / when in one breath, a re-hook around the middle ("But here's the
     strange part"), the climax, and a last line that lands hard or loops back to the start. Short sentences, no
     filler. Description ends with "Based on a true story. Some scenes are dramatized."
+19. **Story structure for scripts (from the reference scripts the user shared, 23 Nov 2026).** Rule + automatic penalty
+    -> "You see," how it works with 3 examples -> "Because of this," how the world behaves -> "But one day," the
+    inciting incident -> a visible countdown or stages of the penalty -> a mentor/object/warning that gets planted
+    -> escalating journey with specific creepy details -> a personal-stakes reveal at the middle -> a win -> a
+    fake-out ("you think that was the list?") -> the planted object pays off -> resolution -> a final sting that
+    loops back. Shorts version (110-130 words): 0-3 s rule+penalty, 3-9 you see+3 examples, 9-13 because of this,
+    13-18 trigger+countdown, 18-30 plant+escalation, 30-38 reveal+fake-out, 38-45 payoff+sting. A new fact or turn
+    every 5-8 s, each paragraph ends on a mini-hook.
 
 ## Settings used so far
 - Ep 1 "Your Shadow Is Free": pastel main street, town hall with gold dome, glass skyline, suburbs.
