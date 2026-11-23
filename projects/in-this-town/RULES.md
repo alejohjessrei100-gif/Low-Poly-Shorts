@@ -76,7 +76,8 @@ Set by the channel owner. Every episode follows these.
     the first shot shows it), then who / where / when in one breath, a re-hook around the middle ("But here's the
     strange part"), the climax, and a last line that lands hard or loops back to the start. Short sentences, no
     filler. Description ends with "Based on a true story. Some scenes are dramatized."
-19. **Story structure for scripts (from the reference scripts the user shared, 23 Nov 2026).** Rule + automatic penalty
+19. **Every script starts with "In this town,"** (the reference scripts open "In this world/town/jungle,"; ours always say town). The first sentence is the rule and its penalty.
+20. **Story structure for scripts (from the reference scripts the user shared, 23 Nov 2026).** Rule + automatic penalty
     -> "You see," how it works with 3 examples -> "Because of this," how the world behaves -> "But one day," the
     inciting incident -> a visible countdown or stages of the penalty -> a mentor/object/warning that gets planted
     -> escalating journey with specific creepy details -> a personal-stakes reveal at the middle -> a win -> a
