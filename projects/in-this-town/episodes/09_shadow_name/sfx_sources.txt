@@ -1,1 +1,1 @@
-all sound effects and the music bed are synthesized (kit/sfx.py, kit/drone.py)
+music: renders/music/bgm.wav (looped, 25% of voice); sound effects synthesized in kit/sfx.py
